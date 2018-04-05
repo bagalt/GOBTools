@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<assembly xmlns="urn:schemas-microsoft-com:asm.v1" manifestVersion="1.0">
+
+  <assemblyIdentity name="GOBTools" version="1.0.0.0"></assemblyIdentity>
+
+  <clrClass clsid="{da7f705f-fbfa-45b4-ad7f-8398a2480c7c}" progid="GOBTools.StandardAddInServer" threadingModel="Both" name="GOBTools.GOBTools.StandardAddInServer" runtimeVersion=""></clrClass>
+
+  <file name="GOBTools.dll" hashalg="SHA1"></file>
+
+</assembly>

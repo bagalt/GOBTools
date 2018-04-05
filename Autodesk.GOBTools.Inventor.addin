@@ -1,0 +1,16 @@
+<Addin Type="Standard">
+  <!--Created for Autodesk Inventor Version 22.0-->
+  <ClassId>{da7f705f-fbfa-45b4-ad7f-8398a2480c7c}</ClassId>
+  <ClientId>{da7f705f-fbfa-45b4-ad7f-8398a2480c7c}</ClientId>
+  <DisplayName>GOBTools</DisplayName>
+  <Description>GOBTools</Description>
+  <Assembly>GOBTools.dll</Assembly>
+  <LoadOnStartUp>1</LoadOnStartUp>
+  <!-- LoadBehavior = 2 load when an assembly document is opened, 1 = load when any document is opened-->
+  <LoadBehavior>1</LoadBehavior>
+  <UserUnloadable>1</UserUnloadable>
+  <Hidden>0</Hidden>
+  <SupportedSoftwareVersionGreaterThan>21..</SupportedSoftwareVersionGreaterThan>
+  <DataVersion>1</DataVersion>
+  <UserInterfaceVersion>1</UserInterfaceVersion>
+</Addin>
