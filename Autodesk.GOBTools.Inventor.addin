@@ -3,7 +3,7 @@
   <ClassId>{da7f705f-fbfa-45b4-ad7f-8398a2480c7c}</ClassId>
   <ClientId>{da7f705f-fbfa-45b4-ad7f-8398a2480c7c}</ClientId>
   <DisplayName>GOBTools</DisplayName>
-  <Description>GOBTools</Description>
+  <Description>A few useful tools for Inventor by Brett Gombar</Description>
   <Assembly>GOBTools.dll</Assembly>
   <LoadOnStartUp>1</LoadOnStartUp>
   <!-- LoadBehavior = 2 load when an assembly document is opened, 1 = load when any document is opened-->
