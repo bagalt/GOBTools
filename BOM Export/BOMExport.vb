@@ -1,5 +1,6 @@
 ﻿Imports Inventor
 Imports Microsoft.Office.Interop
+Imports System.IO
 
 Module BOMExport
 
@@ -9,6 +10,12 @@ Module BOMExport
     Private mYear As String 'variable to hold the current year as a string
     Private mParentAssy As String 'variable to hold the name of the parent assembly for a part
     Private mAddBAssy As Boolean 'variable to hold flag for adding B49 assemblies to part list
+    Private mErrorStatus As Boolean 'variable to show if an error has occurred or not
+
+    Private Structure ParentStatus
+        Public ErrorStatus As Boolean
+        Public Result As String
+    End Structure
 
     'enum to characterize the type of part that is identified
     'this helps with handling the different types of parts
@@ -20,9 +27,9 @@ Module BOMExport
         BAssy = 5 'for B049, B0049 assemblies
     End Enum
 
-    Public Results As String 'variable used for displaying the results
+    Public Results As String = "" 'variable used for displaying the results
 
-    Public Sub AssemblyCount(ThisApplication As Inventor.Application, bIgnorePriorYr As Boolean, sFilePath As String, AddBAssy As Boolean)
+    Public Sub AssemblyCount(ThisApplication As Inventor.Application, bIgnorePriorYr As Boolean, sDirectoryPath As String, AddBAssy As Boolean)
         ' Set reference to active document.
         ' This assumes the active document is an assembly
         Dim oDoc As Inventor.AssemblyDocument
@@ -47,11 +54,14 @@ Module BOMExport
         Dim assyDoc As Inventor.AssemblyDocument
         Dim colBreadCrumb As Collection
         Dim thisDate As Date
+        Dim sFilePath As String
 
         sMsg = ""
         mIgnoreYr = bIgnorePriorYr
         mParentAssy = ""
         mAddBAssy = AddBAssy
+        mErrorStatus = False
+        Results = ""
 
         'Get the current year,  then get the last two characters to get the year string
         mYear = Right(CStr(thisDate.Year), 2)
@@ -76,11 +86,11 @@ Module BOMExport
                 If oCompOcc.SubOccurrences.Count = 0 Then
                     'not a sub assembly
                     mParentAssy = mStartAssy
-                    Call SortPart(oCompOcc, colBreadCrumb)
+                    SortPart(oCompOcc, colBreadCrumb)
                     iLeafNodes = iLeafNodes + 1
                 Else
                     'sub assembly found
-                    Call SortPart(oCompOcc, colBreadCrumb)
+                    SortPart(oCompOcc, colBreadCrumb)
                     iSubAssemblies = iSubAssemblies + 1
                     assyDoc = oCompOcc.Definition.Document
                     'add subassembly part number to breadcrumb
@@ -92,29 +102,67 @@ Module BOMExport
             End If
         Next
 
-        'if file path is not selected, then do not create an excel file
-        If sFilePath <> "Choose a Folder" Then
+        'check the file path to see if it is valid
+        sFilePath = sDirectoryPath & "\" & mStartAssy & "_PartsList.xlsx"
+
+        If IsValidFileNameOrPath(sFilePath) And IsDirectoryValid(sDirectoryPath) Then
+            'file name is valid and directory path is valid
             Debug.Print("")
+            If mErrorStatus = True Then
+                Debug.Print("**** ERRORS FOUND See Excel Document ****")
+                Results = "**** ERRORS FOUND Check Excel Document ****" & vbNewLine
+            End If
             Debug.Print("Num unique Parts: " & mMyParts.Count)
             Debug.Print("No of sub assemblies: " + CStr(iSubAssemblies))
-            Results = "File Path: " & sFilePath & "\" & mStartAssy & "_PartsList.xlsx" & vbNewLine &
+            Results = Results & "File Path: " & sFilePath & vbNewLine &
             "Num Unique Parts: " & CStr(mMyParts.Count) & vbNewLine & "Num Sub Assemblies: " & CStr(iSubAssemblies)
-            Call CreateExcelDoc(mMyParts, mStartAssy, sFilePath)
+            If CreateExcelDoc(mMyParts, mStartAssy, sFilePath) = False Then
+                Results = Results & vbNewLine & "**** No Excel File Created ****" & vbNewLine
+            End If
         Else
             Debug.Print("")
+            If mErrorStatus = True Then
+                Debug.Print("**** ERRORS FOUND Parts Missing Info ****")
+                Results = "**** ERRORS FOUND Some Parts Missing Info ****" & vbNewLine
+            End If
             Debug.Print("Excel Document NOT created")
             Debug.Print("Num unique Parts: " & mMyParts.Count)
             Debug.Print("No of sub assemblies: " + CStr(iSubAssemblies))
-            Results = "Excel file NOT created" & vbNewLine &
+            Results = Results & "Excel file NOT created" & vbNewLine &
             "Num Unique Parts: " & CStr(mMyParts.Count) & vbNewLine & "Num Sub Assemblies: " & CStr(iSubAssemblies)
         End If
+
+
+        'if file path is not selected, then do not create an excel file
+        'If sFilePath <> "Choose a Folder" Then
+        'Debug.Print("")
+        'If mErrorStatus = True Then
+        'Debug.Print("**** ERRORS FOUND Check Excel ****")
+        'Results = "**** ERRORS FOUND Check Excel ****" & vbNewLine
+        'End If
+        'Debug.Print("Num unique Parts: " & mMyParts.Count)
+        'Debug.Print("No of sub assemblies: " + CStr(iSubAssemblies))
+        'Results = Results & "File Path: " & sFilePath & "\" & mStartAssy & "_PartsList.xlsx" & vbNewLine &
+        '"Num Unique Parts: " & CStr(mMyParts.Count) & vbNewLine & "Num Sub Assemblies: " & CStr(iSubAssemblies)
+        'Call CreateExcelDoc(mMyParts, mStartAssy, sFilePath)
+        'Else
+        'Debug.Print("")
+        'If mErrorStatus = True Then
+        'Debug.Print("**** ERRORS FOUND Check Excel ****")
+        'Results = "**** ERRORS FOUND Check Excel ****" & vbNewLine
+        'End If
+        'Debug.Print("Excel Document NOT created")
+        'Debug.Print("Num unique Parts: " & mMyParts.Count)
+        'Debug.Print("No of sub assemblies: " + CStr(iSubAssemblies))
+        'Results = Results & "Excel file NOT created" & vbNewLine &
+        '"Num Unique Parts: " & CStr(mMyParts.Count) & vbNewLine & "Num Sub Assemblies: " & CStr(iSubAssemblies)
+        'End If
 
         'print the part list
         Debug.Print("")
         PrintColl(mMyParts)
 
     End Sub
-
 
     Private Sub processAllSubOcc(ByVal oCompOcc As Inventor.ComponentOccurrence, ByRef sMsg As String, ByRef iLeafNodes As Long, ByRef iSubAssemblies As Long, ParentName As String, prevBreadCrumb As Collection)
         ' This function is called for processing sub assembly.  It is called recursively
@@ -141,7 +189,7 @@ Module BOMExport
             ' Check if it's child occurrence (leaf node)
             If oSubCompOcc.SubOccurrences.Count = 0 Then
                 'Debug.Print oSubCompOcc.Name
-                Call SortPart(oSubCompOcc, subBreadCrumb)
+                SortPart(oSubCompOcc, subBreadCrumb)
                 iLeafNodes = iLeafNodes + 1
             Else 'it is a subassembly
                 sMsg = sMsg + oSubCompOcc.Name + vbCr
@@ -248,33 +296,24 @@ Module BOMExport
         'sub to get the desired properties from the occurrence
         'Proman Class Code, Part Number, Description English, Cust Serv Code
 
+        'initialize variables
         Dim partProps As Inventor.PropertySets
-        Dim sPromanCode As String
-        Dim sDescription As String
-        Dim sServCode As String
-        Dim sPartNum As String
-        Dim sVendCode As String
-        Dim sManufName As String
-        Dim sManufNum As String
-        Dim bError As Boolean
-        Dim sErrorMsg As String
-        Dim sKey As String 'used to store the key for the collection PartNum + ParentAssy
+        Dim sPromanCode As String = ""
+        Dim sDescription As String = ""
+        Dim sServCode As String = ""
+        Dim sPartNum As String = ""
+        Dim sVendCode As String = ""
+        Dim sManufName As String = ""
+        Dim sManufNum As String = ""
+        Dim bError As Boolean = False
+        Dim sErrorMsg As String = ""
+        Dim sKey As String = "" 'used to store the key for the collection PartNum + ParentAssy
         Dim myParts As New Collection
-
-        'initialize all items to empty strings
-        sPartNum = ""
-        sPromanCode = ""
-        sDescription = ""
-        sServCode = ""
-        sVendCode = ""
-        sManufName = ""
-        sManufNum = ""
-        bError = False
-        sErrorMsg = ""
+        Dim ParentInfo As ParentStatus
 
         'define myPartInfo as class of cPartInfo
         Dim myPartInfo As cPartInfo
-
+        'assign part properties object
         partProps = oCompOcc.Definition.Document.PropertySets
 
         Select Case desiredPart
@@ -282,63 +321,121 @@ Module BOMExport
                 'virtual parts have a different location to get the part number
                 'assign the other fields manually
                 sPartNum = oCompOcc.Definition.PropertySets.item("Design Tracking Properties").item("Part Number").value
-                sPromanCode = "XXXX"
-                sDescription = "XXXXXXXXXXXX"
+                sPromanCode = "XXXXXX"
+                sDescription = "XXXX XXXX"
                 sServCode = "XX"
 
             Case PartType.ManufPart, PartType.BAssy
                 'Get the part number from the status tab of the iProperties
                 sPartNum = partProps.Item("Design Tracking Properties").Item("Part Number").Value
-                On Error GoTo PromanErr
-                'some parts may not have these items, such as proman class code, probably older items
-                sPromanCode = partProps.Item("User Defined Properties").Item("Proman Class Code").Value
-                On Error GoTo DescErr
-                sDescription = partProps.Item("User Defined Properties").Item("Description English").Value
-                On Error GoTo ServErr
-                sServCode = partProps.Item("User Defined Properties").Item("Cust Serv Code").Value
+                Try
+                    'some parts may not have these items, such as proman class code, probably older items
+                    sPromanCode = partProps.Item("User Defined Properties").Item("Proman Class Code").Value
+                Catch
+                    PromanErr(sPromanCode, bError, mErrorStatus, sErrorMsg)
+                End Try
+
+                Try
+                    sDescription = partProps.Item("User Defined Properties").Item("Description English").Value
+                Catch
+                    DescriptionErr(sDescription, bError, mErrorStatus, sErrorMsg)
+                End Try
+
+                Try
+                    sServCode = partProps.Item("User Defined Properties").Item("Cust Serv Code").Value
+                Catch
+                    ServiceCodeErr(sServCode, bError, mErrorStatus, sErrorMsg)
+                End Try
 
             Case PartType.PurchPart
                 'Get the part number from the status tab of the iProperties
                 sPartNum = partProps.Item("Design Tracking Properties").Item("Part Number").Value
-                On Error GoTo PromanErr
+                Try
+                    sPromanCode = partProps.Item("User Defined Properties").Item("Proman Class Code").Value
+                Catch
+                    PromanErr(sPromanCode, bError, mErrorStatus, sErrorMsg)
+                End Try
+
                 'some parts may not have these items, such as proman class code, probably older items
-                sPromanCode = partProps.Item("User Defined Properties").Item("Proman Class Code").Value
-                On Error GoTo DescErr
-                sDescription = partProps.Item("User Defined Properties").Item("Description English").Value
-                On Error GoTo ServErr
-                sServCode = partProps.Item("User Defined Properties").Item("Cust Serv Code").Value
-                On Error GoTo VendCodeErr
-                sVendCode = partProps.Item("User Defined Properties").Item("Supplier").Value
-                On Error GoTo ManufNameErr
-                sManufName = partProps.Item("User Defined Properties").Item("Manufacturer Name").Value
-                On Error GoTo ManufNumErr
-                sManufNum = partProps.Item("User Defined Properties").Item("Supplier Part Nb").Value
+                Try
+                    sDescription = partProps.Item("User Defined Properties").Item("Description English").Value
+                Catch
+                    DescriptionErr(sDescription, bError, mErrorStatus, sErrorMsg)
+                End Try
+
+                Try
+                    sServCode = partProps.Item("User Defined Properties").Item("Cust Serv Code").Value
+                Catch
+                    ServiceCodeErr(sServCode, bError, mErrorStatus, sErrorMsg)
+                End Try
+
+                Try
+                    sVendCode = partProps.Item("User Defined Properties").Item("Supplier").Value
+                Catch
+                    VendorCodeErr(sVendCode, bError, mErrorStatus, sErrorMsg)
+                End Try
+
+                Try
+                    sManufName = partProps.Item("User Defined Properties").Item("Manufacturer Name").Value
+                Catch
+                    ManufNameErr(sManufName, bError, mErrorStatus, sErrorMsg)
+                End Try
+
+                Try
+                    sManufNum = partProps.Item("User Defined Properties").Item("Supplier Part Nb").Value
+                Catch
+                    ManufNumErr(sManufNum, bError, mErrorStatus, sErrorMsg)
+                End Try
 
             Case PartType.OldPurchPart
                 'Get the part number from the status tab of the iProperties
                 sPartNum = partProps.Item("Design Tracking Properties").Item("Part Number").Value
-                On Error GoTo PromanErr
+                Try
+                    sPromanCode = partProps.Item("User Defined Properties").Item("Proman Class Code").Value
+                Catch
+                    PromanErr(sPromanCode, bError, mErrorStatus, sErrorMsg)
+                End Try
+
                 'some parts may not have these items, such as proman class code, probably older items
-                sPromanCode = partProps.Item("User Defined Properties").Item("Proman Class Code").Value
-                On Error GoTo DescErr
-                sDescription = partProps.Item("User Defined Properties").Item("Description English").Value
-                On Error GoTo ServErr
-                sServCode = partProps.Item("User Defined Properties").Item("Cust Serv Code").Value
-                On Error GoTo VendCodeErr
-                sVendCode = partProps.Item("User Defined Properties").Item("Supplier Mnem").Value
-                On Error GoTo ManufNameErr
-                sManufName = partProps.Item("User Defined Properties").Item("Supplier").Value
-                On Error GoTo ManufNumErr
-                sManufNum = partProps.Item("User Defined Properties").Item("Supplier Part Nb").Value
+                Try
+                    sDescription = partProps.Item("User Defined Properties").Item("Description English").Value
+                Catch
+                    DescriptionErr(sDescription, bError, mErrorStatus, sErrorMsg)
+                End Try
+
+                Try
+                    sServCode = partProps.Item("User Defined Properties").Item("Cust Serv Code").Value
+                Catch
+                    ServiceCodeErr(sServCode, bError, mErrorStatus, sErrorMsg)
+                End Try
+
+                Try
+                    sVendCode = partProps.Item("User Defined Properties").Item("Supplier Mnem").Value
+                Catch
+                    VendorCodeErr(sVendCode, bError, mErrorStatus, sErrorMsg)
+                End Try
+
+                Try
+                    sManufName = partProps.Item("User Defined Properties").Item("Supplier").Value
+                Catch
+                    ManufNameErr(sManufName, bError, mErrorStatus, sErrorMsg)
+                End Try
+
+                Try
+                    sManufNum = partProps.Item("User Defined Properties").Item("Supplier Part Nb").Value
+                Catch
+                    ManufNumErr(sManufNum, bError, mErrorStatus, sErrorMsg)
+                End Try
 
         End Select
 
         'define the key for the item in the collection, PartNumber + Parent Part
-        sKey = sPartNum & FindParent(coll)
+        ParentInfo = FindParent(coll)
+        sKey = sPartNum & ParentInfo.Result
 
         'add parts to collection if they are not already there
         'keys must be unique strings
-        If Not KeyExists(mMyParts, sKey) Then
+        If KeyExists(mMyParts, sKey) = False Then
             'create a new instance of the PartInfo class
             myPartInfo = New cPartInfo
             'add properties to myPartInfo
@@ -349,69 +446,108 @@ Module BOMExport
             myPartInfo.VendorCode = sVendCode
             myPartInfo.ManufName = CommaReplacer(sManufName)
             myPartInfo.ManufNum = sManufNum
-            myPartInfo.ParentAssy = FindParent(coll)
+
+            If ParentInfo.ErrorStatus = True Then
+                myPartInfo.ParentAssy = ParentInfo.Result
+                myPartInfo.PartError = True
+                myPartInfo.ErrorMsg = "Invalid Parent Assy"
+            Else
+                myPartInfo.ParentAssy = ParentInfo.Result
+                myPartInfo.PartError = bError
+                myPartInfo.ErrorMsg = sErrorMsg
+            End If
+            myPartInfo.ParentAssy = FindParent(coll).Result
             myPartInfo.Breadcrumb = coll
-            myPartInfo.PartError = bError
-            myPartInfo.ErrorMsg = sErrorMsg
+            'myPartInfo.PartError = bError
+            'myPartInfo.ErrorMsg = sErrorMsg
+
             'bump the quantity of the part (starts at 0)
             myPartInfo.IncrementQty(1)
             'add the newly created myPartInfo to the myParts collection with the part number as the key
             mMyParts.Add(myPartInfo, (sPartNum & myPartInfo.ParentAssy))
         Else
             'key already exists, bump the quantity of the part
-            'Call myPartInfo.IncrementQty(1)
-            Call mMyParts.Item(sKey).IncrementQty(1)
+            mMyParts.Item(sKey).IncrementQty(1)
         End If
 
-        'Debug.Print myPartInfo.PartNum & vbTab & myPartInfo.PromanCode & vbTab & myPartInfo.Description & vbTab & myPartInfo.ServiceCode & _
-        '           vbTab & myPartInfo.VendorCode & vbTab & myPartInfo.ManufName & vbTab & _
-        '          myPartInfo.ManufNum & vbTab & myPartInfo.ParentAssy & vbTab & myPartInfo.PrintBreadCrumb & vbTab & myPartInfo.Qty
         Exit Sub
-
-PromanErr:
-        sPromanCode = "XXXX"
-        bError = True
-        sErrorMsg = sErrorMsg & "Missing Proman Class Code"
-        Resume Next
-DescErr:
-        sDescription = "XXXXXXXXXXXX"
-        bError = True
-        sErrorMsg = sErrorMsg & ", " & "Missing Description"
-        Resume Next
-ServErr:
-        sServCode = "XX"
-        bError = True
-        sErrorMsg = sErrorMsg & ", " & "Missing Customer Service Code"
-        Resume Next
-VendCodeErr:
-        sVendCode = "XXXXX"
-        bError = True
-        sErrorMsg = sErrorMsg & ", " & "Missing Vendor Code"
-        Resume Next
-ManufNameErr:
-        sManufName = "XXXXX"
-        bError = True
-        sErrorMsg = sErrorMsg & ", " & "Missing Manufacturer Name"
-        Resume Next
-ManufNumErr:
-        sManufNum = "XXXX"
-        bError = True
-        sErrorMsg = sErrorMsg & ", " & "Missing Manufacturer Number"
-        Resume Next
 
     End Sub
 
-    Private Sub CreateExcelDoc(PartsList As Collection, AssyName As String, FilePath As String)
+#Region "Error handler sub routines"
+
+    Private Sub PromanErr(ByRef PromanCode As String, ByRef MyError As Boolean, ByRef ErrorStatus As Boolean, ByRef ErrorMsg As String)
+        'sub to handle changing the values if there is no proman code in the part
+
+        PromanCode = "XXXX"
+        MyError = True
+        ErrorStatus = True
+        ErrorMsg = ErrorMsg & "Missing Proman Class Code"
+
+    End Sub
+
+    Private Sub DescriptionErr(ByRef Description As String, ByRef MyError As Boolean, ByRef ErrorStatus As Boolean, ByRef ErrorMsg As String)
+        'sub to handle changing the values if there is no english description in the part
+
+        Description = "XXXX XXXX"
+        MyError = True
+        ErrorStatus = True
+        ErrorMsg = ErrorMsg & ", " & "Missing Description"
+
+    End Sub
+
+    Private Sub ServiceCodeErr(ByRef ServCode As String, ByRef MyError As Boolean, ByRef ErrorStatus As Boolean, ByRef ErrorMsg As String)
+        'sub to handle changing the values if there is no Customer Service Code in the part
+
+        ServCode = "XX"
+        MyError = True
+        ErrorStatus = True
+        ErrorMsg = ErrorMsg & ", " & "Missing Customer Service Code"
+
+    End Sub
+
+    Private Sub VendorCodeErr(ByRef VendCode As String, ByRef MyError As Boolean, ByRef ErrorStatus As Boolean, ByRef ErrorMsg As String)
+        'sub to handle changing the values if there is no Vendor Code in the part
+
+        VendCode = "XXXXXX"
+        MyError = True
+        ErrorStatus = True
+        ErrorMsg = ErrorMsg & ", " & "Missing Vendor Code"
+
+    End Sub
+
+    Private Sub ManufNameErr(ByRef ManufName As String, ByRef MyError As Boolean, ByRef ErrorStatus As Boolean, ByRef ErrorMsg As String)
+        'sub to handle changing the values if there is no Manufacturer Name in the part
+
+        ManufName = "XXXXXX"
+        MyError = True
+        ErrorStatus = True
+        ErrorMsg = ErrorMsg & ", " & "Missing Manufacturer Name"
+
+    End Sub
+
+    Private Sub ManufNumErr(ByRef ManufNum As String, ByRef MyError As Boolean, ByRef ErrorStatus As Boolean, ByRef ErrorMsg As String)
+        'sub to handle changing the values if there is no Manufacturer Name in the part
+
+        ManufNum = "XXXXXX"
+        MyError = True
+        ErrorStatus = True
+        ErrorMsg = ErrorMsg & ", " & "Missing Manufacturer Number"
+
+    End Sub
+#End Region
+
+    Private Function CreateExcelDoc(PartsList As Collection, AssyName As String, FilePath As String) As Boolean
         'sub to create an excel document from the parts list that was created from the assembly
 
         Dim XLApp As Excel.Application
         Dim wb As Excel.Workbook
-        Dim ws As Excel.WorkSheet
+        Dim ws As Excel.Worksheet
 
         'create the excel application, workbook and worksheet
         XLApp = CreateObject("Excel.Application")
         wb = XLApp.Workbooks.Add
-        ws = wb.Worksheets.item(1)
+        ws = wb.Worksheets.Item(1)
 
         'add items to the worksheet
         Dim part As cPartInfo
@@ -422,16 +558,16 @@ ManufNumErr:
 
         'create column headings
         With ws
-            .Range("A1").value = "Part Number"
-            .Range("B1").value = "Class Code"
-            .Range("C1").value = "Description"
-            .Range("D1").value = "Serv Code"
-            .Range("E1").value = "Vend Code"
-            .Range("F1").value = "Manuf Name"
-            .Range("G1").value = "Manuf Num"
-            .Range("H1").value = "Parent Assy"
-            .Range("I1").value = "QPA"
-            .Range("J1").value = "Errors"
+            .Range("A1").Value = "Part Number"
+            .Range("B1").Value = "Class Code"
+            .Range("C1").Value = "Description"
+            .Range("D1").Value = "Serv Code"
+            .Range("E1").Value = "Vend Code"
+            .Range("F1").Value = "Manuf Name"
+            .Range("G1").Value = "Manuf Num"
+            .Range("H1").Value = "Parent Assy"
+            .Range("I1").Value = "QPA"
+            .Range("J1").Value = "Errors"
             'color heading row gray
             .Range("A1").EntireRow.Interior.Color = RGB(178, 178, 178)
             'bold heading row column headings
@@ -442,16 +578,16 @@ ManufNumErr:
         'populate the remaining cells
         For Each part In mMyParts
             With ws
-                .Range("A" & row).value = part.PartNum
-                .Range("B" & row).value = part.PromanCode
-                .Range("C" & row).value = part.Description
-                .Range("D" & row).value = part.ServiceCode
-                .Range("E" & row).value = part.VendorCode
-                .Range("F" & row).value = part.ManufName
-                .Range("G" & row).value = part.ManufNum
-                .Range("H" & row).value = part.ParentAssy
-                .Range("I" & row).value = part.Qty
-                .Range("J" & row).value = part.ErrorMsg
+                .Range("A" & row).Value = part.PartNum
+                .Range("B" & row).Value = part.PromanCode
+                .Range("C" & row).Value = part.Description
+                .Range("D" & row).Value = part.ServiceCode
+                .Range("E" & row).Value = part.VendorCode
+                .Range("F" & row).Value = part.ManufName
+                .Range("G" & row).Value = part.ManufNum
+                .Range("H" & row).Value = part.ParentAssy
+                .Range("I" & row).Value = part.Qty
+                .Range("J" & row).Value = part.ErrorMsg
                 If part.PartError = True Then
                     .Range("A" & row).EntireRow.Interior.Color = RGB(255, 97, 161)
                 End If
@@ -462,10 +598,17 @@ ManufNumErr:
         'autosize columns
         ws.Columns("A:J").AutoFit
 
-        Call wb.SaveAs(FilePath & "\" & AssyName & "_PartsList.xlsx")
-        Call wb.Close
+        Try
+            wb.SaveAs(FilePath)
+            CreateExcelDoc = True
+            wb.Close()
+        Catch ex As Exception
+            MsgBox("No Excel Document will be Created")
+            CreateExcelDoc = False
+        End Try
 
-    End Sub
+
+    End Function
 
     Private Sub PrintColl(PartCollection As Collection)
         'sub to debug print the parts collection
@@ -499,7 +642,6 @@ ManufNumErr:
         Dim iPeriodLoc As Integer
         Dim sPrefix As String = ""
 
-
         'identify where the period is in the Parent part
         iPeriodLoc = InStr(Name, ".")
         If iPeriodLoc <> 0 Then
@@ -514,20 +656,29 @@ ManufNumErr:
 
     End Function
 
-    Private Function FindParent(coll As Collection) As String
+    Private Function FindParent(coll As Collection) As ParentStatus
         'function to find the parent assembly by going backwards through the breadcrumb collection
         'this will skip over BGE assemblies and get the next parent
 
         Dim i As Integer
 
         For i = 0 To coll.Count
-            'if it is not a BGE then
-            If Not IsBGE(coll.Item(coll.Count - i)) Then
-                FindParent = coll.Item(coll.Count - i)
-                Exit Function
-            End If
+            Try
+                'if it is not a BGE then
+                If Not IsBGE(coll.Item(coll.Count - i)) Then
+                    FindParent.Result = coll.Item(coll.Count - i)
+                    FindParent.ErrorStatus = False
+                    Exit Function
+                End If
+            Catch ex As Exception
+                FindParent.Result = "INVALID"
+                FindParent.ErrorStatus = True
+                mErrorStatus = True
+            End Try
         Next
-        FindParent = "****"
+        FindParent.Result = "****"
+        FindParent.ErrorStatus = True
+
     End Function
 
     Private Function IsBGE(Name As String) As Boolean
@@ -555,15 +706,43 @@ ManufNumErr:
         'if it does it returns true
 
         If coll.Contains(key) Then
-            Return KeyExists = True
+            KeyExists = True
+        Else
+            KeyExists = False
         End If
 
-        'On Error GoTo EH
-        'coll.Item(key)
-        'key exists in the collection already
-        'KeyExists = True
-        'EH:
-        'did not find the key, it does not exist. no action required
+    End Function
+
+    Private Function IsValidFileNameOrPath(ByVal name As String) As Boolean
+        'determines if the name is nothing
+        If name Is Nothing Then
+            Return False
+        End If
+
+        'determines if there are bad characters in the name
+        For Each badchar As Char In System.IO.Path.GetInvalidPathChars
+            If InStr(name, badchar) > 0 Then
+                Return False
+            End If
+        Next
+
+        'check if file exists, will return false if it does exist
+        'If Not System.IO.File.Exists(name) Then
+        'Return False
+        'End If
+
+        'the name passes basic validation
+        Return True
+    End Function
+
+    Private Function IsDirectoryValid(sDirectoryPath As String) As Boolean
+        'function to determine if the directory is valid
+
+        If System.IO.Directory.Exists(sDirectoryPath) Then
+            Return True
+        End If
+
+        Return False
     End Function
 
 End Module

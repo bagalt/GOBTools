@@ -93,10 +93,10 @@
     <Compile Include="Classes\cPartInfo.vb" />
     <Compile Include="Classes\clsInteract.vb" />
     <Compile Include="BOM Export\BOMExport.vb" />
-    <Compile Include="BOM Export\PartExport.Designer.vb">
-      <DependentUpon>PartExport.vb</DependentUpon>
+    <Compile Include="BOM Export\frmBOMExport.Designer.vb">
+      <DependentUpon>frmBOMExport.vb</DependentUpon>
     </Compile>
-    <Compile Include="BOM Export\PartExport.vb">
+    <Compile Include="BOM Export\frmBOMExport.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="HoleMaker.designer.vb">
@@ -133,7 +133,9 @@
   <ItemGroup>
     <None Include="Readme.txt" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="BOM Export\Icons\ExportBOM16x16.bmp" />
+  </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
       <Visible>False</Visible>
@@ -198,8 +200,8 @@
       <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.vb</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="BOM Export\PartExport.resx">
-      <DependentUpon>PartExport.vb</DependentUpon>
+    <EmbeddedResource Include="BOM Export\frmBOMExport.resx">
+      <DependentUpon>frmBOMExport.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="NameHelp.resx">
       <DependentUpon>NameHelp.vb</DependentUpon>
@@ -258,6 +260,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Stepper64x64.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="BOM Export\Icons\ExportBOM64x64.bmp" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.VisualBasic.targets" />
   <PropertyGroup>

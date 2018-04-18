@@ -14,8 +14,7 @@ Namespace GOBTools
 
         Private WithEvents m_StepperButtonDef As ButtonDefinition
         Private WithEvents m_HoleMakerButtonDef As ButtonDefinition
-
-        Private WithEvents m_sampleButton As ButtonDefinition
+        Private WithEvents m_BOMExportButtonDef As ButtonDefinition
         Private WithEvents m_featureCountButtonDef As ButtonDefinition
 
 
@@ -48,11 +47,18 @@ Namespace GOBTools
             Dim HMlargeIcon As stdole.IPictureDisp = PictureDispConverter.ToIPictureDisp(My.Resources.HoleMaker64x64)
             Dim HMsmallIcon As stdole.IPictureDisp = PictureDispConverter.ToIPictureDisp(My.Resources.HoleMaker16x16)
 
+            'defining icons for the BOM export button
+            Dim BOMLargeIcon As stdole.IPictureDisp = PictureDispConverter.ToIPictureDisp(My.Resources.ExportBOM64x64)
+            Dim BOMSmallIcon As stdole.IPictureDisp = PictureDispConverter.ToIPictureDisp(My.Resources.ExportBOM16x16)
+
             'Button definition for the stepper program
             m_StepperButtonDef = controlDefs.AddButtonDefinition("Position Stepper", "GOBStepper", CommandTypesEnum.kNonShapeEditCmdType, AddInGuid(Me.GetType), "Automatically move P&P arm", "Position Stpper", smallIcon, largeIcon)
 
             'Button definition for the hole maker program
             m_HoleMakerButtonDef = controlDefs.AddButtonDefinition("Hole Maker", "GOBHoleMaker", CommandTypesEnum.kNonShapeEditCmdType, AddInGuid(Me.GetType), "Add Hole patterns to parts", "Hole Maker", HMsmallIcon, HMlargeIcon)
+
+            'Button definition for the BOM export button
+            m_BOMExportButtonDef = controlDefs.AddButtonDefinition("BOM Export", "GOBBOMExport", CommandTypesEnum.kEditMaskCmdType, AddInGuid(Me.GetType), "Export Parts To Excel for import into ProMAN", "BOM Export", BOMSmallIcon, BOMLargeIcon)
 
             ' Add to the user interface, if it's the first time.
             If firstTime Then
@@ -75,6 +81,14 @@ Namespace GOBTools
 
             If Not m_StepperButtonDef Is Nothing Then
                 Marshal.FinalReleaseComObject(m_StepperButtonDef)
+            End If
+
+            If Not m_HoleMakerButtonDef Is Nothing Then
+                Marshal.FinalReleaseComObject(m_HoleMakerButtonDef)
+            End If
+
+            If Not m_BOMExportButtonDef Is Nothing Then
+                Marshal.FinalReleaseComObject(m_BOMExportButtonDef)
             End If
 
             'this seem to generate the following error: "exception has been thrown by the target of an invocation"
@@ -124,6 +138,7 @@ Namespace GOBTools
 
                             Call newpanel.CommandControls.AddButton(m_StepperButtonDef, True, True)
                             Call newpanel.CommandControls.AddButton(m_HoleMakerButtonDef, True, True)
+                            Call newpanel.CommandControls.AddButton(m_BOMExportButtonDef, True, True)
 
                     End Select
                 Next
@@ -151,43 +166,15 @@ Namespace GOBTools
 
         End Sub
 
-#Region "User interface definition"
-        ' Sub where the user-interface creation is done.  This is called when
-        ' the add-in loaded and also if the user interface is reset.
-        Private Sub AddToUserInterface()
-            ' This is where you'll add code to add buttons to the ribbon.
+        Private Sub m_BOMExportButtonDef_OnExecute(Context As NameValueMap) Handles m_BOMExportButtonDef.OnExecute
+            'sub to handle clicking the BOM export button 
 
-            '** Sample to illustrate creating a button on a new panel of the Tools tab of the Part ribbon.
-
-            'Get the ribbon associated with the part document.
-            'Dim partRibbon As Ribbon = g_inventorApplication.UserInterfaceManager.Ribbons.Item("Part")
-            'get the ribbon associated with the Assembly document
-            Dim partRibbon As Ribbon = g_inventorApplication.UserInterfaceManager.Ribbons.Item("Assembly")
-
-            '' Get the "Tools" tab.
-            'Dim toolsTab As RibbonTab = partRibbon.RibbonTabs.Item("id_TabTools")
-            'get the Add-Ins tab from the assembly document ribbon
-            Dim toolsTab As RibbonTab = partRibbon.RibbonTabs.Item("id_AddInsTab")
-
-
-            '' Create a new panel.
-            'Dim customPanel As RibbonPanel = toolsTab.RibbonPanels.Add("Sample", "MysSample", AddInClientID)
-            Dim customPanel As RibbonPanel = toolsTab.RibbonPanels.Add("GOB Tools", "GOBTools", AddInClientID)
-
-            '' Add a button, set to true to use the large icon (64x64)
-            customPanel.CommandControls.AddButton(m_sampleButton, True)
+            'define new form and pass application
+            Dim BOMExport As New frmBOMExport(g_inventorApplication)
+            'show the form and tie it to the inventor window
+            BOMExport.Show(New WindowWrapper(g_inventorApplication.MainFrameHWND))
 
         End Sub
-
-        ' Sample handler for the button.
-        ' Private Sub m_sampleButton_OnExecute(Context As NameValueMap) Handles m_sampleButton.OnExecute
-
-        'Dim PosStepper As New frmStepper(g_inventorApplication)
-        'show form and tie it to the inventor window
-        'PosStepper.Show(New WindowWrapper(g_inventorApplication.MainFrameHWND))
-
-        'End Sub
-#End Region
 
     End Class
 End Namespace
