@@ -27,12 +27,12 @@ Partial Class frmHoleMaker
         Me.gboxTolerance = New System.Windows.Forms.GroupBox()
         Me.cmbTolerance = New System.Windows.Forms.ComboBox()
         Me.GroupBox1 = New System.Windows.Forms.GroupBox()
+        Me.chkShowThumb = New System.Windows.Forms.CheckBox()
         Me.numRotationAngle = New System.Windows.Forms.NumericUpDown()
         Me.lblRotationAngle = New System.Windows.Forms.Label()
         Me.chkThreaded = New System.Windows.Forms.CheckBox()
         Me.chkFlip = New System.Windows.Forms.CheckBox()
         Me.picThumbnail = New System.Windows.Forms.PictureBox()
-        Me.chkShowThumb = New System.Windows.Forms.CheckBox()
         Me.gboxTemplate.SuspendLayout()
         Me.gboxTolerance.SuspendLayout()
         Me.GroupBox1.SuspendLayout()
@@ -92,6 +92,18 @@ Partial Class frmHoleMaker
         Me.GroupBox1.TabStop = False
         Me.GroupBox1.Text = "Options"
         '
+        'chkShowThumb
+        '
+        Me.chkShowThumb.AutoSize = True
+        Me.chkShowThumb.Checked = True
+        Me.chkShowThumb.CheckState = System.Windows.Forms.CheckState.Checked
+        Me.chkShowThumb.Location = New System.Drawing.Point(9, 83)
+        Me.chkShowThumb.Name = "chkShowThumb"
+        Me.chkShowThumb.Size = New System.Drawing.Size(95, 17)
+        Me.chkShowThumb.TabIndex = 4
+        Me.chkShowThumb.Text = "Show Thumb?"
+        Me.chkShowThumb.UseVisualStyleBackColor = True
+        '
         'numRotationAngle
         '
         Me.numRotationAngle.Location = New System.Drawing.Point(9, 36)
@@ -137,18 +149,6 @@ Partial Class frmHoleMaker
         Me.picThumbnail.TabIndex = 3
         Me.picThumbnail.TabStop = False
         '
-        'chkShowThumb
-        '
-        Me.chkShowThumb.AutoSize = True
-        Me.chkShowThumb.Checked = True
-        Me.chkShowThumb.CheckState = System.Windows.Forms.CheckState.Checked
-        Me.chkShowThumb.Location = New System.Drawing.Point(9, 83)
-        Me.chkShowThumb.Name = "chkShowThumb"
-        Me.chkShowThumb.Size = New System.Drawing.Size(95, 17)
-        Me.chkShowThumb.TabIndex = 4
-        Me.chkShowThumb.Text = "Show Thumb?"
-        Me.chkShowThumb.UseVisualStyleBackColor = True
-        '
         'frmHoleMaker
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -164,7 +164,7 @@ Partial Class frmHoleMaker
         Me.MinimizeBox = False
         Me.MinimumSize = New System.Drawing.Size(185, 250)
         Me.Name = "frmHoleMaker"
-        Me.Text = "Hole Maker"
+        Me.Text = "7"
         Me.gboxTemplate.ResumeLayout(False)
         Me.gboxTolerance.ResumeLayout(False)
         Me.GroupBox1.ResumeLayout(False)

@@ -75,6 +75,7 @@
       <EmbedInteropTypes>False</EmbedInteropTypes>
       <HintPath>C:\Windows\Microsoft.NET\assembly\GAC_MSIL\Autodesk.Inventor.Interop\v4.0_22.0.0.0__d84147f8b4276564\autodesk.inventor.interop.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.VisualBasic.Compatibility" />
     <Reference Include="System">
       <Name>System</Name>
     </Reference>
@@ -89,7 +90,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.vb" />
-    <Compile Include="clsInteract.vb" />
+    <Compile Include="Classes\cPartInfo.vb" />
+    <Compile Include="Classes\clsInteract.vb" />
+    <Compile Include="BOM Export\BOMExport.vb" />
+    <Compile Include="BOM Export\frmBOMExport.Designer.vb">
+      <DependentUpon>frmBOMExport.vb</DependentUpon>
+    </Compile>
+    <Compile Include="BOM Export\frmBOMExport.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="HoleMaker.designer.vb">
       <DependentUpon>HoleMaker.vb</DependentUpon>
     </Compile>
@@ -124,7 +133,9 @@
   <ItemGroup>
     <None Include="Readme.txt" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="BOM Export\Icons\ExportBOM16x16.bmp" />
+  </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
       <Visible>False</Visible>
@@ -143,6 +154,24 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <COMReference Include="Microsoft.Office.Core">
+      <Guid>{2DF8D04C-5BFA-101B-BDE5-00AA0044DE52}</Guid>
+      <VersionMajor>2</VersionMajor>
+      <VersionMinor>8</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>primary</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+    <COMReference Include="Microsoft.Office.Interop.Excel">
+      <Guid>{00020813-0000-0000-C000-000000000046}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>9</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>primary</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
     <COMReference Include="stdole">
       <Guid>{00020430-0000-0000-C000-000000000046}</Guid>
       <VersionMajor>2</VersionMajor>
@@ -151,6 +180,15 @@
       <WrapperTool>primary</WrapperTool>
       <Isolated>False</Isolated>
       <EmbedInteropTypes>False</EmbedInteropTypes>
+    </COMReference>
+    <COMReference Include="VBIDE">
+      <Guid>{0002E157-0000-0000-C000-000000000046}</Guid>
+      <VersionMajor>5</VersionMajor>
+      <VersionMinor>3</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>primary</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
   </ItemGroup>
   <ItemGroup>
@@ -161,6 +199,9 @@
       <CustomToolNamespace>My.Resources</CustomToolNamespace>
       <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.vb</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="BOM Export\frmBOMExport.resx">
+      <DependentUpon>frmBOMExport.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="NameHelp.resx">
       <DependentUpon>NameHelp.vb</DependentUpon>
@@ -219,6 +260,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Stepper64x64.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="BOM Export\Icons\ExportBOM64x64.bmp" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.VisualBasic.targets" />
   <PropertyGroup>
