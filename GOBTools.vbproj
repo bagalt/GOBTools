@@ -90,6 +90,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.vb" />
+    <Compile Include="BOM Compare\mAllBOMExport.vb" />
     <Compile Include="Classes\cPartInfo.vb" />
     <Compile Include="Classes\clsInteract.vb" />
     <Compile Include="BOM Export\BOMExport.vb" />
@@ -97,6 +98,12 @@
       <DependentUpon>frmBOMExport.vb</DependentUpon>
     </Compile>
     <Compile Include="BOM Export\frmBOMExport.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="BOM Compare\frmBomCompare.Designer.vb">
+      <DependentUpon>frmBomCompare.vb</DependentUpon>
+    </Compile>
+    <Compile Include="BOM Compare\frmBomCompare.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="HoleMaker.designer.vb">
@@ -192,6 +199,9 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="BOM Compare\frmBomCompare.resx">
+      <DependentUpon>frmBomCompare.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="HoleMaker.resx">
       <DependentUpon>HoleMaker.vb</DependentUpon>
     </EmbeddedResource>
