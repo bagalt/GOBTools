@@ -458,8 +458,8 @@ Module BOMExport
             End If
             myPartInfo.ParentAssy = FindParent(coll).Result
             myPartInfo.Breadcrumb = coll
-            'myPartInfo.PartError = bError
-            'myPartInfo.ErrorMsg = sErrorMsg
+
+            'test comment
 
             'bump the quantity of the part (starts at 0)
             myPartInfo.IncrementQty(1)
