@@ -39,6 +39,7 @@
             .FullRowSelect = True
             .GridLines = True
             .HeaderStyle = Windows.Forms.ColumnHeaderStyle.Clickable
+            .LabelEdit = False
             .MultiSelect = False
             .Sorting = Windows.Forms.SortOrder.Ascending
         End With
@@ -47,6 +48,7 @@
             .FullRowSelect = True
             .GridLines = True
             .HeaderStyle = Windows.Forms.ColumnHeaderStyle.Clickable
+            .LabelEdit = True
             .MultiSelect = False
             .Sorting = Windows.Forms.SortOrder.Ascending
         End With
@@ -77,13 +79,25 @@
 
     Private Sub btnLoadInventorBom_Click(sender As Object, e As EventArgs) Handles btnLoadInventorBom.Click
         'call all BOM export and load the results into the inventor bom listview
+        Dim InventorParts As Collection
+        mAllBOMExport.AssemblyCount(g_inventorApplication, True, "", True)
+        InventorParts = mAllBOMExport.PartsList
 
     End Sub
 
-
-
-    Private Sub PopulateListView()
+    Private Sub PopulateListView(ByRef PartsList As Collection, MyList As System.Windows.Forms.ListView, TextBox As System.Windows.Forms.TextBox)
         'sub to populate the listview based on the collection passed in
+
+        Dim part As cPartInfo
+        Dim myItem As System.Windows.Forms.ListViewItem
+
+        'add items to the listview
+        For Each part In PartsList
+            myItem = MyList.Items.Add(part.PartNum)
+            myItem.SubItems.Add(part.Qty)
+        Next
+        'display total parts count
+        TextBox.Text = PartsList.Count
 
     End Sub
 

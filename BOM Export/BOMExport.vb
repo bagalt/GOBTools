@@ -186,22 +186,24 @@ Module BOMExport
             'append prevBreadCrumb to the newly created breadcrumb
             AppendColl(subBreadCrumb, prevBreadCrumb)
 
-            ' Check if it's child occurrence (leaf node)
-            If oSubCompOcc.SubOccurrences.Count = 0 Then
-                'Debug.Print oSubCompOcc.Name
-                SortPart(oSubCompOcc, subBreadCrumb)
-                iLeafNodes = iLeafNodes + 1
-            Else 'it is a subassembly
-                sMsg = sMsg + oSubCompOcc.Name + vbCr
-                iSubAssemblies = iSubAssemblies + 1
-                'add subassembly to breadcrumb collection
-                subDoc = oSubCompOcc.Definition.Document
-                'subBreadCrumb.Add oSubCompOcc.Name
-                subBreadCrumb.Add(subDoc.PropertySets.Item("Design Tracking Properties").Item("Part Number").Value)
-                'check if  subassembly is a BGE
-                sSubAssyName = BGENamePicker(oSubCompOcc.Name, mParentAssy)
-                'recursive call to this function to continue down the branch
-                processAllSubOcc(oSubCompOcc, sMsg, iLeafNodes, iSubAssemblies, sSubAssyName, subBreadCrumb)
+            If (Not oSubCompOcc.BOMStructure = Inventor.BOMStructureEnum.kReferenceBOMStructure) And (Not oSubCompOcc.Suppressed = True) Then  'if not reference or suppressed then continue
+                ' Check if it's child occurrence (leaf node)
+                If oSubCompOcc.SubOccurrences.Count = 0 Then
+                    'Debug.Print oSubCompOcc.Name
+                    SortPart(oSubCompOcc, subBreadCrumb)
+                    iLeafNodes = iLeafNodes + 1
+                Else 'it is a subassembly
+                    sMsg = sMsg + oSubCompOcc.Name + vbCr
+                    iSubAssemblies = iSubAssemblies + 1
+                    'add subassembly to breadcrumb collection
+                    subDoc = oSubCompOcc.Definition.Document
+                    'subBreadCrumb.Add oSubCompOcc.Name
+                    subBreadCrumb.Add(subDoc.PropertySets.Item("Design Tracking Properties").Item("Part Number").Value)
+                    'check if  subassembly is a BGE
+                    sSubAssyName = BGENamePicker(oSubCompOcc.Name, mParentAssy)
+                    'recursive call to this function to continue down the branch
+                    processAllSubOcc(oSubCompOcc, sMsg, iLeafNodes, iSubAssemblies, sSubAssyName, subBreadCrumb)
+                End If
             End If
         Next
 

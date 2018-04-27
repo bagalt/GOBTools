@@ -25,9 +25,11 @@ Module mAllBOMExport
         VirtualPart = 3
         OldPurchPart = 4
         BAssy = 5 'for B049, B0049 assemblies
+        StdAssy = 6
     End Enum
 
     Public Results As String = "" 'variable used for displaying the results
+    Public PartsList As Collection
 
     Public Sub AssemblyCount(ThisApplication As Inventor.Application, bIgnorePriorYr As Boolean, sDirectoryPath As String, AddBAssy As Boolean)
         ' Set reference to active document.
@@ -96,10 +98,16 @@ Module mAllBOMExport
                     'add subassembly part number to breadcrumb
                     colBreadCrumb.Add(assyDoc.PropertySets.Item("Design Tracking Properties").Item("Part Number").Value)
                     sSubAssyName = BGENamePicker(oCompOcc.Name, mStartAssy)
+
+                    'dont go into the following sub assemblies, just the top level
+                    If Left(GetPrefix(sSubAssyName), 1) = "N" Or Left(GetPrefix(sSubAssyName), 1) = "S" Then
+                        SortPart(oCompOcc, colBreadCrumb)
+                    End If
+
                     'subassembly
                     processAllSubOcc(oCompOcc, sMsg, iLeafNodes, iSubAssemblies, sSubAssyName, colBreadCrumb)
+                    End If
                 End If
-            End If
         Next
 
         'check the file path to see if it is valid
@@ -147,6 +155,13 @@ Module mAllBOMExport
                 subBreadCrumb.Add(subDoc.PropertySets.Item("Design Tracking Properties").Item("Part Number").Value)
                 'check if  subassembly is a BGE
                 sSubAssyName = BGENamePicker(oSubCompOcc.Name, mParentAssy)
+
+                'dont go into the following sub assemblies, just the top level
+                If Left(GetPrefix(sSubAssyName), 1) = "N" Or Left(GetPrefix(sSubAssyName), 1) = "S" Then
+                    SortPart(oSubCompOcc, subBreadCrumb)
+                    Exit Sub
+                End If
+
                 'recursive call to this function to continue down the branch
                 processAllSubOcc(oSubCompOcc, sMsg, iLeafNodes, iSubAssemblies, sSubAssyName, subBreadCrumb)
             End If
@@ -171,7 +186,6 @@ Module mAllBOMExport
     Private Sub SortPart(ByVal oCompOcc As Inventor.ComponentOccurrence, ByVal coll As Collection)
         'sub to filter out desired parts and take further action
 
-        Dim PeriodLoc As Integer 'variable to hold the location of the period in the name
         Dim partProps As Inventor.PropertySets  'variable for the property sets object of the occurrence
         Dim sFirstTwo As String 'variable for first two letters of part number/name
         Dim docDef As Inventor.ComponentDefinition
@@ -192,33 +206,27 @@ Module mAllBOMExport
             Exit Sub
         End If
 
+        Dim sPrefix As String
+        sPrefix = GetPrefix(oCompOcc.Name)
         'search for the period in the occurrence name, if it doesnt have one, skip the occurrence
-        PeriodLoc = InStr(oCompOcc.Name, ".")
-        If PeriodLoc <> 0 Then 'InStr returns 0 if the string is not found
+        If sPrefix <> "" Then 'InStr returns 0 if the string is not found
 
-            'Dim prefix As String
-            'prefix = Left(oCompOcc.Name, PeriodLoc - 1)
-
-            'Select Case prefix
+            Select Case sPrefix
             'pick out desired parts
-            'may want to expand this search to get all the characters to the first period, it may be more robust that way for other parts
-            'Case "B20", "B30", "B39", "B40", "B45", "B47", "B61", "B62", "B82", "B87", "B92"
-            'GetProps(oCompOcc, PartType.ManufPart, coll)
-            'Exit Sub
-            'Case "B0049", "B49"
-            'case to allow B49 assemblies to be parts in the list
-            'If mAddBAssy = True Then
-            'add the B49 assy to the parts list
-            'GetProps(oCompOcc, PartType.BAssy, coll)
-            'End If
-            'Exit Sub
-            'End Select
-
-            If Left(oCompOcc.Name, 1) = "N" Or Left(oCompOcc.Name, 1) = "S" Then
-                'do nothing with the part
-            Else
-                GetProps(oCompOcc, PartType.)
-            End If
+                'may want to expand this search to get all the characters to the first period, it may be more robust that way for other parts
+                Case "B20", "B30", "B39", "B40", "B45", "B47", "B61", "B62", "B82", "B87", "B92"
+                    GetProps(oCompOcc, PartType.ManufPart, coll)
+                    Exit Sub
+                Case "B0049", "B49"
+                    'case to allow B49 assemblies to be parts in the list
+                    If mAddBAssy = True Then
+                        'add the B49 assy to the parts list
+                        GetProps(oCompOcc, PartType.BAssy, coll)
+                    End If
+                    Exit Sub
+                Case "N", "S"
+                    GetProps(oCompOcc, PartType.StdAssy, coll)
+            End Select
 
             'needed a second select case for the BY part numbers, this avoids having to list all the years of BY part numbers
             'in the case expression
@@ -228,14 +236,14 @@ Module mAllBOMExport
                     'ignoring old purch parts?
                     If mIgnoreYr = False Then 'not ignoring old purch parts
                         'check if part is a prior year part
-                        If prefix <> sCurrentYear Then
+                        If sPrefix <> sCurrentYear Then
                             'prefix does not match current year parts, it is an old purch part
                             GetProps(oCompOcc, PartType.OldPurchPart, coll)
                         End If
                         'prefix matches current year prefix so it is a current purch part
                         GetProps(oCompOcc, PartType.PurchPart, coll)
                         'if ignore year is selected and part is not BY+current year then it is an old purch part, do nothing
-                    ElseIf mIgnoreYr = True And prefix <> sCurrentYear Then
+                    ElseIf mIgnoreYr = True And sPrefix <> sCurrentYear Then
                         'Prior year part, do nothing
                     Else
                         GetProps(oCompOcc, PartType.PurchPart, coll)
@@ -300,7 +308,7 @@ Module mAllBOMExport
                     ServiceCodeErr(sServCode, bError, mErrorStatus, sErrorMsg)
                 End Try
 
-            Case PartType.PurchPart
+            Case PartType.PurchPart, PartType.StdAssy
                 'Get the part number from the status tab of the iProperties
                 sPartNum = partProps.Item("Design Tracking Properties").Item("Part Number").Value
                 Try
@@ -379,7 +387,6 @@ Module mAllBOMExport
                 Catch
                     ManufNumErr(sManufNum, bError, mErrorStatus, sErrorMsg)
                 End Try
-
         End Select
 
         'define the key for the item in the collection, PartNumber + Parent Part
@@ -697,6 +704,55 @@ Module mAllBOMExport
 
         Return False
     End Function
+
+    Private Function GetPrefix(Name As String) As String
+        'function to return the desired prefix of a file name, the letters before the period
+        Dim iPeriodLoc As Integer
+
+        'identify where the period is in the Parent part
+        iPeriodLoc = InStr(Name, ".")
+        If iPeriodLoc <> 0 Then
+            GetPrefix = Left(Name, iPeriodLoc - 1)
+        Else
+            GetPrefix = ""
+        End If
+
+    End Function
+
+    Private Sub HighlightPart(PartNum As String)
+        'sub to highlight the part based on the part number
+
+        'Dim oCompOcc As ComponentOccurrence
+        'Dim PartProps As Inventor.PropertySets
+        'Dim oDoc As Inventor.Document
+
+        'clear the highlight set
+        'oSet.Clear()
+
+        'need to have recursive function here
+        'For Each oCompOcc In oCompDef.Occurrences
+        'If oCompOcc.SubOccurrences.Count = 0 Then
+        'oDoc = oCompOcc.Definition.Document
+        'PartProps = oDoc.PropertySets
+        'If PartProps.Item("Design Tracking Properties").Item("Part Number").Value = PartNum Then
+        'Add occurrence to highlight set
+        'oSet.AddItem(oCompOcc)
+        'End If
+        'Else
+        'sub assembly found
+        'ProcessSubAssys(oCompOcc)
+        'End If
+        'Next
+
+        'For Each oCompOcc In oCompDef.Occurrences
+        'If PartProps.Item("Design Tracking Properties").Item("Part Number").Value = PartNum Then
+        'oSet.AddItem(oCompOcc)
+        'End If
+        'Next
+
+
+
+    End Sub
 
 
 
