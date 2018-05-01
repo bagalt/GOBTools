@@ -164,7 +164,7 @@ Partial Class frmHoleMaker
         Me.MinimizeBox = False
         Me.MinimumSize = New System.Drawing.Size(185, 250)
         Me.Name = "frmHoleMaker"
-        Me.Text = "7"
+        Me.Text = "Hole Maker"
         Me.gboxTemplate.ResumeLayout(False)
         Me.gboxTolerance.ResumeLayout(False)
         Me.GroupBox1.ResumeLayout(False)

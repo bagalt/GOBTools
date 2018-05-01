@@ -966,6 +966,9 @@ Public Class frmHoleMaker
         'mark line 5&6 as construction
         line5.Construction = True
         line6.Construction = True
+        'make start and endpoint of lines 5 hole centers
+        line5.StartSketchPoint.HoleCenter = True
+        line5.EndSketchPoint.HoleCenter = True
         'make start and endpoint of lines 6 hole centers
         line6.StartSketchPoint.HoleCenter = True
         line6.EndSketchPoint.HoleCenter = True
