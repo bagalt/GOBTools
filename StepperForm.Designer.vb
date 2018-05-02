@@ -61,7 +61,7 @@ Partial Class frmStepper
         Me.lblStopwatch = New System.Windows.Forms.Label()
         Me.txtStopwatch = New System.Windows.Forms.TextBox()
         Me.lblVertPos = New System.Windows.Forms.Label()
-        Me.lblGOBName = New System.Windows.Forms.Label()
+        Me.lblVersion = New System.Windows.Forms.Label()
         Me.txtCurrentIndex = New System.Windows.Forms.TextBox()
         Me.btnReset = New System.Windows.Forms.Button()
         Me.lblNumConstraints = New System.Windows.Forms.Label()
@@ -469,14 +469,14 @@ Partial Class frmStepper
         Me.lblVertPos.TabIndex = 50
         Me.lblVertPos.Text = "Vert Pos"
         '
-        'lblGOBName
+        'lblVersion
         '
-        Me.lblGOBName.AutoSize = True
-        Me.lblGOBName.Location = New System.Drawing.Point(493, 460)
-        Me.lblGOBName.Name = "lblGOBName"
-        Me.lblGOBName.Size = New System.Drawing.Size(39, 13)
-        Me.lblGOBName.TabIndex = 51
-        Me.lblGOBName.Text = "Label1"
+        Me.lblVersion.AutoSize = True
+        Me.lblVersion.Location = New System.Drawing.Point(496, 460)
+        Me.lblVersion.Name = "lblVersion"
+        Me.lblVersion.Size = New System.Drawing.Size(30, 13)
+        Me.lblVersion.TabIndex = 51
+        Me.lblVersion.Text = "vX.X"
         '
         'txtCurrentIndex
         '
@@ -516,7 +516,7 @@ Partial Class frmStepper
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(490, 482)
+        Me.ClientSize = New System.Drawing.Size(580, 482)
         Me.Controls.Add(Me.lblNumConstraints)
         Me.Controls.Add(Me.txtNumConstraints)
         Me.Controls.Add(Me.btnReset)
@@ -528,7 +528,7 @@ Partial Class frmStepper
         Me.Controls.Add(Me.lblStopwatch)
         Me.Controls.Add(Me.txtStopwatch)
         Me.Controls.Add(Me.lblVertPos)
-        Me.Controls.Add(Me.lblGOBName)
+        Me.Controls.Add(Me.lblVersion)
         Me.Controls.Add(Me.txtCurrentIndex)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D
         Me.MaximizeBox = False
@@ -588,7 +588,7 @@ Partial Class frmStepper
     Friend WithEvents lblStopwatch As Windows.Forms.Label
     Friend WithEvents txtStopwatch As Windows.Forms.TextBox
     Friend WithEvents lblVertPos As Windows.Forms.Label
-    Friend WithEvents lblGOBName As Windows.Forms.Label
+    Friend WithEvents lblVersion As Windows.Forms.Label
     Friend WithEvents txtCurrentIndex As Windows.Forms.TextBox
     Friend WithEvents btnReset As Windows.Forms.Button
     Friend WithEvents lblNumConstraints As Windows.Forms.Label

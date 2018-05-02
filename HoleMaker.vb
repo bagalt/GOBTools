@@ -30,6 +30,7 @@ Public Class frmHoleMaker
             Dim PartDoc As Inventor.PartDocument
             PartDoc = g_inventorApplication.ActiveDocument
             oCompDef = PartDoc.ComponentDefinition
+            lblVersion.Text = "v1.0"
         Catch
             MsgBox("Part document must be active")
             Exit Sub

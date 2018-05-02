@@ -138,7 +138,7 @@ Namespace GOBTools
 
                             Call newpanel.CommandControls.AddButton(m_StepperButtonDef, True, True)
                             Call newpanel.CommandControls.AddButton(m_HoleMakerButtonDef, True, True)
-                            Call newpanel.CommandControls.AddButton(m_BOMExportButtonDef, True, True)
+                            'Call newpanel.CommandControls.AddButton(m_BOMExportButtonDef, True, True)
 
                     End Select
                 Next

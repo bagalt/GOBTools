@@ -33,6 +33,7 @@ Partial Class frmHoleMaker
         Me.chkThreaded = New System.Windows.Forms.CheckBox()
         Me.chkFlip = New System.Windows.Forms.CheckBox()
         Me.picThumbnail = New System.Windows.Forms.PictureBox()
+        Me.lblVersion = New System.Windows.Forms.Label()
         Me.gboxTemplate.SuspendLayout()
         Me.gboxTolerance.SuspendLayout()
         Me.GroupBox1.SuspendLayout()
@@ -149,11 +150,21 @@ Partial Class frmHoleMaker
         Me.picThumbnail.TabIndex = 3
         Me.picThumbnail.TabStop = False
         '
+        'lblVersion
+        '
+        Me.lblVersion.AutoSize = True
+        Me.lblVersion.Location = New System.Drawing.Point(294, 219)
+        Me.lblVersion.Name = "lblVersion"
+        Me.lblVersion.Size = New System.Drawing.Size(30, 13)
+        Me.lblVersion.TabIndex = 4
+        Me.lblVersion.Text = "vX.X"
+        '
         'frmHoleMaker
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(334, 241)
+        Me.Controls.Add(Me.lblVersion)
         Me.Controls.Add(Me.picThumbnail)
         Me.Controls.Add(Me.GroupBox1)
         Me.Controls.Add(Me.gboxTolerance)
@@ -172,6 +183,7 @@ Partial Class frmHoleMaker
         CType(Me.numRotationAngle, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.picThumbnail, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
+        Me.PerformLayout()
 
     End Sub
 
@@ -186,4 +198,5 @@ Partial Class frmHoleMaker
     Friend WithEvents numRotationAngle As Windows.Forms.NumericUpDown
     Friend WithEvents picThumbnail As Windows.Forms.PictureBox
     Friend WithEvents chkShowThumb As Windows.Forms.CheckBox
+    Friend WithEvents lblVersion As Windows.Forms.Label
 End Class

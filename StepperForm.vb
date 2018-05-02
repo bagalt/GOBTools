@@ -31,6 +31,8 @@ Public Class frmStepper
             gAssyDoc = g_inventorApplication.ActiveDocument
             gAssyCompDef = gAssyDoc.ComponentDefinition
             txtNumConstraints.Text = gAssyDoc.ComponentDefinition.Constraints.Count
+            'add label for information
+            lblVersion.Text = "v1.0"
         Catch
             MsgBox("Assembly document must be active")
             Me.Close()
@@ -539,9 +541,6 @@ Public Class frmStepper
 
         'set window width
         Me.Width = 510 'debug controls hidden
-
-        'add label for information
-        lblGOBName.Text = "GOB - 2018 v1.2"
 
         'check for master representation, and activate it if selected
         If (Not gAssyCompDef.RepresentationsManager.ActivePositionalRepresentation.Master) Then
