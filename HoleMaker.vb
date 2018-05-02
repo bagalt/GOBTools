@@ -33,9 +33,12 @@ Public Class frmHoleMaker
             lblVersion.Text = "v1.0"
         Catch
             MsgBox("Part document must be active")
-            Exit Sub
-
+            Me.Close()
         End Try
+
+    End Sub
+
+    Private Sub frmHoleMaker_Shown(sender As Object, e As EventArgs) Handles Me.Shown
 
         'create interaction object
         oInteraction = g_inventorApplication.CommandManager.CreateInteractionEvents
@@ -1410,4 +1413,6 @@ Public Class frmHoleMaker
     Private Sub frmHoleMaker_HelpButtonClicked(sender As Object, e As CancelEventArgs) Handles Me.HelpButtonClicked
 
     End Sub
+
+
 End Class
