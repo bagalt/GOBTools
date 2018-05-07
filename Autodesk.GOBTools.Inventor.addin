@@ -5,8 +5,8 @@
   <DisplayName>GOBTools</DisplayName>
   <Description>A few useful tools for Inventor by Brett Gombar</Description>
   <Assembly>GOBTools.dll</Assembly>
-  <LoadOnStartUp>1</LoadOnStartUp>
-  <!-- LoadBehavior = 2 load when an assembly document is opened, 1 = load when any document is opened-->
+  <LoadAutomatically>1</LoadAutomatically>
+  <!-- LoadBehavior: 1 = load when any document is opened-->
   <LoadBehavior>1</LoadBehavior>
   <UserUnloadable>1</UserUnloadable>
   <Hidden>0</Hidden>
