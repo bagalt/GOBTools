@@ -16,6 +16,7 @@ Namespace GOBTools
         Private WithEvents m_HoleMakerButtonDef As ButtonDefinition
         Private WithEvents m_BOMExportButtonDef As ButtonDefinition
         Private WithEvents m_featureCountButtonDef As ButtonDefinition
+        Private WithEvents m_bomToolsButtonDef As ButtonDefinition
 
 
 #Region "ApplicationAddInServer Members"
@@ -51,6 +52,10 @@ Namespace GOBTools
             Dim BOMLargeIcon As stdole.IPictureDisp = PictureDispConverter.ToIPictureDisp(My.Resources.ExportBOM64x64)
             Dim BOMSmallIcon As stdole.IPictureDisp = PictureDispConverter.ToIPictureDisp(My.Resources.ExportBOM16x16)
 
+            'defining icons for the BOM Tools button
+            Dim BomToolsLargeIcon As stdole.IPictureDisp = PictureDispConverter.ToIPictureDisp(My.Resources.BOMTools64x64)
+            Dim BomToolsSmallIcon As stdole.IPictureDisp = PictureDispConverter.ToIPictureDisp(My.Resources.BOMTools16x16)
+
             'Button definition for the stepper program
             m_StepperButtonDef = controlDefs.AddButtonDefinition("Position Stepper", "GOBStepper", CommandTypesEnum.kNonShapeEditCmdType, AddInGuid(Me.GetType), "Automatically move P&P arm", "Position Stpper", smallIcon, largeIcon)
 
@@ -59,6 +64,9 @@ Namespace GOBTools
 
             'Button definition for the BOM export button
             m_BOMExportButtonDef = controlDefs.AddButtonDefinition("BOM Export", "GOBBOMExport", CommandTypesEnum.kEditMaskCmdType, AddInGuid(Me.GetType), "Export Parts To Excel for import into ProMAN", "BOM Export", BOMSmallIcon, BOMLargeIcon)
+
+            'Button definition for the BOM tools button
+            m_bomToolsButtonDef = controlDefs.AddButtonDefinition("BOM Tools", "GOBBOMTools", CommandTypesEnum.kEditMaskCmdType, AddInGuid(Me.GetType), "BOM Export and Compare tools", "BOM Tools", BomToolsSmallIcon, BomToolsLargeIcon)
 
             ' Add to the user interface, if it's the first time.
             If firstTime Then
@@ -89,6 +97,10 @@ Namespace GOBTools
 
             If Not m_BOMExportButtonDef Is Nothing Then
                 Marshal.FinalReleaseComObject(m_BOMExportButtonDef)
+            End If
+
+            If Not m_bomToolsButtonDef Is Nothing Then
+                Marshal.FinalReleaseComObject(m_bomToolsButtonDef)
             End If
 
             'this seem to generate the following error: "exception has been thrown by the target of an invocation"
@@ -139,6 +151,7 @@ Namespace GOBTools
                             Call newpanel.CommandControls.AddButton(m_StepperButtonDef, True, True)
                             Call newpanel.CommandControls.AddButton(m_HoleMakerButtonDef, True, True)
                             'Call newpanel.CommandControls.AddButton(m_BOMExportButtonDef, True, True)
+                            Call newpanel.CommandControls.AddButton(m_bomToolsButtonDef, True, True)
 
                     End Select
                 Next
@@ -176,6 +189,15 @@ Namespace GOBTools
 
         End Sub
 
+        Private Sub m_bomToolsButtonDef_OnExecute(Context As NameValueMap) Handles m_bomToolsButtonDef.OnExecute
+            'sub to handle clicking the BOM tools button
+
+            'define new form and pass application
+            Dim BOMTools As New frmBomTools(g_inventorApplication)
+
+            'show the form and tie it to the inventor window
+            BOMTools.Show(New WindowWrapper(g_inventorApplication.MainFrameHWND))
+        End Sub
     End Class
 End Namespace
 
