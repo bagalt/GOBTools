@@ -90,7 +90,27 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.vb" />
-    <Compile Include="BOM Compare\mAllBOMExport.vb" />
+    <Compile Include="BOM Tools\ExcelTools.vb" />
+    <Compile Include="BOM Tools\frmBomTools.Designer.vb">
+      <DependentUpon>frmBomTools.vb</DependentUpon>
+    </Compile>
+    <Compile Include="BOM Tools\frmBomTools.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="BOM Tools\frmBOMToolsHelp.Designer.vb">
+      <DependentUpon>frmBOMToolsHelp.vb</DependentUpon>
+    </Compile>
+    <Compile Include="BOM Tools\frmBOMToolsHelp.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="BOM Tools\ListViewItemComparer.vb" />
+    <Compile Include="BOM Tools\mAllBOMExport.vb" />
+    <Compile Include="BOM Tools\Processing.Designer.vb">
+      <DependentUpon>Processing.vb</DependentUpon>
+    </Compile>
+    <Compile Include="BOM Tools\Processing.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Classes\cPartInfo.vb" />
     <Compile Include="Classes\clsInteract.vb" />
     <Compile Include="BOM Export\BOMExport.vb" />
@@ -98,12 +118,6 @@
       <DependentUpon>frmBOMExport.vb</DependentUpon>
     </Compile>
     <Compile Include="BOM Export\frmBOMExport.vb">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="BOM Compare\frmBomCompare.Designer.vb">
-      <DependentUpon>frmBomCompare.vb</DependentUpon>
-    </Compile>
-    <Compile Include="BOM Compare\frmBomCompare.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="HoleMaker.designer.vb">
@@ -132,10 +146,15 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="GOBTools.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="GOBTools.X.manifest" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Autodesk.GOBTools.Inventor.addin" />
+    <None Include="Autodesk.GOBTools.Inventor.addin">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <None Include="Readme.txt" />
@@ -199,8 +218,14 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="BOM Compare\frmBomCompare.resx">
-      <DependentUpon>frmBomCompare.vb</DependentUpon>
+    <EmbeddedResource Include="BOM Tools\frmBomTools.resx">
+      <DependentUpon>frmBomTools.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="BOM Tools\frmBOMToolsHelp.resx">
+      <DependentUpon>frmBOMToolsHelp.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="BOM Tools\Processing.resx">
+      <DependentUpon>Processing.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="HoleMaker.resx">
       <DependentUpon>HoleMaker.vb</DependentUpon>
@@ -230,6 +255,7 @@
     <None Include="Resources\BAG75mm.bmp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\BOMComparison Help.rtf" />
     <None Include="Resources\MPG25.bmp" />
   </ItemGroup>
   <ItemGroup>
@@ -273,6 +299,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="BOM Export\Icons\ExportBOM64x64.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="BOM Tools\Icons\BOMTools16x16.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="BOM Tools\Icons\BOMTools64x64.bmp" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.VisualBasic.targets" />
   <PropertyGroup>
