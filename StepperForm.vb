@@ -1,7 +1,8 @@
 ﻿Imports Inventor
 Imports System.ComponentModel
 Imports Excel = Microsoft.Office.Interop.Excel
-
+Imports System.Windows.Forms
+Imports System.Drawing
 
 Public Class frmStepper
 
@@ -16,6 +17,8 @@ Public Class frmStepper
     Dim gOrigVert As Double 'holds the original value of the vertical parameter for reset purposes
     Dim gOrigHoriz As Double 'holds the original value of the horizontal parameter for reset purposes
     Dim gAssyDoc As Inventor.AssemblyDocument
+    Dim gVertNameValidated As Boolean
+    Dim gHorizNameValidated As Boolean
 
     Public Sub New(ThisApplication As Inventor.Application)
 
@@ -32,12 +35,14 @@ Public Class frmStepper
             gAssyCompDef = gAssyDoc.ComponentDefinition
             txtNumConstraints.Text = gAssyDoc.ComponentDefinition.Constraints.Count
             'add label for information
-            lblVersion.Text = "v1.0"
+            lblVersion.Text = "v1.1"
+            'set default values
+            gVertNameValidated = False
+            gHorizNameValidated = False
         Catch
             MsgBox("Assembly document must be active")
             Me.Close()
         End Try
-
 
     End Sub
 
@@ -49,7 +54,7 @@ Public Class frmStepper
         Dim myFileDlog As New System.Windows.Forms.OpenFileDialog 'OpenFileDialog()
 
         'look for files starting at desktop, doesnt quite work correctly now        
-        myFileDlog.InitialDirectory = Environ("USERPROFILE") & "\Work Folders\Roaming\Desktop"
+        myFileDlog.InitialDirectory = System.Environment.SpecialFolder.MyComputer
 
         'specifies what type of data files to look for
         myFileDlog.Filter = "All Files (*.*)|*.*"
@@ -274,21 +279,19 @@ Public Class frmStepper
         stopwatch.Start()
         gInvApp.ScreenUpdating = False
         Try
-            'check if update model is check
-            If (chkUpdateModel.Checked = True) Then
-                'check if ignore horiz is checked
-                If (chkIgnoreHoriz.Checked = True) Then
-                    'for passing values to inventor, inventor uses internal units of cm and radians
-                    VertName.Value = (gdblPosArray(gintCurrentIndex, 2) + txtVertOffset.Text) / 10
-                    'update model and ignore errors
-                    gAssyDoc.Update2(True)
-                Else
-                    VertName.Value = (gdblPosArray(gintCurrentIndex, 2) + CDbl(txtVertOffset.Text)) / 10
-                    HorizName.Value = (gdblPosArray(gintCurrentIndex, 3) + CDbl(txtHorizOffset.Text)) / 10
-                    'update model and ignore errors
-                    gInvApp.ScreenUpdating = True
-                    gAssyDoc.Update2(True)
-                End If
+            'check if ignore horiz is checked
+            If (chkIgnoreHoriz.Checked = True) Then
+                'for passing values to inventor, inventor uses internal units of cm and radians
+                VertName.Value = (gdblPosArray(gintCurrentIndex, 2) + txtVertOffset.Text) / 10
+                'update model and ignore errors
+                gInvApp.ScreenUpdating = True
+                gAssyDoc.Update2(True)
+            Else
+                VertName.Value = (gdblPosArray(gintCurrentIndex, 2) + CDbl(txtVertOffset.Text)) / 10
+                HorizName.Value = (gdblPosArray(gintCurrentIndex, 3) + CDbl(txtHorizOffset.Text)) / 10
+                'update model and ignore errors
+                gInvApp.ScreenUpdating = True
+                gAssyDoc.Update2(True)
             End If
 
             txtStopwatch.Text = stopwatch.ElapsedMilliseconds
@@ -301,8 +304,6 @@ Public Class frmStepper
             Exit Sub
 
         End Try
-
-
     End Sub
 
     Private Sub NextAngle()
@@ -391,6 +392,8 @@ Public Class frmStepper
         If (CheckHorizName(txtHorizName.Text)) Then
             'parameter name OK, assign to origian variable for reset purposes
             gOrigHoriz = gHorizParam.Value
+            'set validated flag
+            gHorizNameValidated = True
         End If
     End Sub
 
@@ -401,15 +404,49 @@ Public Class frmStepper
         If (CheckVertName(txtVertName.Text)) Then
             'parameter name valid assign to original variable
             gOrigVert = gVertParam.Value
+            'set validated flag
+            gVertNameValidated = True
         End If
     End Sub
 
     Private Sub btnNextAngle_Click(sender As Object, e As EventArgs) Handles btnNextAngle.Click
-        Call NextAngle()
+        'make sure parameter names are valid
+        If chkIgnoreHoriz.Checked = True Then
+            'check only the vert name
+            If gVertNameValidated = True Then
+                'vert name is valid
+                Call NextAngle()
+            Else
+                MsgBox("Vert Name not valid")
+            End If
+        Else
+            If gVertNameValidated = True And gHorizNameValidated = True Then
+                'both names valid
+                Call NextAngle()
+            Else
+                MsgBox("Vert Name or Horiz Name not valid")
+            End If
+        End If
     End Sub
 
     Private Sub btnPrevAngle_Click(sender As Object, e As EventArgs) Handles btnPrevAngle.Click
-        Call PrevAngle()
+        'make sure parameter names are valid
+        If chkIgnoreHoriz.Checked = True Then
+            'check only the vert name
+            If gVertNameValidated = True Then
+                'vert name is valid
+                Call PrevAngle()
+            Else
+                MsgBox("Vert Name not valid")
+            End If
+        Else
+            If gVertNameValidated = True And gHorizNameValidated = True Then
+                'both names valid
+                Call PrevAngle()
+            Else
+                MsgBox("Vert Name or Horiz Name not valid")
+            End If
+        End If
     End Sub
 
     Private Sub lstData_DoubleClick(sender As Object, e As EventArgs) Handles lstData.DoubleClick
@@ -557,14 +594,20 @@ Public Class frmStepper
     End Sub
 
     Private Sub btnNameHelp_Click(sender As Object, e As EventArgs) Handles btnNameHelp.Click
-        'show the form
-        Me.Hide()
+
 
         'create new instance of the class frmNameHelp and pass inventor application object
         Dim NameHelp = New frmNameHelp(gInvApp)
 
         'show NameHelp form
         NameHelp.Show()
+        'set the namehelp form owner
+        NameHelp.Owner = Me
+        'set the location
+        NameHelp.Location = LocateInCenter(Me, NameHelp)
+        'hide the form
+        Me.Hide()
+
         NameHelp.PickConsraint()
 
         'if either the vert or horiz params have a name, then update the text box on PosStepper
@@ -583,11 +626,29 @@ Public Class frmStepper
         End If
 
         'Stop  NameHelp form And clear up memory
-        NameHelp.StopNameHelp()
+        NameHelp.Close()
         'make sure selection is terminated
         gInvApp.CommandManager.StopActiveCommand()
         'Show form again
         Me.Show()
 
     End Sub
+
+    Private Function LocateInCenter(ByVal parent As Form, ByVal child As Form) As System.Drawing.Point
+        'function to find the center point of the parent form 
+        'and locate the child form in the center of the parent
+        'returns the top left location the child should be on the parent
+
+        Dim parentCenter As System.Drawing.Point
+
+        'calculate the center locaton of the parent form
+        parentCenter.X = Me.Location.X + (Me.Width / 2)
+        parentCenter.Y = Me.Location.Y + (Me.Height / 2)
+        'calculate the top left point of the child form
+        LocateInCenter.X = parentCenter.X - (child.Width / 2)
+        LocateInCenter.Y = parentCenter.Y - (child.Height / 2)
+
+        Return LocateInCenter
+
+    End Function
 End Class

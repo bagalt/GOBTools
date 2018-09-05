@@ -31,7 +31,7 @@ Public Class frmBomTools
             mAssyDoc = g_inventorApplication.ActiveDocument
             'get the top level assembly document name
             startAssy = mAssyDoc.PropertySets.Item("Design Tracking Properties").Item("Part Number").Value
-            lblVersion.Text = "v0.1"
+            lblVersion.Text = "v0.2"
         Catch
             MsgBox("Assembly document must be active")
             Me.Close()

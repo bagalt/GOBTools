@@ -28,7 +28,6 @@ Partial Class frmStepper
         Me.TabPage1 = New System.Windows.Forms.TabPage()
         Me.chkShowDebug = New System.Windows.Forms.CheckBox()
         Me.btnExit = New System.Windows.Forms.Button()
-        Me.chkUpdateModel = New System.Windows.Forms.CheckBox()
         Me.GroupBox1 = New System.Windows.Forms.GroupBox()
         Me.chkLoop = New System.Windows.Forms.CheckBox()
         Me.btnStop = New System.Windows.Forms.Button()
@@ -96,7 +95,6 @@ Partial Class frmStepper
         '
         Me.TabPage1.Controls.Add(Me.chkShowDebug)
         Me.TabPage1.Controls.Add(Me.btnExit)
-        Me.TabPage1.Controls.Add(Me.chkUpdateModel)
         Me.TabPage1.Controls.Add(Me.GroupBox1)
         Me.TabPage1.Controls.Add(Me.btnReload)
         Me.TabPage1.Controls.Add(Me.lstData)
@@ -117,7 +115,7 @@ Partial Class frmStepper
         'chkShowDebug
         '
         Me.chkShowDebug.AutoSize = True
-        Me.chkShowDebug.Location = New System.Drawing.Point(8, 425)
+        Me.chkShowDebug.Location = New System.Drawing.Point(12, 418)
         Me.chkShowDebug.Name = "chkShowDebug"
         Me.chkShowDebug.Size = New System.Drawing.Size(107, 17)
         Me.chkShowDebug.TabIndex = 36
@@ -132,18 +130,6 @@ Partial Class frmStepper
         Me.btnExit.TabIndex = 35
         Me.btnExit.Text = "Exit"
         Me.btnExit.UseVisualStyleBackColor = True
-        '
-        'chkUpdateModel
-        '
-        Me.chkUpdateModel.AutoSize = True
-        Me.chkUpdateModel.Checked = True
-        Me.chkUpdateModel.CheckState = System.Windows.Forms.CheckState.Checked
-        Me.chkUpdateModel.Location = New System.Drawing.Point(8, 398)
-        Me.chkUpdateModel.Name = "chkUpdateModel"
-        Me.chkUpdateModel.Size = New System.Drawing.Size(99, 17)
-        Me.chkUpdateModel.TabIndex = 16
-        Me.chkUpdateModel.Text = "Update Model?"
-        Me.chkUpdateModel.UseVisualStyleBackColor = True
         '
         'GroupBox1
         '
@@ -516,7 +502,7 @@ Partial Class frmStepper
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(580, 482)
+        Me.ClientSize = New System.Drawing.Size(490, 482)
         Me.Controls.Add(Me.lblNumConstraints)
         Me.Controls.Add(Me.txtNumConstraints)
         Me.Controls.Add(Me.btnReset)
@@ -555,7 +541,6 @@ Partial Class frmStepper
     Friend WithEvents TabPage1 As Windows.Forms.TabPage
     Friend WithEvents chkShowDebug As Windows.Forms.CheckBox
     Friend WithEvents btnExit As Windows.Forms.Button
-    Friend WithEvents chkUpdateModel As Windows.Forms.CheckBox
     Friend WithEvents GroupBox1 As Windows.Forms.GroupBox
     Friend WithEvents chkLoop As Windows.Forms.CheckBox
     Friend WithEvents btnStop As Windows.Forms.Button
