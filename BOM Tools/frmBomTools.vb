@@ -64,8 +64,6 @@ Public Class frmBomTools
         Dim promanHeader1 As New System.Windows.Forms.ColumnHeader
         Dim promanHeader2 As New System.Windows.Forms.ColumnHeader
 
-
-
         'configure proman bom options
         With lvPromanBom
             .FullRowSelect = True
@@ -157,7 +155,7 @@ Public Class frmBomTools
 
         'populate the listview with the data
         PopulateListView(mAllBOMExport.PartsList, lvInventorBom, txtNumInventorParts)
-
+        ColorList(lvInventorBom)
     End Sub
 
     Private Sub PopulateListView(ByRef PartsList As Collection, MyList As System.Windows.Forms.ListView, TextBox As System.Windows.Forms.TextBox)
@@ -289,6 +287,7 @@ Public Class frmBomTools
         'Load Proman BOM into listview
 
         Dim path As String
+        Dim proc As New frmProcessing
 
         'clear proman listview
         lvPromanBom.Clear()
@@ -301,11 +300,26 @@ Public Class frmBomTools
             Dim PartCollection As Collection
             Dim collPromanParts As New Collection 'collection to hold all the parts in the expedite all report
 
+            'show the processing form
+            proc.Show()
+            'set the processing form owner
+            proc.Owner = Me
+            'set the location
+            proc.Location = LocateInCenter(Me, proc)
+            'disable the bom tools form to grey it out
+            Me.Enabled = False
+
             'read excel document and load results into proman parts collection
             PartCollection = ExcelTools.ExcelToPartCollection(path, collPromanParts)
 
+            'close the processing form
+            proc.Close()
+            'enable BOM tools form again
+            Me.Enabled = True
+
             'load collection into listview
             PopulateListView(PartCollection, lvPromanBom, txtNumPromanParts)
+            ColorList(lvPromanBom)
         End If
 
     End Sub
@@ -325,6 +339,24 @@ Public Class frmBomTools
 
     End Sub
 
+    Sub ColorList(ByVal list As ListView)
+        'sub to color the list
+        'colors 0 Qty parts 
+
+        Dim colorQtyZero As Color
+        Dim item As ListViewItem
+
+        colorQtyZero = Color.Goldenrod
+
+        For Each item In list.Items
+            If CInt(item.SubItems(1).Text) = 0 Then
+                'color the row 
+                item.BackColor = colorQtyZero
+            End If
+        Next
+
+    End Sub
+
     Sub CompareLists(ByVal list1 As ListView, ByVal list2 As ListView)
         'compares list1 against list2 and applies colors to the items accordingly
 
@@ -335,7 +367,7 @@ Public Class frmBomTools
         'define colors for row highlighting
         colorPartNotOnList = Color.DeepPink
         colorPartQtyHigher = Color.LightGray
-        colorPartQtyLower = Color.MediumPurple 'purple
+        colorPartQtyLower = Color.MediumPurple
 
         'see if items in the inventor BOM are in the Proman BOM
         'check for part number and quantity
@@ -344,7 +376,6 @@ Public Class frmBomTools
         Dim findItem As ListViewItem
         Dim searchQty As Integer
         Dim findQty As Integer
-
 
         i = 0
         'search through each item in list1

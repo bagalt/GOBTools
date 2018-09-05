@@ -140,8 +140,9 @@ Partial Class frmBomTools
         '
         'lblVersion
         '
+        Me.lblVersion.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.lblVersion.AutoSize = True
-        Me.lblVersion.Location = New System.Drawing.Point(360, 443)
+        Me.lblVersion.Location = New System.Drawing.Point(402, 461)
         Me.lblVersion.Name = "lblVersion"
         Me.lblVersion.Size = New System.Drawing.Size(39, 13)
         Me.lblVersion.TabIndex = 18
