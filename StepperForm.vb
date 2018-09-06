@@ -35,7 +35,7 @@ Public Class frmStepper
             gAssyCompDef = gAssyDoc.ComponentDefinition
             txtNumConstraints.Text = gAssyDoc.ComponentDefinition.Constraints.Count
             'add label for information
-            lblVersion.Text = "v1.1x"
+            lblVersion.Text = "v1.2"
             'set default values
             gVertNameValidated = False
             gHorizNameValidated = False
@@ -282,13 +282,20 @@ Public Class frmStepper
             'check if ignore horiz is checked
             If (chkIgnoreHoriz.Checked = True) Then
                 'for passing values to inventor, inventor uses internal units of cm and radians
-                VertName.Value = (gdblPosArray(gintCurrentIndex, 2) + txtVertOffset.Text) / 10
+                'use the expression to have the display only show 3 decimal places and add the mm to use the correct units
+                'may be a slight performance penalty but it is hard to tell
+                VertName.Expression = gdblPosArray(gintCurrentIndex, 2) + CDbl(txtVertOffset.Text) & "mm"
+                'VertName.Value = CDbl((gdblPosArray(gintCurrentIndex, 2) + CDbl(txtVertOffset.Text)) / 10)
                 'update model and ignore errors
                 gInvApp.ScreenUpdating = True
                 gAssyDoc.Update2(True)
             Else
-                VertName.Value = (gdblPosArray(gintCurrentIndex, 2) + CDbl(txtVertOffset.Text)) / 10
-                HorizName.Value = (gdblPosArray(gintCurrentIndex, 3) + CDbl(txtHorizOffset.Text)) / 10
+                'use the expression to have the display only show 3 decimal places and add the mm to use the correct units
+                'may be a slight performance penalty but it is hard to tell
+                VertName.Expression = gdblPosArray(gintCurrentIndex, 2) + CDbl(txtVertOffset.Text) & "mm"
+                HorizName.Expression = gdblPosArray(gintCurrentIndex, 3) + CDbl(txtHorizOffset.Text) & "mm"
+                'VertName.Value = CDbl((gdblPosArray(gintCurrentIndex, 2) + CDbl(txtVertOffset.Text)) / 10)
+                'HorizName.Value = CDbl((gdblPosArray(gintCurrentIndex, 3) + CDbl(txtHorizOffset.Text)) / 10)
                 'update model and ignore errors
                 gInvApp.ScreenUpdating = True
                 gAssyDoc.Update2(True)
