@@ -336,7 +336,7 @@ Public Class frmStepper
         'update the model
         Call UpdateModel(gVertParam, gHorizParam)
         Call UpdateListView()
-        txtCurrentIndex.Text = gintCurrentIndex
+
     End Sub
 
     Private Sub PrevAngle()
@@ -362,7 +362,7 @@ Public Class frmStepper
         'update model
         Call UpdateModel(gVertParam, gHorizParam)
         Call UpdateListView()
-        txtCurrentIndex.Text = gintCurrentIndex
+
     End Sub
 
     Private Function CheckHorizName(HorizName As String) As Boolean
@@ -464,7 +464,7 @@ Public Class frmStepper
 
         'index will be +1 from current index
         'pos array index starts at 1, lstview index starts at 0
-        txtCurrentIndex.Text = gintCurrentIndex
+
         gintPrevIndex = gintCurrentIndex
         gintCurrentIndex = selectedItems.Item(0).Index + 1
         Call UpdateModel(gVertParam, gHorizParam)

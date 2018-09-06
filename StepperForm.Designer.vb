@@ -54,14 +54,12 @@ Partial Class frmStepper
         Me.txtHorizOffset = New System.Windows.Forms.TextBox()
         Me.lblVertOffset = New System.Windows.Forms.Label()
         Me.txtVertOffset = New System.Windows.Forms.TextBox()
-        Me.lblCurrentIndex = New System.Windows.Forms.Label()
         Me.lblHorizPos = New System.Windows.Forms.Label()
         Me.txtHorizPos = New System.Windows.Forms.TextBox()
         Me.lblStopwatch = New System.Windows.Forms.Label()
         Me.txtStopwatch = New System.Windows.Forms.TextBox()
         Me.lblVertPos = New System.Windows.Forms.Label()
         Me.lblVersion = New System.Windows.Forms.Label()
-        Me.txtCurrentIndex = New System.Windows.Forms.TextBox()
         Me.btnReset = New System.Windows.Forms.Button()
         Me.lblNumConstraints = New System.Windows.Forms.Label()
         Me.txtNumConstraints = New System.Windows.Forms.TextBox()
@@ -73,7 +71,7 @@ Partial Class frmStepper
         '
         'txtVertPos
         '
-        Me.txtVertPos.Location = New System.Drawing.Point(497, 43)
+        Me.txtVertPos.Location = New System.Drawing.Point(492, 43)
         Me.txtVertPos.Name = "txtVertPos"
         Me.txtVertPos.Size = New System.Drawing.Size(79, 20)
         Me.txtVertPos.TabIndex = 49
@@ -405,19 +403,10 @@ Partial Class frmStepper
         Me.txtVertOffset.TabIndex = 3
         Me.txtVertOffset.Text = "261.424"
         '
-        'lblCurrentIndex
-        '
-        Me.lblCurrentIndex.AutoSize = True
-        Me.lblCurrentIndex.Location = New System.Drawing.Point(496, 408)
-        Me.lblCurrentIndex.Name = "lblCurrentIndex"
-        Me.lblCurrentIndex.Size = New System.Drawing.Size(70, 13)
-        Me.lblCurrentIndex.TabIndex = 43
-        Me.lblCurrentIndex.Text = "Current Index"
-        '
         'lblHorizPos
         '
         Me.lblHorizPos.AutoSize = True
-        Me.lblHorizPos.Location = New System.Drawing.Point(496, 68)
+        Me.lblHorizPos.Location = New System.Drawing.Point(492, 68)
         Me.lblHorizPos.Name = "lblHorizPos"
         Me.lblHorizPos.Size = New System.Drawing.Size(52, 13)
         Me.lblHorizPos.TabIndex = 48
@@ -425,7 +414,7 @@ Partial Class frmStepper
         '
         'txtHorizPos
         '
-        Me.txtHorizPos.Location = New System.Drawing.Point(497, 87)
+        Me.txtHorizPos.Location = New System.Drawing.Point(492, 87)
         Me.txtHorizPos.Name = "txtHorizPos"
         Me.txtHorizPos.Size = New System.Drawing.Size(79, 20)
         Me.txtHorizPos.TabIndex = 47
@@ -433,7 +422,7 @@ Partial Class frmStepper
         'lblStopwatch
         '
         Me.lblStopwatch.AutoSize = True
-        Me.lblStopwatch.Location = New System.Drawing.Point(496, 111)
+        Me.lblStopwatch.Location = New System.Drawing.Point(492, 111)
         Me.lblStopwatch.Name = "lblStopwatch"
         Me.lblStopwatch.Size = New System.Drawing.Size(80, 13)
         Me.lblStopwatch.TabIndex = 46
@@ -441,7 +430,7 @@ Partial Class frmStepper
         '
         'txtStopwatch
         '
-        Me.txtStopwatch.Location = New System.Drawing.Point(497, 130)
+        Me.txtStopwatch.Location = New System.Drawing.Point(492, 130)
         Me.txtStopwatch.Name = "txtStopwatch"
         Me.txtStopwatch.Size = New System.Drawing.Size(79, 20)
         Me.txtStopwatch.TabIndex = 45
@@ -449,7 +438,7 @@ Partial Class frmStepper
         'lblVertPos
         '
         Me.lblVertPos.AutoSize = True
-        Me.lblVertPos.Location = New System.Drawing.Point(496, 24)
+        Me.lblVertPos.Location = New System.Drawing.Point(492, 24)
         Me.lblVertPos.Name = "lblVertPos"
         Me.lblVertPos.Size = New System.Drawing.Size(47, 13)
         Me.lblVertPos.TabIndex = 50
@@ -464,17 +453,9 @@ Partial Class frmStepper
         Me.lblVersion.TabIndex = 51
         Me.lblVersion.Text = "vX.X"
         '
-        'txtCurrentIndex
-        '
-        Me.txtCurrentIndex.Location = New System.Drawing.Point(496, 428)
-        Me.txtCurrentIndex.Name = "txtCurrentIndex"
-        Me.txtCurrentIndex.Size = New System.Drawing.Size(49, 20)
-        Me.txtCurrentIndex.TabIndex = 42
-        Me.txtCurrentIndex.Text = "0"
-        '
         'btnReset
         '
-        Me.btnReset.Location = New System.Drawing.Point(496, 169)
+        Me.btnReset.Location = New System.Drawing.Point(492, 207)
         Me.btnReset.Name = "btnReset"
         Me.btnReset.Size = New System.Drawing.Size(75, 28)
         Me.btnReset.TabIndex = 52
@@ -484,7 +465,7 @@ Partial Class frmStepper
         'lblNumConstraints
         '
         Me.lblNumConstraints.AutoSize = True
-        Me.lblNumConstraints.Location = New System.Drawing.Point(494, 361)
+        Me.lblNumConstraints.Location = New System.Drawing.Point(492, 159)
         Me.lblNumConstraints.Name = "lblNumConstraints"
         Me.lblNumConstraints.Size = New System.Drawing.Size(84, 13)
         Me.lblNumConstraints.TabIndex = 54
@@ -492,7 +473,7 @@ Partial Class frmStepper
         '
         'txtNumConstraints
         '
-        Me.txtNumConstraints.Location = New System.Drawing.Point(494, 381)
+        Me.txtNumConstraints.Location = New System.Drawing.Point(492, 175)
         Me.txtNumConstraints.Name = "txtNumConstraints"
         Me.txtNumConstraints.Size = New System.Drawing.Size(49, 20)
         Me.txtNumConstraints.TabIndex = 53
@@ -508,14 +489,12 @@ Partial Class frmStepper
         Me.Controls.Add(Me.btnReset)
         Me.Controls.Add(Me.txtVertPos)
         Me.Controls.Add(Me.TabControl1)
-        Me.Controls.Add(Me.lblCurrentIndex)
         Me.Controls.Add(Me.lblHorizPos)
         Me.Controls.Add(Me.txtHorizPos)
         Me.Controls.Add(Me.lblStopwatch)
         Me.Controls.Add(Me.txtStopwatch)
         Me.Controls.Add(Me.lblVertPos)
         Me.Controls.Add(Me.lblVersion)
-        Me.Controls.Add(Me.txtCurrentIndex)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D
         Me.MaximizeBox = False
         Me.MaximumSize = New System.Drawing.Size(600, 525)
@@ -567,14 +546,12 @@ Partial Class frmStepper
     Friend WithEvents txtHorizOffset As Windows.Forms.TextBox
     Friend WithEvents lblVertOffset As Windows.Forms.Label
     Friend WithEvents txtVertOffset As Windows.Forms.TextBox
-    Friend WithEvents lblCurrentIndex As Windows.Forms.Label
     Friend WithEvents lblHorizPos As Windows.Forms.Label
     Friend WithEvents txtHorizPos As Windows.Forms.TextBox
     Friend WithEvents lblStopwatch As Windows.Forms.Label
     Friend WithEvents txtStopwatch As Windows.Forms.TextBox
     Friend WithEvents lblVertPos As Windows.Forms.Label
     Friend WithEvents lblVersion As Windows.Forms.Label
-    Friend WithEvents txtCurrentIndex As Windows.Forms.TextBox
     Friend WithEvents btnReset As Windows.Forms.Button
     Friend WithEvents lblNumConstraints As Windows.Forms.Label
     Friend WithEvents txtNumConstraints As Windows.Forms.TextBox
