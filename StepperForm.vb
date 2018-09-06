@@ -35,7 +35,7 @@ Public Class frmStepper
             gAssyCompDef = gAssyDoc.ComponentDefinition
             txtNumConstraints.Text = gAssyDoc.ComponentDefinition.Constraints.Count
             'add label for information
-            lblVersion.Text = "v1.1"
+            lblVersion.Text = "v1.1x"
             'set default values
             gVertNameValidated = False
             gHorizNameValidated = False
@@ -364,6 +364,8 @@ Public Class frmStepper
 
         Try
             gHorizParam = gAssyCompDef.Parameters(txtHorizName.Text)
+            'set validated flag
+            gHorizNameValidated = True
             Return True
         Catch ex As Exception
             MsgBox("Problem with the Horiz Parameter Name")
@@ -377,6 +379,8 @@ Public Class frmStepper
         'and assign it to the vert param global
         Try
             gVertParam = gAssyCompDef.Parameters(txtVertName.Text)
+            'set validated flag
+            gVertNameValidated = True
             Return True
         Catch ex As Exception
             MsgBox("Problem with the Vert Parameter Name")
@@ -392,8 +396,6 @@ Public Class frmStepper
         If (CheckHorizName(txtHorizName.Text)) Then
             'parameter name OK, assign to origian variable for reset purposes
             gOrigHoriz = gHorizParam.Value
-            'set validated flag
-            gHorizNameValidated = True
         End If
     End Sub
 
@@ -404,8 +406,6 @@ Public Class frmStepper
         If (CheckVertName(txtVertName.Text)) Then
             'parameter name valid assign to original variable
             gOrigVert = gVertParam.Value
-            'set validated flag
-            gVertNameValidated = True
         End If
     End Sub
 
@@ -594,7 +594,6 @@ Public Class frmStepper
     End Sub
 
     Private Sub btnNameHelp_Click(sender As Object, e As EventArgs) Handles btnNameHelp.Click
-
 
         'create new instance of the class frmNameHelp and pass inventor application object
         Dim NameHelp = New frmNameHelp(gInvApp)
