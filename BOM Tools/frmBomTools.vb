@@ -17,6 +17,11 @@ Public Class frmBomTools
     Private BomCompareSettings As mAllBOMExport.BomCompareSettings 'settings for BOM compare collection
     Private startAssy As String 'holds the name of the top level assembly
 
+    Private colorPartNotOnList As Color
+    Private colorPartQtyHigher As Color
+    Private colorPartQtyLower As Color
+    Private colorQtyZero As Color
+
     Public Sub New(InvApp As Inventor.Application)
 
         ' This call is required by the designer.
@@ -32,6 +37,12 @@ Public Class frmBomTools
             'get the top level assembly document name
             startAssy = mAssyDoc.PropertySets.Item("Design Tracking Properties").Item("Part Number").Value
             lblVersion.Text = "v0.2"
+
+            'define colors for row highlighting
+            colorPartNotOnList = Color.DeepPink
+            colorPartQtyHigher = Color.LightGray
+            colorPartQtyLower = Color.MediumPurple
+            colorQtyZero = Color.Goldenrod
         Catch
             MsgBox("Assembly document must be active")
             Me.Close()
@@ -340,13 +351,10 @@ Public Class frmBomTools
     End Sub
 
     Sub ColorList(ByVal list As ListView)
-        'sub to color the list
+        'sub to color a list
         'colors 0 Qty parts 
 
-        Dim colorQtyZero As Color
         Dim item As ListViewItem
-
-        colorQtyZero = Color.Goldenrod
 
         For Each item In list.Items
             If CInt(item.SubItems(1).Text) = 0 Then
@@ -360,15 +368,6 @@ Public Class frmBomTools
     Sub CompareLists(ByVal list1 As ListView, ByVal list2 As ListView)
         'compares list1 against list2 and applies colors to the items accordingly
 
-        Dim colorPartNotOnList As Color
-        Dim colorPartQtyHigher As Color
-        Dim colorPartQtyLower As Color
-
-        'define colors for row highlighting
-        colorPartNotOnList = Color.DeepPink
-        colorPartQtyHigher = Color.LightGray
-        colorPartQtyLower = Color.MediumPurple
-
         'see if items in the inventor BOM are in the Proman BOM
         'check for part number and quantity
         Dim i As Integer
@@ -378,7 +377,7 @@ Public Class frmBomTools
         Dim findQty As Integer
 
         i = 0
-        'search through each item in list1
+        'search through each item in list1 to see if it is in list 2
         For Each searchItem In list1.Items
             searchQty = CInt(searchItem.SubItems(1).Text)
             findItem = list2.FindItemWithText(searchItem.Text, False, 0, False)
@@ -405,7 +404,7 @@ Public Class frmBomTools
             End Try
             i += 1
         Next
-
+        ColorList(list1)
     End Sub
 
     Private Sub frmBomTools_HelpButtonClicked(sender As Object, e As CancelEventArgs) Handles Me.HelpButtonClicked

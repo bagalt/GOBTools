@@ -268,7 +268,7 @@ Module mAllBOMExport
                         Return False
                     Case Else
                         Select Case sPrefix
-                            Case "B39", "B45", "B47", "B49", "B0049", "BGE"
+                            Case "B39", "B47", "B49", "B0049", "BGE" '"B45" do not go into B45 assemblies
                                 'Ok to go into assemblies
                                 Return True
                             Case Else
@@ -330,10 +330,10 @@ Module mAllBOMExport
 
                     Case Else
                         Select Case sPrefix
-                            Case "B20", "B30", "B40", "B47", "B61", "B62", "B82", "B87", "B92", "B39"
+                            Case "B20", "B30", "B40", "B47", "B61", "B62", "B82", "B87", "B92", "B39", "B45"
                                 GetProps(oCompOcc, PartType.ManufPart, coll)
 
-                            Case "B0049", "B49", "B45"
+                            Case "B0049", "B49"
                                 'case to allow B49 assemblies to be parts in the list
                                 'add the B49 assy to the parts list
                                 GetProps(oCompOcc, PartType.BAssy, coll)
