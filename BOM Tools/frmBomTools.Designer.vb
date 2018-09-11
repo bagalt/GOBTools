@@ -49,6 +49,8 @@ Partial Class frmBomTools
         Me.PromanLVMenuDeleteItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.TabControl1 = New System.Windows.Forms.TabControl()
         Me.SaveFileDialog1 = New System.Windows.Forms.SaveFileDialog()
+        Me.chkBOMCompIncB39Children = New System.Windows.Forms.CheckBox()
+        Me.chkBOMCompIncB45Children = New System.Windows.Forms.CheckBox()
         Me.GroupBox2.SuspendLayout()
         Me.GroupBox1.SuspendLayout()
         Me.GroupBox3.SuspendLayout()
@@ -116,10 +118,12 @@ Partial Class frmBomTools
         '
         'GroupBox3
         '
+        Me.GroupBox3.Controls.Add(Me.chkBOMCompIncB45Children)
+        Me.GroupBox3.Controls.Add(Me.chkBOMCompIncB39Children)
         Me.GroupBox3.Controls.Add(Me.chkBomCompIncludeBAssy)
         Me.GroupBox3.Location = New System.Drawing.Point(18, 151)
         Me.GroupBox3.Name = "GroupBox3"
-        Me.GroupBox3.Size = New System.Drawing.Size(180, 60)
+        Me.GroupBox3.Size = New System.Drawing.Size(180, 99)
         Me.GroupBox3.TabIndex = 17
         Me.GroupBox3.TabStop = False
         Me.GroupBox3.Text = "BOM Compare Options"
@@ -316,6 +320,28 @@ Partial Class frmBomTools
         Me.TabControl1.Size = New System.Drawing.Size(455, 503)
         Me.TabControl1.TabIndex = 15
         '
+        'chkBOMCompIncB39Children
+        '
+        Me.chkBOMCompIncB39Children.AutoSize = True
+        Me.chkBOMCompIncB39Children.Checked = True
+        Me.chkBOMCompIncB39Children.CheckState = System.Windows.Forms.CheckState.Checked
+        Me.chkBOMCompIncB39Children.Location = New System.Drawing.Point(6, 51)
+        Me.chkBOMCompIncB39Children.Name = "chkBOMCompIncB39Children"
+        Me.chkBOMCompIncB39Children.Size = New System.Drawing.Size(130, 17)
+        Me.chkBOMCompIncB39Children.TabIndex = 15
+        Me.chkBOMCompIncB39Children.Text = "Include B39 Children?"
+        Me.chkBOMCompIncB39Children.UseVisualStyleBackColor = True
+        '
+        'chkBOMCompIncB45Children
+        '
+        Me.chkBOMCompIncB45Children.AutoSize = True
+        Me.chkBOMCompIncB45Children.Location = New System.Drawing.Point(6, 74)
+        Me.chkBOMCompIncB45Children.Name = "chkBOMCompIncB45Children"
+        Me.chkBOMCompIncB45Children.Size = New System.Drawing.Size(130, 17)
+        Me.chkBOMCompIncB45Children.TabIndex = 15
+        Me.chkBOMCompIncB45Children.Text = "Include B45 Children?"
+        Me.chkBOMCompIncB45Children.UseVisualStyleBackColor = True
+        '
         'frmBomTools
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -370,4 +396,6 @@ Partial Class frmBomTools
     Friend WithEvents TabControl1 As Windows.Forms.TabControl
     Friend WithEvents lblVersion As Windows.Forms.Label
     Friend WithEvents SaveFileDialog1 As Windows.Forms.SaveFileDialog
+    Friend WithEvents chkBOMCompIncB39Children As Windows.Forms.CheckBox
+    Friend WithEvents chkBOMCompIncB45Children As Windows.Forms.CheckBox
 End Class

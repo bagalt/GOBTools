@@ -35,7 +35,7 @@ Public Class frmStepper
             gAssyCompDef = gAssyDoc.ComponentDefinition
             txtNumConstraints.Text = gAssyDoc.ComponentDefinition.Constraints.Count
             'add label for information
-            lblVersion.Text = "v1.1"
+            lblVersion.Text = "v1.2"
             'set default values
             gVertNameValidated = False
             gHorizNameValidated = False
@@ -282,13 +282,20 @@ Public Class frmStepper
             'check if ignore horiz is checked
             If (chkIgnoreHoriz.Checked = True) Then
                 'for passing values to inventor, inventor uses internal units of cm and radians
-                VertName.Value = (gdblPosArray(gintCurrentIndex, 2) + txtVertOffset.Text) / 10
+                'use the expression to have the display only show 3 decimal places and add the mm to use the correct units
+                'may be a slight performance penalty but it is hard to tell
+                VertName.Expression = gdblPosArray(gintCurrentIndex, 2) + CDbl(txtVertOffset.Text) & "mm"
+                'VertName.Value = CDbl((gdblPosArray(gintCurrentIndex, 2) + CDbl(txtVertOffset.Text)) / 10)
                 'update model and ignore errors
                 gInvApp.ScreenUpdating = True
                 gAssyDoc.Update2(True)
             Else
-                VertName.Value = (gdblPosArray(gintCurrentIndex, 2) + CDbl(txtVertOffset.Text)) / 10
-                HorizName.Value = (gdblPosArray(gintCurrentIndex, 3) + CDbl(txtHorizOffset.Text)) / 10
+                'use the expression to have the display only show 3 decimal places and add the mm to use the correct units
+                'may be a slight performance penalty but it is hard to tell
+                VertName.Expression = gdblPosArray(gintCurrentIndex, 2) + CDbl(txtVertOffset.Text) & "mm"
+                HorizName.Expression = gdblPosArray(gintCurrentIndex, 3) + CDbl(txtHorizOffset.Text) & "mm"
+                'VertName.Value = CDbl((gdblPosArray(gintCurrentIndex, 2) + CDbl(txtVertOffset.Text)) / 10)
+                'HorizName.Value = CDbl((gdblPosArray(gintCurrentIndex, 3) + CDbl(txtHorizOffset.Text)) / 10)
                 'update model and ignore errors
                 gInvApp.ScreenUpdating = True
                 gAssyDoc.Update2(True)
@@ -329,7 +336,7 @@ Public Class frmStepper
         'update the model
         Call UpdateModel(gVertParam, gHorizParam)
         Call UpdateListView()
-        txtCurrentIndex.Text = gintCurrentIndex
+
     End Sub
 
     Private Sub PrevAngle()
@@ -355,7 +362,7 @@ Public Class frmStepper
         'update model
         Call UpdateModel(gVertParam, gHorizParam)
         Call UpdateListView()
-        txtCurrentIndex.Text = gintCurrentIndex
+
     End Sub
 
     Private Function CheckHorizName(HorizName As String) As Boolean
@@ -364,6 +371,8 @@ Public Class frmStepper
 
         Try
             gHorizParam = gAssyCompDef.Parameters(txtHorizName.Text)
+            'set validated flag
+            gHorizNameValidated = True
             Return True
         Catch ex As Exception
             MsgBox("Problem with the Horiz Parameter Name")
@@ -377,6 +386,8 @@ Public Class frmStepper
         'and assign it to the vert param global
         Try
             gVertParam = gAssyCompDef.Parameters(txtVertName.Text)
+            'set validated flag
+            gVertNameValidated = True
             Return True
         Catch ex As Exception
             MsgBox("Problem with the Vert Parameter Name")
@@ -392,8 +403,6 @@ Public Class frmStepper
         If (CheckHorizName(txtHorizName.Text)) Then
             'parameter name OK, assign to origian variable for reset purposes
             gOrigHoriz = gHorizParam.Value
-            'set validated flag
-            gHorizNameValidated = True
         End If
     End Sub
 
@@ -404,8 +413,6 @@ Public Class frmStepper
         If (CheckVertName(txtVertName.Text)) Then
             'parameter name valid assign to original variable
             gOrigVert = gVertParam.Value
-            'set validated flag
-            gVertNameValidated = True
         End If
     End Sub
 
@@ -457,7 +464,7 @@ Public Class frmStepper
 
         'index will be +1 from current index
         'pos array index starts at 1, lstview index starts at 0
-        txtCurrentIndex.Text = gintCurrentIndex
+
         gintPrevIndex = gintCurrentIndex
         gintCurrentIndex = selectedItems.Item(0).Index + 1
         Call UpdateModel(gVertParam, gHorizParam)
@@ -594,7 +601,6 @@ Public Class frmStepper
     End Sub
 
     Private Sub btnNameHelp_Click(sender As Object, e As EventArgs) Handles btnNameHelp.Click
-
 
         'create new instance of the class frmNameHelp and pass inventor application object
         Dim NameHelp = New frmNameHelp(gInvApp)
