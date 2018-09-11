@@ -21,6 +21,7 @@ Public Class frmBomTools
     Private colorPartQtyHigher As Color
     Private colorPartQtyLower As Color
     Private colorQtyZero As Color
+    Private colorEvolutionPart As Color
 
     Public Sub New(InvApp As Inventor.Application)
 
@@ -43,6 +44,7 @@ Public Class frmBomTools
             colorPartQtyHigher = Color.LightGray
             colorPartQtyLower = Color.MediumPurple
             colorQtyZero = Color.Goldenrod
+            colorEvolutionPart = Color.Cyan
         Catch
             MsgBox("Assembly document must be active")
             Me.Close()
@@ -414,7 +416,73 @@ Public Class frmBomTools
             End Try
             i += 1
         Next
+        ColorEvolutionParts(list1, list2)
     End Sub
+
+    Sub ColorEvolutionParts(list1 As ListView, list2 As ListView)
+        'sub to color parts containing an evolution number in list1 if they are found in list 2
+
+        Dim list1Item As ListViewItem
+        Dim list2Item As ListViewItem
+        Dim evolutionPart As String
+        Dim evolutionNum As String
+        Dim list1Qty As Integer
+        Dim list2Qty As Integer
+        Dim i As Integer
+
+        i = 0
+        For Each list1Item In list1.Items
+            If HasEvolution(list1Item.Text) Then
+                'part number has an evolution number, grab the string up to the evolution number
+                evolutionPart = list1Item.Text.Substring(0, (list1Item.Text.Length - 3))
+                evolutionNum = list1Item.Text.Substring(list1Item.Text.Length - 3)
+
+                'look in list2 for a match to the evolutionPart
+                For Each list2Item In list2.Items
+                    'compare part numbers not including evolution number
+                    If evolutionPart = list2Item.Text.Substring(0, list2Item.Text.Length - 3) Then
+                        'compare full part number including evolution number
+                        If list1Item.Text = list2Item.Text Then 'evolutionNum = list2Item.Text.Substring(list2Item.Text.Length - 3) Then
+                            'check the quantities
+                            list1Qty = CInt(list1Item.SubItems(1).Text)
+                            list2Qty = CInt(list2Item.SubItems(1).Text)
+                            If list1Qty = list2Qty Then
+                                'item qty is equal
+                            Else
+                                'item qty is not equal
+                                If list1Qty > list2Qty Then
+                                    list1Item.BackColor = colorPartQtyHigher
+                                Else
+                                    list1Item.BackColor = colorPartQtyLower
+                                End If
+                            End If
+                        Else
+                            'evolution part match found, but evolution numbers are different
+                            'color the part blue on list 1
+                            list1.Items(i).BackColor = colorEvolutionPart
+                        End If
+                    End If
+                Next
+            End If
+            i += 1
+        Next
+
+    End Sub
+
+    Function HasEvolution(partNumber As String) As Boolean
+        'function to see if the part number has an evolution number
+        'looks for period in the third position from the right
+
+        If (partNumber.Substring((partNumber.Length - 3), 1) = ".") Then
+            'part number has an evolution
+            'MsgBox("Part number: " & partNumber & " has an evolution number")
+            Return True
+        Else
+            'no evolution number
+            Return False
+        End If
+
+    End Function
 
     Private Sub frmBomTools_HelpButtonClicked(sender As Object, e As CancelEventArgs) Handles Me.HelpButtonClicked
         'show help
