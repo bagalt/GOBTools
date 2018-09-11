@@ -146,6 +146,8 @@ Public Class frmBomTools
         BomImportSettings.bBomImportIncBassy = chkBomImportIncludeBAssy.Checked
         PartCreateSettings.bPartCreatIncBassy = chkPartCreateIncludeBAssy.Checked
         BomCompareSettings.bBomCompIncBassy = chkBomCompIncludeBAssy.Checked
+        BomCompareSettings.bBomCompIncB39Children = chkBOMCompIncB39Children.Checked
+        BomCompareSettings.bBomCompIncB45Children = chkBOMCompIncB45Children.Checked
 
         'show the processing form
         proc.Show()
@@ -379,32 +381,39 @@ Public Class frmBomTools
         i = 0
         'search through each item in list1 to see if it is in list 2
         For Each searchItem In list1.Items
+            'get the quantity for the part in list 1
             searchQty = CInt(searchItem.SubItems(1).Text)
+            'search for the part number in the other list
             findItem = list2.FindItemWithText(searchItem.Text, False, 0, False)
             Try
-                If Not findItem Is Nothing Then
-                    'item found check quantity
-                    findQty = CInt(list2.Items(findItem.Index).SubItems(1).Text)
-                    If searchQty <> findQty Then
-                        'quantity does not match, apply appropriate color
-                        If searchQty > findQty Then
-                            'qty higher on list1 BOM
-                            list1.Items(i).BackColor = colorPartQtyHigher
-                        Else
-                            'qty lower on list1 bom
-                            list1.Items(i).BackColor = colorPartQtyLower
-                        End If
-                    End If
+                If searchQty = 0 Then
+                    'color bom line with 0 qty
+                    list1.Items(i).BackColor = colorQtyZero
                 Else
-                    'item from list1 not found in list2
-                    list1.Items(i).BackColor = colorPartNotOnList
+                    If Not findItem Is Nothing Then
+                        'item found check quantity
+                        findQty = CInt(list2.Items(findItem.Index).SubItems(1).Text)
+                        If searchQty <> findQty Then
+                            'quantity does not match, apply appropriate color
+                            If searchQty > findQty Then
+                                'qty higher on list1 BOM
+                                list1.Items(i).BackColor = colorPartQtyHigher
+                            Else
+                                'qty lower on list1 bom
+                                list1.Items(i).BackColor = colorPartQtyLower
+                            End If
+                        End If
+                    Else
+                        'item from list1 not found in list2
+                        list1.Items(i).BackColor = colorPartNotOnList
+                    End If
                 End If
+
             Catch ex As Exception
                 'do nothing if errors, handles lists of different lengths
             End Try
             i += 1
         Next
-        ColorList(list1)
     End Sub
 
     Private Sub frmBomTools_HelpButtonClicked(sender As Object, e As CancelEventArgs) Handles Me.HelpButtonClicked

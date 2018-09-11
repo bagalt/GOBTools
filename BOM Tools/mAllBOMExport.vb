@@ -34,7 +34,9 @@ Module mAllBOMExport
     End Structure
 
     Public Structure BomCompareSettings
-        Public bBomCompIncBassy As Boolean
+        Public bBomCompIncBassy As Boolean 'include B49 Assy?
+        Public bBomCompIncB39Children As Boolean 'include B39 children?
+        Public bBomCompIncB45Children As Boolean 'include B45 children?
     End Structure
 
     Private mBomImportSettings As BomImportSettings
@@ -140,7 +142,6 @@ Module mAllBOMExport
                         SortPart(oCompOcc, colBreadCrumb)
                     Else
                         'add assembly part number to breadcrumb if going further into sub assembly                        
-                        'may need a check for B49 assemblies, to not have the B49 assembly be its own parent
                         colBreadCrumb.Add(assyDoc.PropertySets.Item("Design Tracking Properties").Item("Part Number").Value)
                         'sort the part
                         SortPart(oCompOcc, colBreadCrumb)
@@ -268,9 +269,15 @@ Module mAllBOMExport
                         Return False
                     Case Else
                         Select Case sPrefix
-                            Case "B39", "B47", "B49", "B0049", "BGE" '"B45" do not go into B45 assemblies
+                            Case "B47", "B49", "B0049", "BGE"
                                 'Ok to go into assemblies
                                 Return True
+                            Case "B39"
+                                'check if B39 children are included
+                                Return mBomCompSettings.bBomCompIncB39Children 'return state of checkbox checked = true
+                            Case "B45"
+                                'check if B45 children are included
+                                Return mBomCompSettings.bBomCompIncB45Children
                             Case Else
                                 Return False
                         End Select
@@ -654,8 +661,6 @@ Module mAllBOMExport
             'if include B49 is true and part is a B49 then do all this
             If (mBomCompSettings.bBomCompIncBassy = False) And (desiredPart = PartType.BAssy) Then
                 'do nothing
-            ElseIf (desiredPart = PartType.BGEPart) Then
-                'do nothing, BGE parts should never be created
             Else
                 'create instance of the partinfo class for all parts
                 BomCompPartInfo = New cPartInfo
