@@ -48,10 +48,6 @@ Namespace GOBTools
             Dim HMlargeIcon As stdole.IPictureDisp = PictureDispConverter.ToIPictureDisp(My.Resources.HoleMaker64x64)
             Dim HMsmallIcon As stdole.IPictureDisp = PictureDispConverter.ToIPictureDisp(My.Resources.HoleMaker16x16)
 
-            'defining icons for the BOM export button
-            Dim BOMLargeIcon As stdole.IPictureDisp = PictureDispConverter.ToIPictureDisp(My.Resources.ExportBOM64x64)
-            Dim BOMSmallIcon As stdole.IPictureDisp = PictureDispConverter.ToIPictureDisp(My.Resources.ExportBOM16x16)
-
             'defining icons for the BOM Tools button
             Dim BomToolsLargeIcon As stdole.IPictureDisp = PictureDispConverter.ToIPictureDisp(My.Resources.BOMTools64x64)
             Dim BomToolsSmallIcon As stdole.IPictureDisp = PictureDispConverter.ToIPictureDisp(My.Resources.BOMTools16x16)
@@ -61,9 +57,6 @@ Namespace GOBTools
 
             'Button definition for the hole maker program
             m_HoleMakerButtonDef = controlDefs.AddButtonDefinition("Hole Maker", "GOBHoleMaker", CommandTypesEnum.kNonShapeEditCmdType, AddInGuid(Me.GetType), "Add Hole patterns to parts", "Hole Maker", HMsmallIcon, HMlargeIcon)
-
-            'Button definition for the BOM export button
-            m_BOMExportButtonDef = controlDefs.AddButtonDefinition("BOM Export", "GOBBOMExport", CommandTypesEnum.kEditMaskCmdType, AddInGuid(Me.GetType), "Export Parts To Excel for import into ProMAN", "BOM Export", BOMSmallIcon, BOMLargeIcon)
 
             'Button definition for the BOM tools button
             m_bomToolsButtonDef = controlDefs.AddButtonDefinition("BOM Tools", "GOBBOMTools", CommandTypesEnum.kEditMaskCmdType, AddInGuid(Me.GetType), "BOM Export and Compare tools", "BOM Tools", BomToolsSmallIcon, BomToolsLargeIcon)
@@ -176,16 +169,6 @@ Namespace GOBTools
             Dim HoleMaker As New frmHoleMaker(g_inventorApplication)
             'show the form and tie it to inventor window, 
             HoleMaker.Show(New WindowWrapper(g_inventorApplication.MainFrameHWND))
-
-        End Sub
-
-        Private Sub m_BOMExportButtonDef_OnExecute(Context As NameValueMap) Handles m_BOMExportButtonDef.OnExecute
-            'sub to handle clicking the BOM export button 
-
-            'define new form and pass application
-            Dim BOMExport As New frmBOMExport(g_inventorApplication)
-            'show the form and tie it to the inventor window
-            BOMExport.Show(New WindowWrapper(g_inventorApplication.MainFrameHWND))
 
         End Sub
 

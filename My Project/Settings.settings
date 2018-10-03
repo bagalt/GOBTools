@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='iso-8859-1'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="BomToolsBomImportIncludeB49Assemblies" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="BomToolsPartCreateIncludeB49Assemblies" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="BomToolsBomCompIncludeB49Assemblies" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="BOMToolsBomCompIncludeB39Children" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="BOMToolsBomCompIncludeB45Children" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="StepperFilePath" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Browse for Path</Value>
+    </Setting>
+    <Setting Name="StepperVertName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Vert Name</Value>
+    </Setting>
+    <Setting Name="StepperHorizName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Horiz Name</Value>
+    </Setting>
+    <Setting Name="StepperAccelThresh" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">9</Value>
+    </Setting>
+    <Setting Name="StepperStepSize" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">2</Value>
+    </Setting>
+    <Setting Name="StepperIgnoreHoriz" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
