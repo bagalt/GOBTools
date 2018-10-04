@@ -184,6 +184,30 @@ Partial Friend NotInheritable Class Settings
             Me("StepperIgnoreHoriz") = value
         End Set
     End Property
+    
+    <Global.System.Configuration.UserScopedSettingAttribute(),  _
+     Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+     Global.System.Configuration.DefaultSettingValueAttribute("True")>  _
+    Public Property BomToolsBomCompIncludeC49Assemblies() As Boolean
+        Get
+            Return CType(Me("BomToolsBomCompIncludeC49Assemblies"),Boolean)
+        End Get
+        Set
+            Me("BomToolsBomCompIncludeC49Assemblies") = value
+        End Set
+    End Property
+    
+    <Global.System.Configuration.UserScopedSettingAttribute(),  _
+     Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+     Global.System.Configuration.DefaultSettingValueAttribute("0, 0")>  _
+    Public Property BomToolsFormLocation() As Global.System.Drawing.Point
+        Get
+            Return CType(Me("BomToolsFormLocation"),Global.System.Drawing.Point)
+        End Get
+        Set
+            Me("BomToolsFormLocation") = value
+        End Set
+    End Property
 End Class
 
 Namespace My

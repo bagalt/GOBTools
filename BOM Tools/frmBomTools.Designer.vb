@@ -51,6 +51,7 @@ Partial Class frmBomTools
         Me.PromanLVMenuDeleteItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.TabControl1 = New System.Windows.Forms.TabControl()
         Me.SaveFileDialog1 = New System.Windows.Forms.SaveFileDialog()
+        Me.chkBomCompIncludeCAssy = New System.Windows.Forms.CheckBox()
         Me.GroupBox2.SuspendLayout()
         Me.GroupBox1.SuspendLayout()
         Me.GroupBox3.SuspendLayout()
@@ -111,19 +112,20 @@ Partial Class frmBomTools
         Me.chkBomCompIncludeBAssy.CheckState = System.Windows.Forms.CheckState.Checked
         Me.chkBomCompIncludeBAssy.Location = New System.Drawing.Point(6, 28)
         Me.chkBomCompIncludeBAssy.Name = "chkBomCompIncludeBAssy"
-        Me.chkBomCompIncludeBAssy.Size = New System.Drawing.Size(144, 17)
+        Me.chkBomCompIncludeBAssy.Size = New System.Drawing.Size(241, 17)
         Me.chkBomCompIncludeBAssy.TabIndex = 15
-        Me.chkBomCompIncludeBAssy.Text = "Include B49 Assemblies?"
+        Me.chkBomCompIncludeBAssy.Text = "Include B49 Assemblies as Part (no children)?"
         Me.chkBomCompIncludeBAssy.UseVisualStyleBackColor = True
         '
         'GroupBox3
         '
+        Me.GroupBox3.Controls.Add(Me.chkBomCompIncludeCAssy)
         Me.GroupBox3.Controls.Add(Me.chkBOMCompIncB45Children)
         Me.GroupBox3.Controls.Add(Me.chkBOMCompIncB39Children)
         Me.GroupBox3.Controls.Add(Me.chkBomCompIncludeBAssy)
         Me.GroupBox3.Location = New System.Drawing.Point(18, 151)
         Me.GroupBox3.Name = "GroupBox3"
-        Me.GroupBox3.Size = New System.Drawing.Size(180, 99)
+        Me.GroupBox3.Size = New System.Drawing.Size(260, 128)
         Me.GroupBox3.TabIndex = 17
         Me.GroupBox3.TabStop = False
         Me.GroupBox3.Text = "BOM Compare Options"
@@ -131,7 +133,7 @@ Partial Class frmBomTools
         'chkBOMCompIncB45Children
         '
         Me.chkBOMCompIncB45Children.AutoSize = True
-        Me.chkBOMCompIncB45Children.Location = New System.Drawing.Point(6, 74)
+        Me.chkBOMCompIncB45Children.Location = New System.Drawing.Point(6, 96)
         Me.chkBOMCompIncB45Children.Name = "chkBOMCompIncB45Children"
         Me.chkBOMCompIncB45Children.Size = New System.Drawing.Size(130, 17)
         Me.chkBOMCompIncB45Children.TabIndex = 15
@@ -143,7 +145,7 @@ Partial Class frmBomTools
         Me.chkBOMCompIncB39Children.AutoSize = True
         Me.chkBOMCompIncB39Children.Checked = True
         Me.chkBOMCompIncB39Children.CheckState = System.Windows.Forms.CheckState.Checked
-        Me.chkBOMCompIncB39Children.Location = New System.Drawing.Point(6, 51)
+        Me.chkBOMCompIncB39Children.Location = New System.Drawing.Point(6, 73)
         Me.chkBOMCompIncB39Children.Name = "chkBOMCompIncB39Children"
         Me.chkBOMCompIncB39Children.Size = New System.Drawing.Size(130, 17)
         Me.chkBOMCompIncB39Children.TabIndex = 15
@@ -342,6 +344,18 @@ Partial Class frmBomTools
         Me.TabControl1.Size = New System.Drawing.Size(455, 503)
         Me.TabControl1.TabIndex = 15
         '
+        'chkBomCompIncludeCAssy
+        '
+        Me.chkBomCompIncludeCAssy.AutoSize = True
+        Me.chkBomCompIncludeCAssy.Checked = True
+        Me.chkBomCompIncludeCAssy.CheckState = System.Windows.Forms.CheckState.Checked
+        Me.chkBomCompIncludeCAssy.Location = New System.Drawing.Point(6, 50)
+        Me.chkBomCompIncludeCAssy.Name = "chkBomCompIncludeCAssy"
+        Me.chkBomCompIncludeCAssy.Size = New System.Drawing.Size(241, 17)
+        Me.chkBomCompIncludeCAssy.TabIndex = 16
+        Me.chkBomCompIncludeCAssy.Text = "Include C49 Assemblies as Part (no children)?"
+        Me.chkBomCompIncludeCAssy.UseVisualStyleBackColor = True
+        '
         'frmBomTools
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -398,4 +412,5 @@ Partial Class frmBomTools
     Friend WithEvents SaveFileDialog1 As Windows.Forms.SaveFileDialog
     Friend WithEvents chkBOMCompIncB39Children As Windows.Forms.CheckBox
     Friend WithEvents chkBOMCompIncB45Children As Windows.Forms.CheckBox
+    Friend WithEvents chkBomCompIncludeCAssy As Windows.Forms.CheckBox
 End Class

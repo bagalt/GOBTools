@@ -37,7 +37,7 @@ Public Class frmBomTools
             mAssyDoc = g_inventorApplication.ActiveDocument
             'get the top level assembly document name
             startAssy = mAssyDoc.PropertySets.Item("Design Tracking Properties").Item("Part Number").Value
-            lblVersion.Text = "v0.3"
+            lblVersion.Text = "v0.4"
 
             'define colors for row highlighting
             colorPartNotOnList = Color.DeepPink
@@ -75,7 +75,8 @@ Public Class frmBomTools
         chkBomCompIncludeBAssy.Checked = My.Settings.BomToolsBomCompIncludeB49Assemblies
         chkBOMCompIncB39Children.Checked = My.Settings.BOMToolsBomCompIncludeB39Children
         chkBOMCompIncB45Children.Checked = My.Settings.BOMToolsBomCompIncludeB45Children
-
+        chkBomCompIncludeCAssy.Checked = My.Settings.BomToolsBomCompIncludeC49Assemblies
+        Me.Location = My.Settings.BomToolsFormLocation
 
     End Sub
 
@@ -156,6 +157,7 @@ Public Class frmBomTools
         BomImportSettings.bBomImportIncBassy = chkBomImportIncludeBAssy.Checked
         PartCreateSettings.bPartCreatIncBassy = chkPartCreateIncludeBAssy.Checked
         BomCompareSettings.bBomCompIncBassy = chkBomCompIncludeBAssy.Checked
+        BomCompareSettings.bBomCompIncCAssy = chkBomCompIncludeCAssy.Checked
         BomCompareSettings.bBomCompIncB39Children = chkBOMCompIncB39Children.Checked
         BomCompareSettings.bBomCompIncB45Children = chkBOMCompIncB45Children.Checked
 
@@ -569,7 +571,8 @@ Public Class frmBomTools
         My.Settings.BomToolsBomCompIncludeB49Assemblies = chkBomCompIncludeBAssy.Checked
         My.Settings.BOMToolsBomCompIncludeB39Children = chkBOMCompIncB39Children.Checked
         My.Settings.BOMToolsBomCompIncludeB45Children = chkBOMCompIncB45Children.Checked
-
+        My.Settings.BomToolsBomCompIncludeC49Assemblies = chkBomCompIncludeCAssy.Checked
+        My.Settings.BomToolsFormLocation = Me.Location
 
     End Sub
 End Class
