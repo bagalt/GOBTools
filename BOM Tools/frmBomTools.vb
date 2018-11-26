@@ -37,7 +37,7 @@ Public Class frmBomTools
             mAssyDoc = g_inventorApplication.ActiveDocument
             'get the top level assembly document name
             startAssy = mAssyDoc.PropertySets.Item("Design Tracking Properties").Item("Part Number").Value
-            lblVersion.Text = "v1.5"
+            lblVersion.Text = "v1.5b"
 
             'define colors for row highlighting
             colorPartNotOnList = Color.DeepPink
@@ -357,10 +357,25 @@ Public Class frmBomTools
             Exit Sub
         End If
 
+        'clear the formatting of the lists
+        ClearListColor(lvInventorBom)
+        ClearListColor(lvPromanBom)
+
         'compare inventor bom to proman bom
         CompareLists(lvInventorBom, lvPromanBom)
         'compare proman bom to inventor bom
         CompareLists(lvPromanBom, lvInventorBom)
+
+    End Sub
+
+    Sub ClearListColor(ByVal list As ListView)
+        'sub to clear the backcolor formatting on a list and set it to white
+
+        Dim item As ListViewItem
+
+        For Each item In list.Items
+            item.BackColor = Color.White
+        Next
 
     End Sub
 
@@ -610,5 +625,31 @@ Public Class frmBomTools
         'Copy item to clipboard
         Clipboard.Clear()
         Clipboard.SetText(lvInventorBom.SelectedItems(0).Text)
+    End Sub
+
+    Private Sub lvInventorBom_KeyDown(sender As Object, e As KeyEventArgs) Handles lvInventorBom.KeyDown
+        'Handles keydown event on listview.  Allows user to copy selected row (part number only)
+
+        If e.KeyCode = Keys.C AndAlso e.Modifiers = Keys.Control Then
+            'Ctrl+c selected            
+            If lvInventorBom.SelectedItems.Count > 0 Then
+                'something selected on inventor BOM
+                Clipboard.Clear()
+                Clipboard.SetText(lvInventorBom.SelectedItems(0).Text)
+            End If
+        End If
+    End Sub
+
+    Private Sub lvPromanBom_KeyDown(sender As Object, e As KeyEventArgs) Handles lvPromanBom.KeyDown
+        'Handles keydown event on listview.  Allows user to copy selected row (part number only)
+
+        If e.KeyCode = Keys.C AndAlso e.Modifiers = Keys.Control Then
+            'Ctrl+c selected            
+            If lvPromanBom.SelectedItems.Count > 0 Then
+                'something selected on inventor BOM
+                Clipboard.Clear()
+                Clipboard.SetText(lvPromanBom.SelectedItems(0).Text)
+            End If
+        End If
     End Sub
 End Class
