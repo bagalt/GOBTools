@@ -862,8 +862,8 @@ Module mAllBOMExport
         Dim XLApp As Excel.Application
         Dim wb As Excel.Workbook
         Dim ws1 As Excel.Worksheet 'for Part Create info
-        Dim ws2 As Excel.Worksheet 'for BOM Import info
-        Dim ws3 As Excel.Worksheet 'for BOM Compare info
+        'Dim ws2 As Excel.Worksheet 'for BOM Import info
+        'Dim ws3 As Excel.Worksheet 'for BOM Compare info
         Dim sFilePath As String = ""
 
         'Check if mNewParts contains items
@@ -900,12 +900,12 @@ Module mAllBOMExport
         XLApp.DisplayAlerts = False 'dont display alert for overwriting file on save
         wb = XLApp.Workbooks.Add
         ws1 = wb.Sheets(1) 'wb.Worksheets.Item(1)
-        ws2 = wb.Sheets.Add(, ws1)
-        ws3 = wb.Sheets.Add(, ws2)
+        'ws2 = wb.Sheets.Add(, ws1)
+        'ws3 = wb.Sheets.Add(, ws2)
 
         ws1.Name = "Part Create"
-        ws2.Name = "BOM Import"
-        ws3.Name = "BOM Compare"
+        'ws2.Name = "BOM Import"
+        'ws3.Name = "BOM Compare"
         ws1.Activate()
 
         'add items to the worksheet
@@ -946,32 +946,32 @@ Module mAllBOMExport
         End With
 
         'create column headings for ws2
-        With ws2
-            .Range("A1").Value = "Part Number"
-            .Range("B1").Value = "Description"
-            .Range("C1").Value = "Parent Assy"
-            .Range("D1").Value = "QPA"
-            .Range("E1").Value = "Errors"
-            'color heading row gray
-            .Range("A1:E1").Interior.Color = mikronBlue 'RGB(178, 178, 178)
-            'color heading text
-            .Range("A1:E1").Font.Color = headingTextColor
-            'bold heading row column headings
-            .Range("A1:E1").Font.Bold = True
-        End With
+        'With ws2
+        '    .Range("A1").Value = "Part Number"
+        '    .Range("B1").Value = "Description"
+        '    .Range("C1").Value = "Parent Assy"
+        '    .Range("D1").Value = "QPA"
+        '    .Range("E1").Value = "Errors"
+        '    'color heading row gray
+        '    .Range("A1:E1").Interior.Color = mikronBlue 'RGB(178, 178, 178)
+        '    'color heading text
+        '    .Range("A1:E1").Font.Color = headingTextColor
+        '    'bold heading row column headings
+        '    .Range("A1:E1").Font.Bold = True
+        'End With
 
         'create column headings for ws3
-        With ws3
-            .Range("A1").Value = "Part Number"
-            .Range("B1").Value = "Description"
-            .Range("C1").Value = "QPA"
-            'color heading row gray
-            .Range("A1:C1").Interior.Color = mikronBlue 'RGB(178, 178, 178)
-            'color heading text
-            .Range("A1:C1").Font.Color = headingTextColor
-            'bold heading row column headings
-            .Range("A1:C1").Font.Bold = True
-        End With
+        'With ws3
+        '    .Range("A1").Value = "Part Number"
+        '    .Range("B1").Value = "Description"
+        '    .Range("C1").Value = "QPA"
+        '    'color heading row gray
+        '    .Range("A1:C1").Interior.Color = mikronBlue 'RGB(178, 178, 178)
+        '    'color heading text
+        '    .Range("A1:C1").Font.Color = headingTextColor
+        '    'bold heading row column headings
+        '    .Range("A1:C1").Font.Bold = True
+        'End With
 
         'populate the remaining cells for WS1
         For Each part In mCollPartCreate
@@ -998,45 +998,45 @@ Module mAllBOMExport
         row = 2
 
         'populate the remaining cells for ws2
-        For Each part In mCollBomImport
-            With ws2
-                .Range("A" & row).Value = part.PartNum
-                .Range("B" & row).Value = part.Description
-                .Range("C" & row).Value = part.ParentAssy
-                .Range("D" & row).Value = part.Qty
-                .Range("E" & row).Value = part.ErrorMsg
-                If part.PartError = True Then
-                    'color error rows
-                    .Range("A" & row & ":" & "E" & row).Interior.Color = errorColor
-                End If
-            End With
-            row = row + 1
-        Next
+        'For Each part In mCollBomImport
+        '    With ws2
+        '        .Range("A" & row).Value = part.PartNum
+        '        .Range("B" & row).Value = part.Description
+        '        .Range("C" & row).Value = part.ParentAssy
+        '        .Range("D" & row).Value = part.Qty
+        '        .Range("E" & row).Value = part.ErrorMsg
+        '        If part.PartError = True Then
+        '            'color error rows
+        '            .Range("A" & row & ":" & "E" & row).Interior.Color = errorColor
+        '        End If
+        '    End With
+        '    row = row + 1
+        'Next
 
         'start filling in table on row 2
         row = 2
 
         'populate the remaining cells for ws3
-        For Each part In mCollBomCompare
-            With ws3
-                .Range("A" & row).Value = part.PartNum
-                .Range("B" & row).Value = part.Description
-                .Range("C" & row).Value = part.Qty
-                If part.PartError = True Then
-                    'color error rows
-                    .Range("A" & row & ":" & "C" & row).Interior.Color = errorColor
-                End If
-            End With
-            row = row + 1
-        Next
+        'For Each part In mCollBomCompare
+        '    With ws3
+        '        .Range("A" & row).Value = part.PartNum
+        '        .Range("B" & row).Value = part.Description
+        '        .Range("C" & row).Value = part.Qty
+        '        If part.PartError = True Then
+        '            'color error rows
+        '            .Range("A" & row & ":" & "C" & row).Interior.Color = errorColor
+        '        End If
+        '    End With
+        '    row = row + 1
+        'Next
 
         'autosize columns
         ws1.Columns("A:J").AutoFit
-        ws2.Columns("A:J").Autofit
-        ws3.Columns("A:D").Autofit
+        'ws2.Columns("A:J").Autofit
+        'ws3.Columns("A:D").Autofit
 
         'autosort by part number on ws3
-        ws3.Columns("A:C").Sort(Key1:=ws3.Range("A2"), Order1:=Excel.XlSortOrder.xlAscending, Header:=Excel.XlYesNoGuess.xlYes)
+        'ws3.Columns("A:C").Sort(Key1:=ws3.Range("A2"), Order1:=Excel.XlSortOrder.xlAscending, Header:=Excel.XlYesNoGuess.xlYes)
 
         Try
             wb.SaveAs(Filename:=FilePath, AccessMode:=Excel.XlSaveAsAccessMode.xlExclusive, ConflictResolution:=Excel.XlSaveConflictResolution.xlLocalSessionChanges)

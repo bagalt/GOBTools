@@ -29,6 +29,7 @@ Partial Class frmBomTools
         Me.chkPartCreateIncludeBAssy = New System.Windows.Forms.CheckBox()
         Me.chkBomCompIncludeBAssy = New System.Windows.Forms.CheckBox()
         Me.GroupBox3 = New System.Windows.Forms.GroupBox()
+        Me.chkBomCompIncludeCAssy = New System.Windows.Forms.CheckBox()
         Me.chkBOMCompIncB45Children = New System.Windows.Forms.CheckBox()
         Me.chkBOMCompIncB39Children = New System.Windows.Forms.CheckBox()
         Me.TabPage2 = New System.Windows.Forms.TabPage()
@@ -36,6 +37,8 @@ Partial Class frmBomTools
         Me.btnExportBOM = New System.Windows.Forms.Button()
         Me.TabPage1 = New System.Windows.Forms.TabPage()
         Me.lvInventorBom = New System.Windows.Forms.ListView()
+        Me.InventorMenuStrip = New System.Windows.Forms.ContextMenuStrip(Me.components)
+        Me.InventorMenuStripCOPY = New System.Windows.Forms.ToolStripMenuItem()
         Me.txtNumInventorParts = New System.Windows.Forms.TextBox()
         Me.btnRunCompare = New System.Windows.Forms.Button()
         Me.btnLoadInventorBom = New System.Windows.Forms.Button()
@@ -47,16 +50,15 @@ Partial Class frmBomTools
         Me.txtNumPromanParts = New System.Windows.Forms.TextBox()
         Me.lvPromanBom = New System.Windows.Forms.ListView()
         Me.PromanMenuStrip = New System.Windows.Forms.ContextMenuStrip(Me.components)
-        Me.PromanLVMenuIsolateItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.PromanLVMenuDeleteItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.PromanLVMenuCopyItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.TabControl1 = New System.Windows.Forms.TabControl()
         Me.SaveFileDialog1 = New System.Windows.Forms.SaveFileDialog()
-        Me.chkBomCompIncludeCAssy = New System.Windows.Forms.CheckBox()
         Me.GroupBox2.SuspendLayout()
         Me.GroupBox1.SuspendLayout()
         Me.GroupBox3.SuspendLayout()
         Me.TabPage2.SuspendLayout()
         Me.TabPage1.SuspendLayout()
+        Me.InventorMenuStrip.SuspendLayout()
         Me.PromanMenuStrip.SuspendLayout()
         Me.TabControl1.SuspendLayout()
         Me.SuspendLayout()
@@ -129,6 +131,18 @@ Partial Class frmBomTools
         Me.GroupBox3.TabIndex = 17
         Me.GroupBox3.TabStop = False
         Me.GroupBox3.Text = "BOM Compare Options"
+        '
+        'chkBomCompIncludeCAssy
+        '
+        Me.chkBomCompIncludeCAssy.AutoSize = True
+        Me.chkBomCompIncludeCAssy.Checked = True
+        Me.chkBomCompIncludeCAssy.CheckState = System.Windows.Forms.CheckState.Checked
+        Me.chkBomCompIncludeCAssy.Location = New System.Drawing.Point(6, 50)
+        Me.chkBomCompIncludeCAssy.Name = "chkBomCompIncludeCAssy"
+        Me.chkBomCompIncludeCAssy.Size = New System.Drawing.Size(241, 17)
+        Me.chkBomCompIncludeCAssy.TabIndex = 16
+        Me.chkBomCompIncludeCAssy.Text = "Include C49 Assemblies as Part (no children)?"
+        Me.chkBomCompIncludeCAssy.UseVisualStyleBackColor = True
         '
         'chkBOMCompIncB45Children
         '
@@ -210,6 +224,7 @@ Partial Class frmBomTools
         'lvInventorBom
         '
         Me.lvInventorBom.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom), System.Windows.Forms.AnchorStyles)
+        Me.lvInventorBom.ContextMenuStrip = Me.InventorMenuStrip
         Me.lvInventorBom.FullRowSelect = True
         Me.lvInventorBom.GridLines = True
         Me.lvInventorBom.Location = New System.Drawing.Point(8, 28)
@@ -219,6 +234,18 @@ Partial Class frmBomTools
         Me.lvInventorBom.TabIndex = 0
         Me.lvInventorBom.UseCompatibleStateImageBehavior = False
         Me.lvInventorBom.View = System.Windows.Forms.View.Details
+        '
+        'InventorMenuStrip
+        '
+        Me.InventorMenuStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.InventorMenuStripCOPY})
+        Me.InventorMenuStrip.Name = "InventorMenuStrip"
+        Me.InventorMenuStrip.Size = New System.Drawing.Size(103, 26)
+        '
+        'InventorMenuStripCOPY
+        '
+        Me.InventorMenuStripCOPY.Name = "InventorMenuStripCOPY"
+        Me.InventorMenuStripCOPY.Size = New System.Drawing.Size(102, 22)
+        Me.InventorMenuStripCOPY.Text = "Copy"
         '
         'txtNumInventorParts
         '
@@ -317,21 +344,15 @@ Partial Class frmBomTools
         '
         'PromanMenuStrip
         '
-        Me.PromanMenuStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.PromanLVMenuIsolateItem, Me.PromanLVMenuDeleteItem})
+        Me.PromanMenuStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.PromanLVMenuCopyItem})
         Me.PromanMenuStrip.Name = "PromanMenuStrip"
-        Me.PromanMenuStrip.Size = New System.Drawing.Size(136, 48)
+        Me.PromanMenuStrip.Size = New System.Drawing.Size(103, 26)
         '
-        'PromanLVMenuIsolateItem
+        'PromanLVMenuCopyItem
         '
-        Me.PromanLVMenuIsolateItem.Name = "PromanLVMenuIsolateItem"
-        Me.PromanLVMenuIsolateItem.Size = New System.Drawing.Size(135, 22)
-        Me.PromanLVMenuIsolateItem.Text = "Isolate Item"
-        '
-        'PromanLVMenuDeleteItem
-        '
-        Me.PromanLVMenuDeleteItem.Name = "PromanLVMenuDeleteItem"
-        Me.PromanLVMenuDeleteItem.Size = New System.Drawing.Size(135, 22)
-        Me.PromanLVMenuDeleteItem.Text = "Delete Item"
+        Me.PromanLVMenuCopyItem.Name = "PromanLVMenuCopyItem"
+        Me.PromanLVMenuCopyItem.Size = New System.Drawing.Size(102, 22)
+        Me.PromanLVMenuCopyItem.Text = "Copy"
         '
         'TabControl1
         '
@@ -343,18 +364,6 @@ Partial Class frmBomTools
         Me.TabControl1.SelectedIndex = 0
         Me.TabControl1.Size = New System.Drawing.Size(455, 503)
         Me.TabControl1.TabIndex = 15
-        '
-        'chkBomCompIncludeCAssy
-        '
-        Me.chkBomCompIncludeCAssy.AutoSize = True
-        Me.chkBomCompIncludeCAssy.Checked = True
-        Me.chkBomCompIncludeCAssy.CheckState = System.Windows.Forms.CheckState.Checked
-        Me.chkBomCompIncludeCAssy.Location = New System.Drawing.Point(6, 50)
-        Me.chkBomCompIncludeCAssy.Name = "chkBomCompIncludeCAssy"
-        Me.chkBomCompIncludeCAssy.Size = New System.Drawing.Size(241, 17)
-        Me.chkBomCompIncludeCAssy.TabIndex = 16
-        Me.chkBomCompIncludeCAssy.Text = "Include C49 Assemblies as Part (no children)?"
-        Me.chkBomCompIncludeCAssy.UseVisualStyleBackColor = True
         '
         'frmBomTools
         '
@@ -379,6 +388,7 @@ Partial Class frmBomTools
         Me.TabPage2.PerformLayout()
         Me.TabPage1.ResumeLayout(False)
         Me.TabPage1.PerformLayout()
+        Me.InventorMenuStrip.ResumeLayout(False)
         Me.PromanMenuStrip.ResumeLayout(False)
         Me.TabControl1.ResumeLayout(False)
         Me.ResumeLayout(False)
@@ -405,12 +415,13 @@ Partial Class frmBomTools
     Friend WithEvents txtNumPromanParts As Windows.Forms.TextBox
     Friend WithEvents lvPromanBom As Windows.Forms.ListView
     Friend WithEvents PromanMenuStrip As Windows.Forms.ContextMenuStrip
-    Friend WithEvents PromanLVMenuIsolateItem As Windows.Forms.ToolStripMenuItem
-    Friend WithEvents PromanLVMenuDeleteItem As Windows.Forms.ToolStripMenuItem
     Friend WithEvents TabControl1 As Windows.Forms.TabControl
     Friend WithEvents lblVersion As Windows.Forms.Label
     Friend WithEvents SaveFileDialog1 As Windows.Forms.SaveFileDialog
     Friend WithEvents chkBOMCompIncB39Children As Windows.Forms.CheckBox
     Friend WithEvents chkBOMCompIncB45Children As Windows.Forms.CheckBox
     Friend WithEvents chkBomCompIncludeCAssy As Windows.Forms.CheckBox
+    Friend WithEvents PromanLVMenuCopyItem As Windows.Forms.ToolStripMenuItem
+    Friend WithEvents InventorMenuStrip As Windows.Forms.ContextMenuStrip
+    Friend WithEvents InventorMenuStripCOPY As Windows.Forms.ToolStripMenuItem
 End Class

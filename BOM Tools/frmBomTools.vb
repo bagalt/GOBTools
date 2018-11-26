@@ -37,7 +37,7 @@ Public Class frmBomTools
             mAssyDoc = g_inventorApplication.ActiveDocument
             'get the top level assembly document name
             startAssy = mAssyDoc.PropertySets.Item("Design Tracking Properties").Item("Part Number").Value
-            lblVersion.Text = "v0.4"
+            lblVersion.Text = "v0.6"
 
             'define colors for row highlighting
             colorPartNotOnList = Color.DeepPink
@@ -505,7 +505,10 @@ Public Class frmBomTools
 
     End Sub
 
-    Private Sub DeletePromanItem_click(sender As Object, e As EventArgs) Handles PromanLVMenuDeleteItem.Click
+    Private Sub DeletePromanItem_click(sender As Object, e As EventArgs)
+        '****NOT IMPLIMENTED YET****
+        'need to add back to menu strip and figure out if this is required
+
         'sub that handles deleting items of the proman listview when right clicked and selected
         'adds a confirmation dialog
 
@@ -520,7 +523,10 @@ Public Class frmBomTools
 
     End Sub
 
-    Private Sub IsolatePromanItem_Click(sender As Object, e As EventArgs) Handles PromanLVMenuIsolateItem.Click
+    Private Sub IsolatePromanItem_Click(sender As Object, e As EventArgs)
+        '****NOT IMPLIMENTED YET******
+        'need to add Isolate back to menu strip and figure out how to actually isolate items
+
         'sub that handles isolating items of the proman listview when right clicked and selected
         'adds a confirmation dialog
 
@@ -545,7 +551,8 @@ Public Class frmBomTools
             e.Cancel = True
         End If
         'tempory: disable menustrip until I can figure out how to use it better
-        e.Cancel = True
+        'e.Cancel = True
+
     End Sub
 
     Private Sub RunCmd(ByVal cmd As String)
@@ -574,5 +581,34 @@ Public Class frmBomTools
         My.Settings.BomToolsBomCompIncludeC49Assemblies = chkBomCompIncludeCAssy.Checked
         My.Settings.BomToolsFormLocation = Me.Location
 
+    End Sub
+
+    Private Sub PromanLVMenuCopyItem_Click(sender As Object, e As EventArgs) Handles PromanLVMenuCopyItem.Click
+
+        If lvPromanBom.SelectedItems.Count = 0 Then
+            Exit Sub
+        End If
+
+        'Copy item to clipboard
+        Clipboard.Clear()
+        Clipboard.SetText(lvPromanBom.SelectedItems(0).Text)
+    End Sub
+
+    Private Sub InventorMenuStrip_Opening(sender As Object, e As CancelEventArgs) Handles InventorMenuStrip.Opening
+        'check to see if the listview has items before displaying the context menu strip
+        'if there is nothing in the listview, it cancels the event and does not appear
+        If lvInventorBom.Items.Count = 0 Then
+            e.Cancel = True
+        End If
+    End Sub
+
+    Private Sub InventorMenuStripCOPY_Click(sender As Object, e As EventArgs) Handles InventorMenuStripCOPY.Click
+        If lvInventorBom.SelectedItems.Count = 0 Then
+            Exit Sub
+        End If
+
+        'Copy item to clipboard
+        Clipboard.Clear()
+        Clipboard.SetText(lvInventorBom.SelectedItems(0).Text)
     End Sub
 End Class
