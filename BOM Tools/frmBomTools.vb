@@ -37,7 +37,7 @@ Public Class frmBomTools
             mAssyDoc = g_inventorApplication.ActiveDocument
             'get the top level assembly document name
             startAssy = mAssyDoc.PropertySets.Item("Design Tracking Properties").Item("Part Number").Value
-            lblVersion.Text = "v1.5b"
+            lblVersion.Text = "v1.5d"
 
             'define colors for row highlighting
             colorPartNotOnList = Color.DeepPink
@@ -70,7 +70,7 @@ Public Class frmBomTools
         End Try
 
         'load the settings from the configuration file
-        chkBomImportIncludeBAssy.Checked = My.Settings.BomToolsBomImportIncludeB49Assemblies
+        chkBomImportAllowBAssyParent.Checked = My.Settings.BomToolsBomImportAllowBAssyParent
         chkPartCreateIncludeBAssy.Checked = My.Settings.BomToolsPartCreateIncludeB49Assemblies
         chkBomCompIncludeBAssy.Checked = My.Settings.BomToolsBomCompIncludeB49Assemblies
         chkBOMCompIncB39Children.Checked = My.Settings.BOMToolsBomCompIncludeB39Children
@@ -154,9 +154,9 @@ Public Class frmBomTools
         InitInventorListView()
 
         'assign the settings for all parts and new parts
-        BomImportSettings.bBomImportIncBassy = chkBomImportIncludeBAssy.Checked
+        BomImportSettings.bBomImportIncBassy = chkBomImportAllowBAssyParent.Checked
         PartCreateSettings.bPartCreatIncBassy = chkPartCreateIncludeBAssy.Checked
-        BomCompareSettings.bBomCompIncBassy = chkBomCompIncludeBAssy.Checked
+        BomCompareSettings.bBomCompAllowBAssyParent = chkBomCompIncludeBAssy.Checked
         BomCompareSettings.bBomCompIncCAssy = chkBomCompIncludeCAssy.Checked
         BomCompareSettings.bBomCompIncB39Children = chkBOMCompIncB39Children.Checked
         BomCompareSettings.bBomCompIncB45Children = chkBOMCompIncB45Children.Checked
@@ -588,7 +588,7 @@ Public Class frmBomTools
     Private Sub frmBomTools_Closing(sender As Object, e As CancelEventArgs) Handles Me.Closing
 
         'form closing, need to save settings
-        My.Settings.BomToolsBomImportIncludeB49Assemblies = chkBomImportIncludeBAssy.Checked
+        My.Settings.BomToolsBomImportAllowBAssyParent = chkBomImportAllowBAssyParent.Checked
         My.Settings.BomToolsPartCreateIncludeB49Assemblies = chkPartCreateIncludeBAssy.Checked
         My.Settings.BomToolsBomCompIncludeB49Assemblies = chkBomCompIncludeBAssy.Checked
         My.Settings.BOMToolsBomCompIncludeB39Children = chkBOMCompIncB39Children.Checked

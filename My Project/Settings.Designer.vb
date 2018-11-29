@@ -56,12 +56,12 @@ Partial Friend NotInheritable Class Settings
     <Global.System.Configuration.UserScopedSettingAttribute(),  _
      Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
      Global.System.Configuration.DefaultSettingValueAttribute("True")>  _
-    Public Property BomToolsBomImportIncludeB49Assemblies() As Boolean
+    Public Property BomToolsBomImportAllowBAssyParent() As Boolean
         Get
-            Return CType(Me("BomToolsBomImportIncludeB49Assemblies"),Boolean)
+            Return CType(Me("BomToolsBomImportAllowBAssyParent"),Boolean)
         End Get
         Set
-            Me("BomToolsBomImportIncludeB49Assemblies") = value
+            Me("BomToolsBomImportAllowBAssyParent") = value
         End Set
     End Property
     

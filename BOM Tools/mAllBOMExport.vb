@@ -19,6 +19,7 @@ Module mAllBOMExport
     Private mParentAssy As String 'variable to hold the name of the parent assembly for a part
     Private mErrorStatus As Boolean 'variable to show if an error has occurred or not
     Private mIsAssembly As Boolean 'flag for indicating if current occurrence is an assembly (true)
+    Private mAddToBomCompCollection As Boolean 'flag for indicating if current part should be added to BOM compare collection or not
 
     Private Structure ParentStatus
         Public ErrorStatus As Boolean
@@ -34,7 +35,7 @@ Module mAllBOMExport
     End Structure
 
     Public Structure BomCompareSettings
-        Public bBomCompIncBassy As Boolean 'include B49 Assy?
+        Public bBomCompAllowBAssyParent As Boolean 'Allow B49 Assemblies to be parents?
         Public bBomCompIncCAssy As Boolean 'include C49 Assy?
         Public bBomCompIncB39Children As Boolean 'include B39 children?
         Public bBomCompIncB45Children As Boolean 'include B45 children?
@@ -141,19 +142,35 @@ Module mAllBOMExport
                     'colBreadCrumb.Add(assyDoc.PropertySets.Item("Design Tracking Properties").Item("Part Number").Value)
                     sSubAssyName = BGENamePicker(oCompOcc.Name, mStartAssy)
 
-                    'dont go into the following sub assemblies, just the top level                    
-                    If PreSortPart(oCompOcc) = False Then
-                        'occurrence is an assembly we do not want to go into further, treat as a part
-                        mIsAssembly = False
-                        SortPart(oCompOcc, colBreadCrumb)
-                    Else
+                    'determine if assembly should be explored deeper or not
+                    If DiveDeeper(oCompOcc) Then
+                        'ok to go deeper into assembly
                         'add assembly part number to breadcrumb if going further into sub assembly                        
                         colBreadCrumb.Add(assyDoc.PropertySets.Item("Design Tracking Properties").Item("Part Number").Value)
                         'sort the part
                         SortPart(oCompOcc, colBreadCrumb)
                         'subassembly
                         processAllSubOcc(oCompOcc, sMsg, iLeafNodes, iSubAssemblies, sSubAssyName, colBreadCrumb)
+                    Else
+                        'do not go deeper into assembly, treat as part
+                        'occurrence is an assembly we do not want to go into further, treat as a part
+                        mIsAssembly = False
+                        SortPart(oCompOcc, colBreadCrumb)
                     End If
+
+                    'dont go into the following sub assemblies, just the top level                    
+                    'If DiveDeeper(oCompOcc) = False Then
+                    '    'occurrence is an assembly we do not want to go into further, treat as a part
+                    '    mIsAssembly = False
+                    '    SortPart(oCompOcc, colBreadCrumb)
+                    'Else
+                    '    'add assembly part number to breadcrumb if going further into sub assembly                        
+                    '    colBreadCrumb.Add(assyDoc.PropertySets.Item("Design Tracking Properties").Item("Part Number").Value)
+                    '    'sort the part
+                    '    SortPart(oCompOcc, colBreadCrumb)
+                    '    'subassembly
+                    '    processAllSubOcc(oCompOcc, sMsg, iLeafNodes, iSubAssemblies, sSubAssyName, colBreadCrumb)
+                    'End If
 
                 End If
             End If
@@ -214,17 +231,31 @@ Module mAllBOMExport
                     'check if  subassembly is a BGE
                     sSubAssyName = BGENamePicker(oSubCompOcc.Name, mParentAssy)
 
-                    'dont go into the following sub assemblies, just the top level
-                    If PreSortPart(oSubCompOcc) = False Then
-                        mIsAssembly = False 'treating these assemblies as parts
-                        SortPart(oSubCompOcc, subBreadCrumb)
-                    Else
+                    'determine if the sub assembly should be explored deeper or not
+                    If DiveDeeper(oSubCompOcc) Then
+                        'dive deeper into sub assembly
                         'Add oSubCompOcc.Name to breadcrumb if going further into a sub assembly
                         subBreadCrumb.Add(subDoc.PropertySets.Item("Design Tracking Properties").Item("Part Number").Value)
                         SortPart(oSubCompOcc, subBreadCrumb)
                         'recursive call to this function to continue down the branch
                         processAllSubOcc(oSubCompOcc, sMsg, iLeafNodes, iSubAssemblies, sSubAssyName, subBreadCrumb)
+                    Else
+                        'do not dive into assembly, treat as part
+                        mIsAssembly = False 'treating these assemblies as parts
+                        SortPart(oSubCompOcc, subBreadCrumb)
                     End If
+
+                    'dont go into the following sub assemblies, just the top level
+                    'If DiveDeeper(oSubCompOcc) = False Then
+                    '    mIsAssembly = False 'treating these assemblies as parts
+                    '    SortPart(oSubCompOcc, subBreadCrumb)
+                    'Else
+                    '    'Add oSubCompOcc.Name to breadcrumb if going further into a sub assembly
+                    '    subBreadCrumb.Add(subDoc.PropertySets.Item("Design Tracking Properties").Item("Part Number").Value)
+                    '    SortPart(oSubCompOcc, subBreadCrumb)
+                    '    'recursive call to this function to continue down the branch
+                    '    processAllSubOcc(oSubCompOcc, sMsg, iLeafNodes, iSubAssemblies, sSubAssyName, subBreadCrumb)
+                    'End If
                 End If
             End If
         Next
@@ -245,7 +276,7 @@ Module mAllBOMExport
 
     End Function
 
-    Private Function PreSortPart(ByVal oCompOcc As Inventor.ComponentOccurrence) As Boolean
+    Private Function DiveDeeper(ByVal oCompOcc As Inventor.ComponentOccurrence) As Boolean
         'function to presort items and determine if assemblies should be explored deeper or not
         'standard assemblies and unknown assemblies should not be explored deeper
         'True = OK to go into assembly
@@ -277,8 +308,18 @@ Module mAllBOMExport
                         Select Case sPrefix
                             Case "B49", "B0049"
                                 'go into B49 assemblies based on setting
+                                If mBomCompSettings.bBomCompAllowBAssyParent Then 'true = dont go deeper, show no children
+                                    'do not go deeper into assembly, no children
+                                    '******************
+                                    'this should only control what is added to the BOM Compare collection or BOM Import collection
+                                    '*******************
+                                    Return True 'currently true to go into all B49 sub assemblies
+                                Else
+                                    'go deeper into assembly, children will be shown
+                                    Return True
+                                End If
                                 ' True = Do not go into assy (no children), False = OK to go into sub assy
-                                Return Not mBomCompSettings.bBomCompIncBassy
+                                'Return Not mBomCompSettings.bBomCompIncBassy
                             Case "B47", "BGE", "BPH"
                                 'Ok to go into assemblies
                                 Return True
@@ -422,7 +463,7 @@ Module mAllBOMExport
 
     End Sub
 
-    Private Sub GetProps(ByVal oCompOcc As Inventor.ComponentOccurrence, ByVal desiredPart As PartType, ByVal coll As Collection)
+    Private Sub GetProps(ByVal oCompOcc As Inventor.ComponentOccurrence, ByVal desiredPart As PartType, ByVal collBreadCrumb As Collection)
         'sub to get the desired properties from the occurrence
         'Proman Class Code, Part Number, Description English, Cust Serv Code
 
@@ -659,7 +700,7 @@ Module mAllBOMExport
         'define the key for the item in the collection, PartNumber + Parent Part
 
         '*************will need parent info for each part collection, currently it is in all parts
-        ParentInfo = AllPartsFindParent(coll, sPartNum)
+        ParentInfo = AllPartsFindParent(collBreadCrumb, sPartNum)
 
         sBomImportKey = sPartNum & ParentInfo.ParentName
         sPartCreateKey = sPartNum
@@ -667,12 +708,12 @@ Module mAllBOMExport
 
         'build BOM Import collection
         If Not KeyExists(mCollBomImport, sBomImportKey) Then
-            ParentInfo = AllPartsFindParent(coll, sPartNum)
+            ParentInfo = AllPartsFindParent(collBreadCrumb, sPartNum)
             'if include B49 is true and part is a B49 then do all this
             If (mBomImportSettings.bBomImportIncBassy = False) And (desiredPart = PartType.BAssy) Then
                 'do nothing
             ElseIf (desiredPart = PartType.BGEPart) Then
-                'do nothing, BGE parts should never be created
+                'do nothing, BGE parts should never be added to collection
             Else
                 'create instance of the partinfo class for all parts
                 BomImportPartInfo = New cPartInfo
@@ -696,7 +737,7 @@ Module mAllBOMExport
                     BomImportPartInfo.ErrorMsg = sErrorMsg
                 End If
                 'AllPartInfo.ParentAssy = FindParent(coll, False).Result
-                BomImportPartInfo.Breadcrumb = coll
+                BomImportPartInfo.Breadcrumb = collBreadCrumb
 
                 'bump the quantity of the part (starts at 0)
                 BomImportPartInfo.IncrementQty(1)
@@ -740,8 +781,8 @@ Module mAllBOMExport
                     PartCreatePartInfo.PartError = bError
                     PartCreatePartInfo.ErrorMsg = sErrorMsg
                 End If
-                PartCreatePartInfo.ParentAssy = FindParent(coll).ParentName
-                PartCreatePartInfo.Breadcrumb = coll
+                PartCreatePartInfo.ParentAssy = FindParent(collBreadCrumb).ParentName
+                PartCreatePartInfo.Breadcrumb = collBreadCrumb
                 'bump the quantity of the part (starts at 0)
                 PartCreatePartInfo.IncrementQty(1)
                 'add the newly created myPartInfo to the myParts collection with the part number as the key
@@ -755,7 +796,7 @@ Module mAllBOMExport
         'build BOM Compare collection
         If Not KeyExists(mCollBomCompare, sBomCompareKey) Then
             'if include B49 is true and part is a B49 then add the B49's information to the collection
-            If (mBomCompSettings.bBomCompIncBassy = False) And (desiredPart = PartType.BAssy) Then
+            If (mBomCompSettings.bBomCompAllowBAssyParent = False) And (desiredPart = PartType.BAssy) Then
                 'do nothing
             ElseIf (mBomCompSettings.bBomCompIncCAssy = False) And (desiredPart = PartType.CAssy) Then
                 'do nothing
@@ -782,7 +823,6 @@ Module mAllBOMExport
         Exit Sub
 
     End Sub
-
 
 #Region "Error handler sub routines"
 
@@ -862,7 +902,7 @@ Module mAllBOMExport
         Dim XLApp As Excel.Application
         Dim wb As Excel.Workbook
         Dim ws1 As Excel.Worksheet 'for Part Create info
-        'Dim ws2 As Excel.Worksheet 'for BOM Import info
+        Dim ws2 As Excel.Worksheet 'for BOM Import info
         'Dim ws3 As Excel.Worksheet 'for BOM Compare info
         Dim sFilePath As String = ""
 
@@ -900,11 +940,11 @@ Module mAllBOMExport
         XLApp.DisplayAlerts = False 'dont display alert for overwriting file on save
         wb = XLApp.Workbooks.Add
         ws1 = wb.Sheets(1) 'wb.Worksheets.Item(1)
-        'ws2 = wb.Sheets.Add(, ws1)
+        ws2 = wb.Sheets.Add(, ws1)
         'ws3 = wb.Sheets.Add(, ws2)
 
         ws1.Name = "Part Create"
-        'ws2.Name = "BOM Import"
+        ws2.Name = "EXPERIMENTAL"
         'ws3.Name = "BOM Compare"
         ws1.Activate()
 
@@ -946,19 +986,25 @@ Module mAllBOMExport
         End With
 
         'create column headings for ws2
-        'With ws2
-        '    .Range("A1").Value = "Part Number"
-        '    .Range("B1").Value = "Description"
-        '    .Range("C1").Value = "Parent Assy"
-        '    .Range("D1").Value = "QPA"
-        '    .Range("E1").Value = "Errors"
-        '    'color heading row gray
-        '    .Range("A1:E1").Interior.Color = mikronBlue 'RGB(178, 178, 178)
-        '    'color heading text
-        '    .Range("A1:E1").Font.Color = headingTextColor
-        '    'bold heading row column headings
-        '    .Range("A1:E1").Font.Bold = True
-        'End With
+        With ws2
+            .Range("A1").Value = "Part Number"
+            .Range("B1").Value = "Class Code"
+            .Range("C1").Value = "Description"
+            .Range("D1").Value = "Serv Code"
+            .Range("E1").Value = "Vend Code"
+            .Range("F1").Value = "Manuf Name"
+            .Range("G1").Value = "Manuf Num"
+            .Range("H1").Value = "QPA"
+            .Range("I1").Value = "Parent Assy"
+            .Range("J1").Value = "Plan Type"
+            .Range("K1").Value = "Errors"
+            'color heading row gray
+            .Range("A1:K1").Interior.Color = mikronBlue 'RGB(178, 178, 178)
+            'color heading text
+            .Range("A1:K1").Font.Color = headingTextColor
+            'bold heading row column headings
+            .Range("A1:K1").Font.Bold = True
+        End With
 
         'create column headings for ws3
         'With ws3
@@ -998,20 +1044,26 @@ Module mAllBOMExport
         row = 2
 
         'populate the remaining cells for ws2
-        'For Each part In mCollBomImport
-        '    With ws2
-        '        .Range("A" & row).Value = part.PartNum
-        '        .Range("B" & row).Value = part.Description
-        '        .Range("C" & row).Value = part.ParentAssy
-        '        .Range("D" & row).Value = part.Qty
-        '        .Range("E" & row).Value = part.ErrorMsg
-        '        If part.PartError = True Then
-        '            'color error rows
-        '            .Range("A" & row & ":" & "E" & row).Interior.Color = errorColor
-        '        End If
-        '    End With
-        '    row = row + 1
-        'Next
+        For Each part In mCollBomImport
+            With ws2
+                .Range("A" & row).Value = part.PartNum
+                .Range("B" & row).Value = part.PromanCode
+                .Range("C" & row).Value = part.Description
+                .Range("D" & row).Value = part.ServiceCode
+                .Range("E" & row).Value = part.VendorCode
+                .Range("F" & row).Value = part.ManufName
+                .Range("G" & row).Value = part.ManufNum
+                .Range("H" & row).Value = part.Qty
+                .Range("I" & row).Value = part.ParentAssy
+                .Range("J" & row).Value = 1 'default plan type will always be 1
+                .Range("K" & row).Value = part.ErrorMsg
+                If part.PartError = True Then
+                    'color error rows
+                    .Range("A" & row & ":" & "K" & row).Interior.Color = errorColor
+                End If
+            End With
+            row = row + 1
+        Next
 
         'start filling in table on row 2
         row = 2
@@ -1032,7 +1084,7 @@ Module mAllBOMExport
 
         'autosize columns
         ws1.Columns("A:J").AutoFit
-        'ws2.Columns("A:J").Autofit
+        ws2.Columns("A:K").Autofit
         'ws3.Columns("A:D").Autofit
 
         'autosort by part number on ws3
@@ -1044,7 +1096,6 @@ Module mAllBOMExport
             wb.Close()
             XLApp.Quit()
         Catch ex As Exception
-            'MsgBox("No Excel Document will be Created")
             CreateExcelDoc = False
             wb.Close()
             XLApp.Quit()
@@ -1107,7 +1158,7 @@ Module mAllBOMExport
 
     End Function
 
-    Private Function AllPartsFindParent(coll As Collection, sChild As String) As ParentStatus
+    Private Function AllPartsFindParent(collBreadCrumb As Collection, sChild As String) As ParentStatus
         'function to find the parent assembly by going backwards through the breadcrumb collection
         'coll is the breadcrumb collection 
         'depending on settings, BGE and B49 parts will or will not be parents
@@ -1115,9 +1166,9 @@ Module mAllBOMExport
         Dim i As Integer
         Dim parent As String
 
-        For i = 0 To coll.Count
+        For i = 0 To collBreadCrumb.Count
             Try
-                parent = coll.Item(coll.Count - i)
+                parent = collBreadCrumb.Item(collBreadCrumb.Count - i)
                 If sChild = parent Then
                     'cant have a child part have itself as a parent 
                 Else
@@ -1169,8 +1220,8 @@ Module mAllBOMExport
             End Try
         Next
 
-        AllPartsFindParent.ParentName = "****"
-        AllPartsFindParent.ErrorStatus = True
+        'AllPartsFindParent.ParentName = "****"
+        'AllPartsFindParent.ErrorStatus = True
 
     End Function
 

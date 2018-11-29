@@ -24,7 +24,7 @@ Partial Class frmBomTools
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
         Me.GroupBox2 = New System.Windows.Forms.GroupBox()
-        Me.chkBomImportIncludeBAssy = New System.Windows.Forms.CheckBox()
+        Me.chkBomImportAllowBAssyParent = New System.Windows.Forms.CheckBox()
         Me.GroupBox1 = New System.Windows.Forms.GroupBox()
         Me.chkPartCreateIncludeBAssy = New System.Windows.Forms.CheckBox()
         Me.chkBomCompIncludeBAssy = New System.Windows.Forms.CheckBox()
@@ -65,25 +65,25 @@ Partial Class frmBomTools
         '
         'GroupBox2
         '
-        Me.GroupBox2.Controls.Add(Me.chkBomImportIncludeBAssy)
+        Me.GroupBox2.Controls.Add(Me.chkBomImportAllowBAssyParent)
         Me.GroupBox2.Location = New System.Drawing.Point(18, 15)
         Me.GroupBox2.Name = "GroupBox2"
-        Me.GroupBox2.Size = New System.Drawing.Size(180, 60)
+        Me.GroupBox2.Size = New System.Drawing.Size(260, 60)
         Me.GroupBox2.TabIndex = 17
         Me.GroupBox2.TabStop = False
         Me.GroupBox2.Text = "BOM Import Options"
         '
-        'chkBomImportIncludeBAssy
+        'chkBomImportAllowBAssyParent
         '
-        Me.chkBomImportIncludeBAssy.AutoSize = True
-        Me.chkBomImportIncludeBAssy.Checked = True
-        Me.chkBomImportIncludeBAssy.CheckState = System.Windows.Forms.CheckState.Checked
-        Me.chkBomImportIncludeBAssy.Location = New System.Drawing.Point(6, 28)
-        Me.chkBomImportIncludeBAssy.Name = "chkBomImportIncludeBAssy"
-        Me.chkBomImportIncludeBAssy.Size = New System.Drawing.Size(144, 17)
-        Me.chkBomImportIncludeBAssy.TabIndex = 13
-        Me.chkBomImportIncludeBAssy.Text = "Include B49 Assemblies?"
-        Me.chkBomImportIncludeBAssy.UseVisualStyleBackColor = True
+        Me.chkBomImportAllowBAssyParent.AutoSize = True
+        Me.chkBomImportAllowBAssyParent.Checked = True
+        Me.chkBomImportAllowBAssyParent.CheckState = System.Windows.Forms.CheckState.Checked
+        Me.chkBomImportAllowBAssyParent.Location = New System.Drawing.Point(6, 28)
+        Me.chkBomImportAllowBAssyParent.Name = "chkBomImportAllowBAssyParent"
+        Me.chkBomImportAllowBAssyParent.Size = New System.Drawing.Size(137, 17)
+        Me.chkBomImportAllowBAssyParent.TabIndex = 13
+        Me.chkBomImportAllowBAssyParent.Text = "Allow B49s as Parents?"
+        Me.chkBomImportAllowBAssyParent.UseVisualStyleBackColor = True
         '
         'GroupBox1
         '
@@ -114,9 +114,9 @@ Partial Class frmBomTools
         Me.chkBomCompIncludeBAssy.CheckState = System.Windows.Forms.CheckState.Checked
         Me.chkBomCompIncludeBAssy.Location = New System.Drawing.Point(6, 28)
         Me.chkBomCompIncludeBAssy.Name = "chkBomCompIncludeBAssy"
-        Me.chkBomCompIncludeBAssy.Size = New System.Drawing.Size(241, 17)
+        Me.chkBomCompIncludeBAssy.Size = New System.Drawing.Size(238, 17)
         Me.chkBomCompIncludeBAssy.TabIndex = 15
-        Me.chkBomCompIncludeBAssy.Text = "Include B49 Assemblies as Part (no children)?"
+        Me.chkBomCompIncludeBAssy.Text = "Show B49 Assemblies as Parts (no children)?"
         Me.chkBomCompIncludeBAssy.UseVisualStyleBackColor = True
         '
         'GroupBox3
@@ -139,9 +139,9 @@ Partial Class frmBomTools
         Me.chkBomCompIncludeCAssy.CheckState = System.Windows.Forms.CheckState.Checked
         Me.chkBomCompIncludeCAssy.Location = New System.Drawing.Point(6, 50)
         Me.chkBomCompIncludeCAssy.Name = "chkBomCompIncludeCAssy"
-        Me.chkBomCompIncludeCAssy.Size = New System.Drawing.Size(241, 17)
+        Me.chkBomCompIncludeCAssy.Size = New System.Drawing.Size(238, 17)
         Me.chkBomCompIncludeCAssy.TabIndex = 16
-        Me.chkBomCompIncludeCAssy.Text = "Include C49 Assemblies as Part (no children)?"
+        Me.chkBomCompIncludeCAssy.Text = "Show C49 Assemblies as Parts (no children)?"
         Me.chkBomCompIncludeCAssy.UseVisualStyleBackColor = True
         '
         'chkBOMCompIncB45Children
@@ -184,7 +184,7 @@ Partial Class frmBomTools
         '
         Me.lblVersion.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.lblVersion.AutoSize = True
-        Me.lblVersion.Location = New System.Drawing.Point(402, 461)
+        Me.lblVersion.Location = New System.Drawing.Point(399, 461)
         Me.lblVersion.Name = "lblVersion"
         Me.lblVersion.Size = New System.Drawing.Size(39, 13)
         Me.lblVersion.TabIndex = 18
@@ -395,7 +395,7 @@ Partial Class frmBomTools
 
     End Sub
     Friend WithEvents GroupBox2 As Windows.Forms.GroupBox
-    Friend WithEvents chkBomImportIncludeBAssy As Windows.Forms.CheckBox
+    Friend WithEvents chkBomImportAllowBAssyParent As Windows.Forms.CheckBox
     Friend WithEvents GroupBox1 As Windows.Forms.GroupBox
     Friend WithEvents chkPartCreateIncludeBAssy As Windows.Forms.CheckBox
     Friend WithEvents chkBomCompIncludeBAssy As Windows.Forms.CheckBox
