@@ -24,8 +24,19 @@
     Private pQty As Integer             'part quantity per assembly
 
     Private Sub Class_Initialize()
-        pQty = 0
         pBreadCrumb = New Collection
+        pPartNum = ""
+        pPromanCode = ""
+        pDescription = ""
+        pServCode = ""
+        pVendCode = ""
+        pManufName = ""
+        pManufNum = ""
+        pError = False
+        pErrorMsg = ""
+        pParentAssy = ""
+        pQty = 0
+
     End Sub
 
     'Part Number property
