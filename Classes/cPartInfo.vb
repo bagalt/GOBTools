@@ -36,7 +36,6 @@
         pErrorMsg = ""
         pParentAssy = ""
         pQty = 0
-
     End Sub
 
     'Part Number property
@@ -186,5 +185,4 @@
         'this will allow the quantity per assembly
         pQty = pQty + Num
     End Function
-
 End Class
