@@ -847,10 +847,16 @@ Module mAllBOMExport
         Dim sBomImportKey As String
         Dim sBomCompareKey As String
         Dim ParentInfo As ParentStatus
+        Dim bomCompOccurrence As cPartInfo
+        Dim bomImportOccurrence As cPartInfo
+
+        'need to copy occurrence info into two variables for each collection
+        bomCompOccurrence = occurrenceInfo
+        bomImportOccurrence = occurrenceInfo
 
         ParentInfo = BomImportFindParent(collBreadCrumb, occurrenceInfo.PartNum)
-        sBomImportKey = occurrenceInfo.PartNum & ParentInfo.ParentName
-        sBomCompareKey = occurrenceInfo.PartNum
+        sBomImportKey = bomImportOccurrence.PartNum & ParentInfo.ParentName
+        sBomCompareKey = bomCompOccurrence.PartNum
 
         'Build the BOM Compare collection of parts
         If Not KeyExists(mCollBomCompare, sBomCompareKey) Then
@@ -863,15 +869,15 @@ Module mAllBOMExport
                 'do nothing
             ElseIf occurrenceType = PartType.BPHPart Then
                 'do nothing
-            ElseIf (IsBFourtyNine(BOMCompareFindParent(collBreadCrumb, occurrenceInfo.PartNum).ParentName)) And mBomCompSettings.bBomCompAllowBAssyParent Then
+            ElseIf (IsBFourtyNine(BOMCompareFindParent(collBreadCrumb, bomCompOccurrence.PartNum).ParentName)) And mBomCompSettings.bBomCompAllowBAssyParent Then
                 'parent is a B49 and setting says to show only B49 parents so do not add child
             Else
                 'create instance of the partinfo class for all parts
-                occurrenceInfo.Description = CommaReplacer(occurrenceInfo.Description)
+                bomCompOccurrence.Description = CommaReplacer(occurrenceInfo.Description)
                 'bump the quantity of the part (starts at 0)
-                occurrenceInfo.IncrementQty(1)
+                bomCompOccurrence.IncrementQty(1)
                 'add the newly created BomCompPartInfo to the mCollBomCompare collection with the part number as the key
-                mCollBomCompare.Add(occurrenceInfo, sBomCompareKey)
+                mCollBomCompare.Add(bomCompOccurrence, sBomCompareKey)
             End If
         Else
             'key already exists, bump the quantity of the part
@@ -880,30 +886,29 @@ Module mAllBOMExport
 
         'Build the BOM Import collection of parts
         If Not KeyExists(mCollBomImport, sBomImportKey) Then
-            ParentInfo = BomImportFindParent(collBreadCrumb, occurrenceInfo.PartNum) 'sPartNum)
+            ParentInfo = BomImportFindParent(collBreadCrumb, bomImportOccurrence.PartNum) 'sPartNum)
             'if include B49 is true and part is a B49 then do all this
             If (mBomImportSettings.bBomImportIncBassy = False) And (occurrenceType = PartType.BAssy) Then
                 'do nothing
             ElseIf (occurrenceType = PartType.BGEPart) Then
                 'do nothing, BGE parts should never be added to collection
-            ElseIf (IsBFourtyNine(BomImportFindParent(collBreadCrumb, occurrenceInfo.PartNum).ParentName)) And mBomImportSettings.bBomImportIncBassy Then
+            ElseIf (IsBFourtyNine(BomImportFindParent(collBreadCrumb, bomImportOccurrence.PartNum).ParentName)) And mBomImportSettings.bBomImportIncBassy Then
                 'parent is a B49 and setting says to show only B49 parents so do not add child
             Else
                 'if include BGE or B49 is checked, how to give the propper parent to the sub components
                 If ParentInfo.ErrorStatus = True Then
-                    occurrenceInfo.ParentAssy = ParentInfo.ParentName
-                    occurrenceInfo.PartError = True
-                    occurrenceInfo.ErrorMsg = "Invalid Parent Assy"
+                    bomImportOccurrence.ParentAssy = ParentInfo.ParentName
+                    bomImportOccurrence.PartError = True
+                    bomImportOccurrence.ErrorMsg = "Invalid Parent Assy"
                 Else
-                    occurrenceInfo.ParentAssy = ParentInfo.ParentName
+                    bomImportOccurrence.ParentAssy = ParentInfo.ParentName
                 End If
                 'AllPartInfo.ParentAssy = FindParent(coll, False).Result
-                occurrenceInfo.Breadcrumb = collBreadCrumb
-
+                bomImportOccurrence.Breadcrumb = collBreadCrumb
                 'bump the quantity of the part (starts at 0)
-                occurrenceInfo.IncrementQty(1)
+                bomImportOccurrence.IncrementQty(1)
                 'add the newly created AllPartInfo to the mAllParts collection with the part number + parent as the key
-                mCollBomImport.Add(occurrenceInfo, sBomImportKey) 'BomImportPartInfo, (sBomImportKey))
+                mCollBomImport.Add(bomImportOccurrence, sBomImportKey)
             End If
         Else
             'key already exists, bump the quantity of the part
