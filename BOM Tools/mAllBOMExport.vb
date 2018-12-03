@@ -458,7 +458,7 @@ Module mAllBOMExport
 
         'initialize variables
         Dim partProps As Inventor.PropertySets
-        Dim bError As Boolean = False
+        Dim propertyError As Boolean = False
 
         'define myPartInfo as class of cPartInfo
         Dim occurrenceInfo As New cPartInfo
@@ -482,7 +482,7 @@ Module mAllBOMExport
                 'sPromanCode = "XXXXXX"
                 'sDescription = "XXXX XXXX"
                 'sServCode = "XX"
-                bError = True
+                propertyError = True
                 'sErrorMsg = "Virtual Part: Missing Info"
 
             Case PartType.ManufPart, PartType.BAssy
@@ -494,24 +494,24 @@ Module mAllBOMExport
                     occurrenceInfo.PromanCode = partProps.Item("User Defined Properties").Item("Proman Class Code").Value
                     'sPromanCode = partProps.Item("User Defined Properties").Item("Proman Class Code").Value
                 Catch
-                    PromanErr(occurrenceInfo.Description, bError, mErrorStatus, occurrenceInfo.ErrorMsg)
-                    'PromanErr(sPromanCode, bError, mErrorStatus, sErrorMsg)
+                    PromanErr(occurrenceInfo)
+                    'PromanErr(occurrenceInfo.Description, propertyError, mErrorStatus, occurrenceInfo.ErrorMsg)
                 End Try
 
                 Try
                     occurrenceInfo.Description = partProps.Item("User Defined Properties").Item("Description English").Value
                     'sDescription = partProps.Item("User Defined Properties").Item("Description English").Value
                 Catch
-                    DescriptionErr(occurrenceInfo.Description, bError, mErrorStatus, occurrenceInfo.ErrorMsg)
-                    'DescriptionErr(sDescription, bError, mErrorStatus, sErrorMsg)
+                    DescriptionError(occurrenceInfo)
+                    'DescriptionErr(occurrenceInfo.Description, propertyError, mErrorStatus, occurrenceInfo.ErrorMsg)                    
                 End Try
 
                 Try
                     occurrenceInfo.ServiceCode = partProps.Item("User Defined Properties").Item("Cust Serv Code").Value
                     'sServCode = partProps.Item("User Defined Properties").Item("Cust Serv Code").Value
                 Catch
-                    ServiceCodeErr(occurrenceInfo.ServiceCode, bError, mErrorStatus, occurrenceInfo.ErrorMsg)
-                    'ServiceCodeErr(sServCode, bError, mErrorStatus, sErrorMsg)
+                    ServiceCodeErr(occurrenceInfo)
+                    'ServiceCodeErr(occurrenceInfo.ServiceCode, propertyError, mErrorStatus, occurrenceInfo.ErrorMsg)
                 End Try
 
             Case PartType.CAssy
@@ -523,24 +523,24 @@ Module mAllBOMExport
                     occurrenceInfo.PromanCode = partProps.Item("User Defined Properties").Item("Proman Class Code").Value
                     'sPromanCode = partProps.Item("User Defined Properties").Item("Proman Class Code").Value
                 Catch
-                    PromanErr(occurrenceInfo.PromanCode, bError, mErrorStatus, occurrenceInfo.ErrorMsg)
-                    'PromanErr(sPromanCode, bError, mErrorStatus, sErrorMsg)
+                    PromanErr(occurrenceInfo)
+                    'PromanErr(occurrenceInfo.PromanCode, propertyError, mErrorStatus, occurrenceInfo.ErrorMsg)
                 End Try
 
                 Try
                     occurrenceInfo.Description = partProps.Item("User Defined Properties").Item("Description English").Value
                     'sDescription = partProps.Item("User Defined Properties").Item("Description English").Value
                 Catch
-                    DescriptionErr(occurrenceInfo.Description, bError, mErrorStatus, occurrenceInfo.ErrorMsg)
-                    'DescriptionErr(sDescription, bError, mErrorStatus, sErrorMsg)
+                    DescriptionError(occurrenceInfo)
+                    'DescriptionErr(occurrenceInfo.Description, propertyError, mErrorStatus, occurrenceInfo.ErrorMsg)                    
                 End Try
 
                 Try
                     occurrenceInfo.ServiceCode = partProps.Item("User Defined Properties").Item("Cust Serv Code").Value
                     'sServCode = partProps.Item("User Defined Properties").Item("Cust Serv Code").Value
                 Catch
-                    ServiceCodeErr(occurrenceInfo.ServiceCode, bError, mErrorStatus, occurrenceInfo.ErrorMsg)
-                    'ServiceCodeErr(sServCode, bError, mErrorStatus, sErrorMsg)
+                    ServiceCodeErr(occurrenceInfo)
+                    'ServiceCodeErr(occurrenceInfo.ServiceCode, propertyError, mErrorStatus, occurrenceInfo.ErrorMsg)
                 End Try
 
             Case PartType.PurchPart
@@ -551,24 +551,24 @@ Module mAllBOMExport
                     occurrenceInfo.PromanCode = partProps.Item("User Defined Properties").Item("Proman Class Code").Value
                     'sPromanCode = partProps.Item("User Defined Properties").Item("Proman Class Code").Value
                 Catch
-                    PromanErr(occurrenceInfo.PromanCode, bError, mErrorStatus, occurrenceInfo.ErrorMsg)
-                    'PromanErr(sPromanCode, bError, mErrorStatus, sErrorMsg)
+                    PromanErr(occurrenceInfo)
+                    'PromanErr(occurrenceInfo.PromanCode, propertyError, mErrorStatus, occurrenceInfo.ErrorMsg)
                 End Try
 
                 Try
                     occurrenceInfo.Description = partProps.Item("User Defined Properties").Item("Description English").Value
                     'sDescription = partProps.Item("User Defined Properties").Item("Description English").Value
                 Catch
-                    DescriptionErr(occurrenceInfo.Description, bError, mErrorStatus, occurrenceInfo.ErrorMsg)
-                    'DescriptionErr(sDescription, bError, mErrorStatus, sErrorMsg)
+                    DescriptionError(occurrenceInfo)
+                    'DescriptionErr(occurrenceInfo.Description, propertyError, mErrorStatus, occurrenceInfo.ErrorMsg)                    
                 End Try
 
                 Try
                     occurrenceInfo.ServiceCode = partProps.Item("User Defined Properties").Item("Cust Serv Code").Value
                     'sServCode = partProps.Item("User Defined Properties").Item("Cust Serv Code").Value
                 Catch
-                    ServiceCodeErr(occurrenceInfo.ServiceCode, bError, mErrorStatus, occurrenceInfo.ErrorMsg)
-                    'ServiceCodeErr(sServCode, bError, mErrorStatus, sErrorMsg)
+                    ServiceCodeErr(occurrenceInfo)
+                    'ServiceCodeErr(occurrenceInfo.ServiceCode, propertyError, mErrorStatus, occurrenceInfo.ErrorMsg)
                 End Try
 
                 Try
@@ -576,24 +576,24 @@ Module mAllBOMExport
                     occurrenceInfo.VendorCode = partProps.Item("User Defined Properties").Item("Supplier").Value
                     'sVendCode = partProps.Item("User Defined Properties").Item("Supplier").Value
                 Catch
-                    VendorCodeErr(occurrenceInfo.VendorCode, bError, mErrorStatus, occurrenceInfo.ErrorMsg)
-                    'VendorCodeErr(sVendCode, bError, mErrorStatus, sErrorMsg)
+                    VendorCodeErr(occurrenceInfo)
+                    'VendorCodeErr(occurrenceInfo.VendorCode, propertyError, mErrorStatus, occurrenceInfo.ErrorMsg)
                 End Try
 
                 Try
                     occurrenceInfo.ManufName = partProps.Item("User Defined Properties").Item("Manufacturer Name").Value
                     'sManufName = partProps.Item("User Defined Properties").Item("Manufacturer Name").Value
                 Catch
-                    ManufNameErr(occurrenceInfo.ManufName, bError, mErrorStatus, occurrenceInfo.ErrorMsg)
-                    'ManufNameErr(sManufName, bError, mErrorStatus, sErrorMsg)
+                    ManufNameErr(occurrenceInfo)
+                    'ManufNameErr(occurrenceInfo.ManufName, propertyError, mErrorStatus, occurrenceInfo.ErrorMsg)
                 End Try
 
                 Try
                     occurrenceInfo.ManufNum = partProps.Item("User Defined Properties").Item("Supplier Part Nb").Value
                     'sManufNum = partProps.Item("User Defined Properties").Item("Supplier Part Nb").Value
                 Catch
-                    ManufNumErr(occurrenceInfo.ManufNum, bError, mErrorStatus, occurrenceInfo.ErrorMsg)
-                    'ManufNumErr(sManufNum, bError, mErrorStatus, sErrorMsg)
+                    ManufNumErr(occurrenceInfo)
+                    'ManufNumErr(occurrenceInfo.ManufNum, propertyError, mErrorStatus, occurrenceInfo.ErrorMsg)
                 End Try
 
             Case PartType.OldPurchPart
@@ -604,8 +604,8 @@ Module mAllBOMExport
                     occurrenceInfo.PromanCode = partProps.Item("User Defined Properties").Item("Proman Class Code").Value
                     'sPromanCode = partProps.Item("User Defined Properties").Item("Proman Class Code").Value
                 Catch
-                    PromanErr(occurrenceInfo.PromanCode, bError, mErrorStatus, occurrenceInfo.ErrorMsg)
-                    'PromanErr(sPromanCode, bError, mErrorStatus, sErrorMsg)
+                    PromanErr(occurrenceInfo)
+                    'PromanErr(occurrenceInfo.PromanCode, propertyError, mErrorStatus, occurrenceInfo.ErrorMsg)                    
                 End Try
 
                 'some parts may not have these items, such as proman class code, probably older items
@@ -613,40 +613,40 @@ Module mAllBOMExport
                     occurrenceInfo.Description = partProps.Item("User Defined Properties").Item("Description English").Value
                     'sDescription = partProps.Item("User Defined Properties").Item("Description English").Value
                 Catch
-                    DescriptionErr(occurrenceInfo.Description, bError, mErrorStatus, occurrenceInfo.ErrorMsg)
-                    'DescriptionErr(sDescription, bError, mErrorStatus, sErrorMsg)
+                    DescriptionError(occurrenceInfo)
+                    'DescriptionErr(occurrenceInfo.Description, propertyError, mErrorStatus, occurrenceInfo.ErrorMsg)                    
                 End Try
 
                 Try
                     occurrenceInfo.ServiceCode = partProps.Item("User Defined Properties").Item("Cust Serv Code").Value
                     'sServCode = partProps.Item("User Defined Properties").Item("Cust Serv Code").Value
                 Catch
-                    ServiceCodeErr(occurrenceInfo.ServiceCode, bError, mErrorStatus, occurrenceInfo.ErrorMsg)
-                    'ServiceCodeErr(sServCode, bError, mErrorStatus, sErrorMsg)
+                    ServiceCodeErr(occurrenceInfo)
+                    'ServiceCodeErr(occurrenceInfo.ServiceCode, propertyError, mErrorStatus, occurrenceInfo.ErrorMsg)
                 End Try
 
                 Try
                     occurrenceInfo.VendorCode = partProps.Item("User Defined Properties").Item("Supplier Mnem").Value
                     'sVendCode = partProps.Item("User Defined Properties").Item("Supplier Mnem").Value
                 Catch
-                    VendorCodeErr(occurrenceInfo.VendorCode, bError, mErrorStatus, occurrenceInfo.ErrorMsg)
-                    'VendorCodeErr(sVendCode, bError, mErrorStatus, sErrorMsg)
+                    VendorCodeErr(occurrenceInfo)
+                    'VendorCodeErr(occurrenceInfo.VendorCode, propertyError, mErrorStatus, occurrenceInfo.ErrorMsg)
                 End Try
 
                 Try
                     occurrenceInfo.ManufName = partProps.Item("User Defined Properties").Item("Supplier").Value
                     'sManufName = partProps.Item("User Defined Properties").Item("Supplier").Value
                 Catch
-                    ManufNameErr(occurrenceInfo.ManufName, bError, mErrorStatus, occurrenceInfo.ErrorMsg)
-                    'ManufNameErr(sManufName, bError, mErrorStatus, sErrorMsg)
+                    ManufNameErr(occurrenceInfo)
+                    'ManufNameErr(occurrenceInfo.ManufName, propertyError, mErrorStatus, occurrenceInfo.ErrorMsg)
                 End Try
 
                 Try
                     occurrenceInfo.ManufNum = partProps.Item("User Defined Properties").Item("Supplier Part Nb").Value
                     'sManufNum = partProps.Item("User Defined Properties").Item("Supplier Part Nb").Value
                 Catch
-                    ManufNumErr(occurrenceInfo.ManufNum, bError, mErrorStatus, occurrenceInfo.ErrorMsg)
-                    'ManufNumErr(sManufNum, bError, mErrorStatus, sErrorMsg)
+                    ManufNumErr(occurrenceInfo)
+                    'ManufNumErr(occurrenceInfo.ManufNum, propertyError, mErrorStatus, occurrenceInfo.ErrorMsg)
                 End Try
 
             Case PartType.StandardPart
@@ -659,16 +659,16 @@ Module mAllBOMExport
                     occurrenceInfo.PromanCode = "STD"
                     'sPromanCode = "STD"
                 Catch
-                    PromanErr(occurrenceInfo.PromanCode, bError, mErrorStatus, occurrenceInfo.ErrorMsg)
-                    'PromanErr(sPromanCode, bError, mErrorStatus, sErrorMsg)
+                    PromanErr(occurrenceInfo)
+                    'PromanErr(occurrenceInfo.PromanCode, propertyError, mErrorStatus, occurrenceInfo.ErrorMsg)                    
                 End Try
 
                 Try
                     occurrenceInfo.Description = partProps.Item("User Defined Properties").Item("Description English").Value
                     'sDescription = partProps.Item("User Defined Properties").Item("Description English").Value
                 Catch
-                    DescriptionErr(occurrenceInfo.Description, bError, mErrorStatus, occurrenceInfo.ErrorMsg)
-                    'DescriptionErr(sDescription, bError, mErrorStatus, sErrorMsg)
+                    DescriptionError(occurrenceInfo)
+                    'DescriptionErr(occurrenceInfo.Description, propertyError, mErrorStatus, occurrenceInfo.ErrorMsg)                    
                 End Try
 
             Case PartType.BGEPart 'BGE Parts should not appear in the BOM Import Collection, or the Part Create Collection, just keeping it as an option just in case
@@ -680,16 +680,16 @@ Module mAllBOMExport
                     occurrenceInfo.PromanCode = "BGE"
                     'sPromanCode = "BGE"
                 Catch
-                    PromanErr(occurrenceInfo.PromanCode, bError, mErrorStatus, occurrenceInfo.ErrorMsg)
-                    'PromanErr(sPromanCode, bError, mErrorStatus, sErrorMsg)
+                    PromanErr(occurrenceInfo)
+                    'PromanErr(occurrenceInfo.PromanCode, propertyError, mErrorStatus, occurrenceInfo.ErrorMsg)                    
                 End Try
 
                 Try
                     occurrenceInfo.Description = partProps.Item("User Defined Properties").Item("Description English").Value
                     'sDescription = partProps.Item("User Defined Properties").Item("Description English").Value
                 Catch
-                    DescriptionErr(occurrenceInfo.Description, bError, mErrorStatus, occurrenceInfo.ErrorMsg)
-                    'DescriptionErr(sDescription, bError, mErrorStatus, sErrorMsg)
+                    DescriptionError(occurrenceInfo)
+                    'DescriptionErr(occurrenceInfo.Description, propertyError, mErrorStatus, occurrenceInfo.ErrorMsg)                    
                 End Try
 
             Case PartType.BPHPart 'BPH Parts should not appear in the BOM Import Collection, or the Part Create Collection, or BOM Compare just keeping it as an option just in case
@@ -701,16 +701,16 @@ Module mAllBOMExport
                     occurrenceInfo.PromanCode = "BPH"
                     'sPromanCode = "BPH"
                 Catch
-                    PromanErr(occurrenceInfo.PromanCode, bError, mErrorStatus, occurrenceInfo.ErrorMsg)
-                    'PromanErr(sPromanCode, bError, mErrorStatus, sErrorMsg)
+                    PromanErr(occurrenceInfo)
+                    'PromanErr(occurrenceInfo.PromanCode, propertyError, mErrorStatus, occurrenceInfo.ErrorMsg)                    
                 End Try
 
                 Try
                     occurrenceInfo.Description = partProps.Item("User Defined Properties").Item("Description English").Value
                     'sDescription = partProps.Item("User Defined Properties").Item("Description English").Value
                 Catch
-                    DescriptionErr(occurrenceInfo.Description, bError, mErrorStatus, occurrenceInfo.ErrorMsg)
-                    'DescriptionErr(sDescription, bError, mErrorStatus, sErrorMsg)
+                    DescriptionError(occurrenceInfo)
+                    'DescriptionErr(occurrenceInfo.Description, propertyError, mErrorStatus, occurrenceInfo.ErrorMsg)                    
                 End Try
 
             Case PartType.Unknown
@@ -721,21 +721,21 @@ Module mAllBOMExport
                     occurrenceInfo.PromanCode = partProps.Item("User Defined Properties").Item("Proman Class Code").Value
                     'sPromanCode = partProps.Item("User Defined Properties").Item("Proman Class Code").Value
                 Catch
-                    PromanErr(occurrenceInfo.PromanCode, bError, mErrorStatus, occurrenceInfo.ErrorMsg)
-                    'PromanErr(sPromanCode, bError, mErrorStatus, sErrorMsg)
+                    PromanErr(occurrenceInfo)
+                    'PromanErr(occurrenceInfo.PromanCode, propertyError, mErrorStatus, occurrenceInfo.ErrorMsg)                    
                 End Try
 
                 Try
                     occurrenceInfo.Description = partProps.Item("User Defined Properties").Item("Description English").Value
                     'sDescription = partProps.Item("User Defined Properties").Item("Description English").Value
                 Catch
-                    DescriptionErr(occurrenceInfo.Description, bError, mErrorStatus, occurrenceInfo.ErrorMsg)
-                    'DescriptionErr(sDescription, bError, mErrorStatus, sErrorMsg)
+                    DescriptionError(occurrenceInfo)
+                    'DescriptionErr(occurrenceInfo.Description, propertyError, mErrorStatus, occurrenceInfo.ErrorMsg)                    
                 End Try
 
                 'General error for unknown part, check for missing information
-                UnknownPartErr(bError, mErrorStatus, occurrenceInfo.ErrorMsg)
-                'UnknownPartErr(bError, mErrorStatus, sErrorMsg)
+                UnknownPartErr(occurrenceInfo)
+                'UnknownPartErr(propertyError, mErrorStatus, occurrenceInfo.ErrorMsg)
 
         End Select
 
@@ -754,13 +754,14 @@ Module mAllBOMExport
         Dim sBomCompareKey As String
         Dim sPartCreateKey As String
         Dim ParentInfo As ParentStatus
-
         Dim createOccurence As cPartInfo
         Dim compOccurrence As cPartInfo
         Dim importOccurrence As cPartInfo
 
-
+        'find parent for occurrence
         ParentInfo = BomImportFindParent(collBreadCrumb, occurrenceInfo.PartNum)
+
+        'build the keys for the part collections
         sBomImportKey = occurrenceInfo.PartNum & ParentInfo.ParentName
         sBomCompareKey = occurrenceInfo.PartNum
         sPartCreateKey = occurrenceInfo.PartNum
@@ -795,18 +796,17 @@ Module mAllBOMExport
 
         'Build the BOM Import collection of parts
         If Not KeyExists(mCollBomImport, sBomImportKey) Then
-            ParentInfo = BomImportFindParent(collBreadCrumb, occurrenceInfo.PartNum) 'sPartNum)
+            ParentInfo = BomImportFindParent(collBreadCrumb, occurrenceInfo.PartNum)
             'if include B49 is true and part is a B49 then do all this
             If (mBomImportSettings.bBomImportIncBassy = False) And (occurrenceType = PartType.BAssy) Then
                 'do nothing
             ElseIf (occurrenceType = PartType.BGEPart) Then
                 'do nothing, BGE parts should never be added to collection
-            ElseIf (IsBFourtyNine(BomImportFindParent(collBreadCrumb, occurrenceInfo.PartNum).ParentName)) And mBomImportSettings.bBomImportIncBassy Then
+                'ElseIf (IsBFourtyNine(BomImportFindParent(collBreadCrumb, occurrenceInfo.PartNum).ParentName)) And mBomImportSettings.bBomImportIncBassy Then
                 'parent is a B49 and setting says to show only B49 parents so do not add child
             Else
                 importOccurrence = New cPartInfo
-                'if include BGE or B49 is checked, how to give the propper parent to the sub components
-                'if include BGE or B49 is checked, how to give the propper parent to the sub components
+                MakeEqual(importOccurrence, occurrenceInfo)
                 If ParentInfo.ErrorStatus = True Then
                     importOccurrence.ParentAssy = ParentInfo.ParentName
                     importOccurrence.PartError = True
@@ -814,7 +814,6 @@ Module mAllBOMExport
                 Else
                     importOccurrence.ParentAssy = ParentInfo.ParentName
                 End If
-                'AllPartInfo.ParentAssy = FindParent(coll, False).Result
                 importOccurrence.Breadcrumb = collBreadCrumb
                 'bump the quantity of the part (starts at 0)
                 importOccurrence.IncrementQty(1)
@@ -841,7 +840,7 @@ Module mAllBOMExport
             Else
                 'create instance of partinfo class for new parts
                 createOccurence = New cPartInfo
-
+                MakeEqual(createOccurence, occurrenceInfo)
                 'partcreatepartinfo = New cPartInfo
                 'add properties to partcreatepartinfo
                 'partcreatepartinfo.partnum = spartnum
@@ -878,7 +877,7 @@ Module mAllBOMExport
             End If
         Else
             'key already exists, bump the quantity of the part
-            mCollPartCreate.Item(spartcreatekey).incrementqty(1)
+            mCollPartCreate.Item(sPartCreateKey).incrementqty(1)
         End If
 
     End Sub
@@ -904,73 +903,65 @@ Module mAllBOMExport
 
 #Region "Error handler sub routines"
 
-    Private Sub PromanErr(ByRef PromanCode As String, ByRef MyError As Boolean, ByRef ErrorStatus As Boolean, ByRef ErrorMsg As String)
-        'sub to handle changing the values if there is no proman code in the part
+    Private Sub PromanErr(ByVal occurrence As cPartInfo)
+        'sub to handle proman errors
 
-        PromanCode = "XXXX"
-        MyError = True
-        ErrorStatus = True
-        ErrorMsg = ErrorMsg & "Missing Proman Class Code"
+        occurrence.PromanCode = "XXXX"
+        occurrence.PartError = True
+        occurrence.ErrorMsg = occurrence.ErrorMsg & "Missing Proman Class Code"
 
     End Sub
 
-    Private Sub DescriptionErr(ByRef Description As String, ByRef MyError As Boolean, ByRef ErrorStatus As Boolean, ByRef ErrorMsg As String)
+    Private Sub DescriptionError(ByVal occurrence As cPartInfo)
         'sub to handle changing the values if there is no english description in the part
+        occurrence.Description = "XXXX XXXX"
+        occurrence.PartError = True
+        occurrence.ErrorMsg = occurrence.ErrorMsg & "," & "Missing Description"
+    End Sub
 
-        Description = "XXXX XXXX"
-        MyError = True
-        ErrorStatus = True
-        ErrorMsg = ErrorMsg & ", " & "Missing Description"
+    Private Sub ServiceCodeErr(ByVal occurrence As cPartInfo)
+        'sub to handle changing values if there is no Customer Service Code in the occurrence
+
+        occurrence.ServiceCode = "XX"
+        occurrence.PartError = True
+        occurrence.ErrorMsg = occurrence.ErrorMsg & "," & "Missing Customer Service Code"
 
     End Sub
 
-    Private Sub ServiceCodeErr(ByRef ServCode As String, ByRef MyError As Boolean, ByRef ErrorStatus As Boolean, ByRef ErrorMsg As String)
-        'sub to handle changing the values if there is no Customer Service Code in the part
-
-        ServCode = "XX"
-        MyError = True
-        ErrorStatus = True
-        ErrorMsg = ErrorMsg & ", " & "Missing Customer Service Code"
-
-    End Sub
-
-    Private Sub VendorCodeErr(ByRef VendCode As String, ByRef MyError As Boolean, ByRef ErrorStatus As Boolean, ByRef ErrorMsg As String)
+    Private Sub VendorCodeErr(ByVal occurrence As cPartInfo)
         'sub to handle changing the values if there is no Vendor Code in the part
 
-        VendCode = "XXXXXX"
-        MyError = True
-        ErrorStatus = True
-        ErrorMsg = ErrorMsg & ", " & "Missing Vendor Code"
+        occurrence.VendorCode = "XXXXXX"
+        occurrence.PartError = True
+        occurrence.ErrorMsg = occurrence.ErrorMsg & "," & "Missing Vendor Code"
 
     End Sub
 
-    Private Sub ManufNameErr(ByRef ManufName As String, ByRef MyError As Boolean, ByRef ErrorStatus As Boolean, ByRef ErrorMsg As String)
+    Private Sub ManufNameErr(ByVal occurrence As cPartInfo)
         'sub to handle changing the values if there is no Manufacturer Name in the part
 
-        ManufName = "XXXXXX"
-        MyError = True
-        ErrorStatus = True
-        ErrorMsg = ErrorMsg & ", " & "Missing Manufacturer Name"
+        occurrence.ManufName = "XXXXXX"
+        occurrence.PartError = True
+        occurrence.ErrorMsg = occurrence.ErrorMsg & ", " & "Missing Manufacturer Name"
 
     End Sub
 
-    Private Sub ManufNumErr(ByRef ManufNum As String, ByRef MyError As Boolean, ByRef ErrorStatus As Boolean, ByRef ErrorMsg As String)
+    Private Sub ManufNumErr(ByVal occurrence As cPartInfo)
         'sub to handle changing the values if there is no Manufacturer Name in the part
 
-        ManufNum = "XXXXXX"
-        MyError = True
-        ErrorStatus = True
-        ErrorMsg = ErrorMsg & ", " & "Missing Manufacturer Number"
+        occurrence.ManufNum = "XXXXXX"
+        occurrence.PartError = True
+        occurrence.ErrorMsg = occurrence.ErrorMsg & ", " & "Missing Manufacturer Number"
 
     End Sub
 
-    Private Sub UnknownPartErr(ByRef MyError As Boolean, ByRef ErrorStatus As Boolean, ByRef ErrorMsg As String)
+    Private Sub UnknownPartErr(ByVal occurrence As cPartInfo)
         'sub to handle error information for unknown parts
-        MyError = True
-        ErrorStatus = True
-        ErrorMsg = ErrorMsg & "," & "Unknown Type: Verify Info"
+        occurrence.PartError = True
+        occurrence.ErrorMsg = occurrence.ErrorMsg & "," & "Unknown Type: Verify Info"
 
     End Sub
+
 
 #End Region
 
