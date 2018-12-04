@@ -458,7 +458,6 @@ Module mAllBOMExport
 
         'initialize variables
         Dim partProps As Inventor.PropertySets
-        Dim propertyError As Boolean = False
 
         'define myPartInfo as class of cPartInfo
         Dim occurrenceInfo As New cPartInfo
@@ -477,13 +476,6 @@ Module mAllBOMExport
                 occurrenceInfo.ServiceCode = "XX"
                 occurrenceInfo.PartError = True
                 occurrenceInfo.ErrorMsg = "Virtual Part: Missing Info"
-
-                'sPartNum = oCompOcc.Definition.PropertySets.item("Design Tracking Properties").item("Part Number").value
-                'sPromanCode = "XXXXXX"
-                'sDescription = "XXXX XXXX"
-                'sServCode = "XX"
-                propertyError = True
-                'sErrorMsg = "Virtual Part: Missing Info"
 
             Case PartType.ManufPart, PartType.BAssy
                 'Get the part number from the status tab of the iProperties
@@ -508,234 +500,178 @@ Module mAllBOMExport
 
                 Try
                     occurrenceInfo.ServiceCode = partProps.Item("User Defined Properties").Item("Cust Serv Code").Value
-                    'sServCode = partProps.Item("User Defined Properties").Item("Cust Serv Code").Value
                 Catch
                     ServiceCodeErr(occurrenceInfo)
-                    'ServiceCodeErr(occurrenceInfo.ServiceCode, propertyError, mErrorStatus, occurrenceInfo.ErrorMsg)
                 End Try
 
             Case PartType.CAssy
                 'Get the part number from the status tab of the iProperties
                 occurrenceInfo.PartNum = partProps.Item("Design Tracking Properties").Item("Part Number").Value
-                'sPartNum = partProps.Item("Design Tracking Properties").Item("Part Number").Value
                 Try
                     'some parts may not have these items, such as proman class code, probably older items
                     occurrenceInfo.PromanCode = partProps.Item("User Defined Properties").Item("Proman Class Code").Value
-                    'sPromanCode = partProps.Item("User Defined Properties").Item("Proman Class Code").Value
                 Catch
                     PromanErr(occurrenceInfo)
-                    'PromanErr(occurrenceInfo.PromanCode, propertyError, mErrorStatus, occurrenceInfo.ErrorMsg)
                 End Try
 
                 Try
                     occurrenceInfo.Description = partProps.Item("User Defined Properties").Item("Description English").Value
-                    'sDescription = partProps.Item("User Defined Properties").Item("Description English").Value
                 Catch
                     DescriptionError(occurrenceInfo)
-                    'DescriptionErr(occurrenceInfo.Description, propertyError, mErrorStatus, occurrenceInfo.ErrorMsg)                    
                 End Try
 
                 Try
                     occurrenceInfo.ServiceCode = partProps.Item("User Defined Properties").Item("Cust Serv Code").Value
-                    'sServCode = partProps.Item("User Defined Properties").Item("Cust Serv Code").Value
                 Catch
                     ServiceCodeErr(occurrenceInfo)
-                    'ServiceCodeErr(occurrenceInfo.ServiceCode, propertyError, mErrorStatus, occurrenceInfo.ErrorMsg)
                 End Try
 
             Case PartType.PurchPart
                 'Get the part number from the status tab of the iProperties
                 occurrenceInfo.PartNum = partProps.Item("Design Tracking Properties").Item("Part Number").Value
-                'sPartNum = partProps.Item("Design Tracking Properties").Item("Part Number").Value
                 Try
                     occurrenceInfo.PromanCode = partProps.Item("User Defined Properties").Item("Proman Class Code").Value
-                    'sPromanCode = partProps.Item("User Defined Properties").Item("Proman Class Code").Value
                 Catch
                     PromanErr(occurrenceInfo)
-                    'PromanErr(occurrenceInfo.PromanCode, propertyError, mErrorStatus, occurrenceInfo.ErrorMsg)
                 End Try
 
                 Try
                     occurrenceInfo.Description = partProps.Item("User Defined Properties").Item("Description English").Value
-                    'sDescription = partProps.Item("User Defined Properties").Item("Description English").Value
                 Catch
                     DescriptionError(occurrenceInfo)
-                    'DescriptionErr(occurrenceInfo.Description, propertyError, mErrorStatus, occurrenceInfo.ErrorMsg)                    
                 End Try
 
                 Try
                     occurrenceInfo.ServiceCode = partProps.Item("User Defined Properties").Item("Cust Serv Code").Value
-                    'sServCode = partProps.Item("User Defined Properties").Item("Cust Serv Code").Value
                 Catch
                     ServiceCodeErr(occurrenceInfo)
-                    'ServiceCodeErr(occurrenceInfo.ServiceCode, propertyError, mErrorStatus, occurrenceInfo.ErrorMsg)
                 End Try
 
                 Try
                     'may need to check the vendor code for standard parts, should be the 6-digit alpha code 
                     occurrenceInfo.VendorCode = partProps.Item("User Defined Properties").Item("Supplier").Value
-                    'sVendCode = partProps.Item("User Defined Properties").Item("Supplier").Value
                 Catch
                     VendorCodeErr(occurrenceInfo)
-                    'VendorCodeErr(occurrenceInfo.VendorCode, propertyError, mErrorStatus, occurrenceInfo.ErrorMsg)
                 End Try
 
                 Try
                     occurrenceInfo.ManufName = partProps.Item("User Defined Properties").Item("Manufacturer Name").Value
-                    'sManufName = partProps.Item("User Defined Properties").Item("Manufacturer Name").Value
                 Catch
                     ManufNameErr(occurrenceInfo)
-                    'ManufNameErr(occurrenceInfo.ManufName, propertyError, mErrorStatus, occurrenceInfo.ErrorMsg)
                 End Try
 
                 Try
                     occurrenceInfo.ManufNum = partProps.Item("User Defined Properties").Item("Supplier Part Nb").Value
-                    'sManufNum = partProps.Item("User Defined Properties").Item("Supplier Part Nb").Value
                 Catch
                     ManufNumErr(occurrenceInfo)
-                    'ManufNumErr(occurrenceInfo.ManufNum, propertyError, mErrorStatus, occurrenceInfo.ErrorMsg)
                 End Try
 
             Case PartType.OldPurchPart
                 'Get the part number from the status tab of the iProperties
                 occurrenceInfo.PartNum = partProps.Item("Design Tracking Properties").Item("Part Number").Value
-                'sPartNum = partProps.Item("Design Tracking Properties").Item("Part Number").Value
                 Try
                     occurrenceInfo.PromanCode = partProps.Item("User Defined Properties").Item("Proman Class Code").Value
-                    'sPromanCode = partProps.Item("User Defined Properties").Item("Proman Class Code").Value
                 Catch
                     PromanErr(occurrenceInfo)
-                    'PromanErr(occurrenceInfo.PromanCode, propertyError, mErrorStatus, occurrenceInfo.ErrorMsg)                    
                 End Try
 
                 'some parts may not have these items, such as proman class code, probably older items
                 Try
                     occurrenceInfo.Description = partProps.Item("User Defined Properties").Item("Description English").Value
-                    'sDescription = partProps.Item("User Defined Properties").Item("Description English").Value
                 Catch
                     DescriptionError(occurrenceInfo)
-                    'DescriptionErr(occurrenceInfo.Description, propertyError, mErrorStatus, occurrenceInfo.ErrorMsg)                    
                 End Try
 
                 Try
                     occurrenceInfo.ServiceCode = partProps.Item("User Defined Properties").Item("Cust Serv Code").Value
-                    'sServCode = partProps.Item("User Defined Properties").Item("Cust Serv Code").Value
                 Catch
                     ServiceCodeErr(occurrenceInfo)
-                    'ServiceCodeErr(occurrenceInfo.ServiceCode, propertyError, mErrorStatus, occurrenceInfo.ErrorMsg)
                 End Try
 
                 Try
                     occurrenceInfo.VendorCode = partProps.Item("User Defined Properties").Item("Supplier Mnem").Value
-                    'sVendCode = partProps.Item("User Defined Properties").Item("Supplier Mnem").Value
                 Catch
                     VendorCodeErr(occurrenceInfo)
-                    'VendorCodeErr(occurrenceInfo.VendorCode, propertyError, mErrorStatus, occurrenceInfo.ErrorMsg)
                 End Try
 
                 Try
                     occurrenceInfo.ManufName = partProps.Item("User Defined Properties").Item("Supplier").Value
-                    'sManufName = partProps.Item("User Defined Properties").Item("Supplier").Value
                 Catch
                     ManufNameErr(occurrenceInfo)
-                    'ManufNameErr(occurrenceInfo.ManufName, propertyError, mErrorStatus, occurrenceInfo.ErrorMsg)
                 End Try
 
                 Try
                     occurrenceInfo.ManufNum = partProps.Item("User Defined Properties").Item("Supplier Part Nb").Value
-                    'sManufNum = partProps.Item("User Defined Properties").Item("Supplier Part Nb").Value
                 Catch
                     ManufNumErr(occurrenceInfo)
-                    'ManufNumErr(occurrenceInfo.ManufNum, propertyError, mErrorStatus, occurrenceInfo.ErrorMsg)
                 End Try
 
             Case PartType.StandardPart
                 'Standard parts will not be in Part Create Collection, but will be in BOM Import Collection
                 'Get the part number from the status tab of the iProperties
                 occurrenceInfo.PartNum = partProps.Item("Design Tracking Properties").Item("Part Number").Value
-                'sPartNum = partProps.Item("Design Tracking Properties").Item("Part Number").Value
                 Try
                     'sPromanCode = partProps.Item("User Defined Properties").Item("Proman Class Code").Value
                     occurrenceInfo.PromanCode = "STD"
-                    'sPromanCode = "STD"
                 Catch
                     PromanErr(occurrenceInfo)
-                    'PromanErr(occurrenceInfo.PromanCode, propertyError, mErrorStatus, occurrenceInfo.ErrorMsg)                    
                 End Try
 
                 Try
                     occurrenceInfo.Description = partProps.Item("User Defined Properties").Item("Description English").Value
-                    'sDescription = partProps.Item("User Defined Properties").Item("Description English").Value
                 Catch
                     DescriptionError(occurrenceInfo)
-                    'DescriptionErr(occurrenceInfo.Description, propertyError, mErrorStatus, occurrenceInfo.ErrorMsg)                    
                 End Try
 
             Case PartType.BGEPart 'BGE Parts should not appear in the BOM Import Collection, or the Part Create Collection, just keeping it as an option just in case
                 'Get the part number from the status tab of the iProperties
                 occurrenceInfo.PartNum = partProps.Item("Design Tracking Properties").Item("Part Number").Value
-                'sPartNum = partProps.Item("Design Tracking Properties").Item("Part Number").Value
                 Try
                     'sPromanCode = partProps.Item("User Defined Properties").Item("Proman Class Code").Value
                     occurrenceInfo.PromanCode = "BGE"
-                    'sPromanCode = "BGE"
                 Catch
                     PromanErr(occurrenceInfo)
-                    'PromanErr(occurrenceInfo.PromanCode, propertyError, mErrorStatus, occurrenceInfo.ErrorMsg)                    
                 End Try
 
                 Try
                     occurrenceInfo.Description = partProps.Item("User Defined Properties").Item("Description English").Value
-                    'sDescription = partProps.Item("User Defined Properties").Item("Description English").Value
                 Catch
                     DescriptionError(occurrenceInfo)
-                    'DescriptionErr(occurrenceInfo.Description, propertyError, mErrorStatus, occurrenceInfo.ErrorMsg)                    
                 End Try
 
             Case PartType.BPHPart 'BPH Parts should not appear in the BOM Import Collection, or the Part Create Collection, or BOM Compare just keeping it as an option just in case
                 'Get the part number from the status tab of the iProperties
                 occurrenceInfo.PartNum = partProps.Item("Design Tracking Properties").Item("Part Number").Value
-                'sPartNum = partProps.Item("Design Tracking Properties").Item("Part Number").Value
                 Try
                     'sPromanCode = partProps.Item("User Defined Properties").Item("Proman Class Code").Value
                     occurrenceInfo.PromanCode = "BPH"
-                    'sPromanCode = "BPH"
                 Catch
                     PromanErr(occurrenceInfo)
-                    'PromanErr(occurrenceInfo.PromanCode, propertyError, mErrorStatus, occurrenceInfo.ErrorMsg)                    
                 End Try
 
                 Try
                     occurrenceInfo.Description = partProps.Item("User Defined Properties").Item("Description English").Value
-                    'sDescription = partProps.Item("User Defined Properties").Item("Description English").Value
                 Catch
                     DescriptionError(occurrenceInfo)
-                    'DescriptionErr(occurrenceInfo.Description, propertyError, mErrorStatus, occurrenceInfo.ErrorMsg)                    
                 End Try
 
             Case PartType.Unknown
                 'Get the part number from the status tab of the iProperties
                 occurrenceInfo.PartNum = partProps.Item("Design Tracking Properties").Item("Part Number").Value
-                'sPartNum = partProps.Item("Design Tracking Properties").Item("Part Number").Value
                 Try
                     occurrenceInfo.PromanCode = partProps.Item("User Defined Properties").Item("Proman Class Code").Value
-                    'sPromanCode = partProps.Item("User Defined Properties").Item("Proman Class Code").Value
                 Catch
                     PromanErr(occurrenceInfo)
-                    'PromanErr(occurrenceInfo.PromanCode, propertyError, mErrorStatus, occurrenceInfo.ErrorMsg)                    
                 End Try
 
                 Try
                     occurrenceInfo.Description = partProps.Item("User Defined Properties").Item("Description English").Value
-                    'sDescription = partProps.Item("User Defined Properties").Item("Description English").Value
                 Catch
                     DescriptionError(occurrenceInfo)
-                    'DescriptionErr(occurrenceInfo.Description, propertyError, mErrorStatus, occurrenceInfo.ErrorMsg)                    
                 End Try
 
                 'General error for unknown part, check for missing information
                 UnknownPartErr(occurrenceInfo)
-                'UnknownPartErr(propertyError, mErrorStatus, occurrenceInfo.ErrorMsg)
 
         End Select
 
@@ -853,17 +789,13 @@ Module mAllBOMExport
                 If ParentInfo.ErrorStatus = True Then
                     createOccurence.ParentAssy = ParentInfo.ParentName
                     createOccurence.PartError = True
-                    createOccurence.ErrorMsg = "invalid parent assy"
+                    createOccurence.ErrorMsg = "Invalid Parent Assy"
                     'partcreatepartinfo.parentassy = ParentInfo.ParentName
                     'partcreatepartinfo.parterror = True
                     'partcreatepartinfo.errormsg = "invalid parent assy"
                 Else
                     createOccurence.ParentAssy = ParentInfo.ParentName
                     createOccurence.PartError = False
-                    createOccurence.ErrorMsg = "Some Error here?"
-                    'partcreatepartinfo.parentassy = ParentInfo.ParentName
-                    'partcreatepartinfo.parterror = bError
-                    'partcreatepartinfo.errormsg = serrormsg
                 End If
                 createOccurence.ParentAssy = FindParent(collBreadCrumb).ParentName
                 createOccurence.Breadcrumb = collBreadCrumb
@@ -959,9 +891,7 @@ Module mAllBOMExport
         'sub to handle error information for unknown parts
         occurrence.PartError = True
         occurrence.ErrorMsg = occurrence.ErrorMsg & "," & "Unknown Type: Verify Info"
-
     End Sub
-
 
 #End Region
 
@@ -972,7 +902,6 @@ Module mAllBOMExport
         Dim wb As Excel.Workbook
         Dim ws1 As Excel.Worksheet 'for Part Create info
         Dim ws2 As Excel.Worksheet 'for BOM Import info
-        'Dim ws3 As Excel.Worksheet 'for BOM Compare info
         Dim sFilePath As String = ""
 
         'Check if mNewParts contains items
@@ -1010,11 +939,10 @@ Module mAllBOMExport
         wb = XLApp.Workbooks.Add
         ws1 = wb.Sheets(1) 'wb.Worksheets.Item(1)
         ws2 = wb.Sheets.Add(, ws1)
-        'ws3 = wb.Sheets.Add(, ws2)
 
+        'name sheets
         ws1.Name = "Part Create"
         ws2.Name = "EXPERIMENTAL"
-        'ws3.Name = "BOM Compare"
         ws1.Activate()
 
         'add items to the worksheet
@@ -1043,7 +971,6 @@ Module mAllBOMExport
             .Range("E1").Value = "Vend Code"
             .Range("F1").Value = "Manuf Name"
             .Range("G1").Value = "Manuf Num"
-            '.Range("H1").Value = "Parent Assy"
             .Range("H1").Value = "QPA"
             .Range("I1").Value = "Errors"
             'color heading row gray
@@ -1075,19 +1002,6 @@ Module mAllBOMExport
             .Range("A1:K1").Font.Bold = True
         End With
 
-        'create column headings for ws3
-        'With ws3
-        '    .Range("A1").Value = "Part Number"
-        '    .Range("B1").Value = "Description"
-        '    .Range("C1").Value = "QPA"
-        '    'color heading row gray
-        '    .Range("A1:C1").Interior.Color = mikronBlue 'RGB(178, 178, 178)
-        '    'color heading text
-        '    .Range("A1:C1").Font.Color = headingTextColor
-        '    'bold heading row column headings
-        '    .Range("A1:C1").Font.Bold = True
-        'End With
-
         'populate the remaining cells for WS1
         For Each part In mCollPartCreate
             With ws1
@@ -1098,7 +1012,6 @@ Module mAllBOMExport
                 .Range("E" & row).Value = part.VendorCode
                 .Range("F" & row).Value = part.ManufName
                 .Range("G" & row).Value = part.ManufNum
-                '.Range("H" & row).Value = part.ParentAssy
                 .Range("H" & row).Value = part.Qty
                 .Range("I" & row).Value = part.ErrorMsg
                 If part.PartError = True Then
@@ -1134,27 +1047,9 @@ Module mAllBOMExport
             row = row + 1
         Next
 
-        'start filling in table on row 2
-        row = 2
-
-        'populate the remaining cells for ws3
-        'For Each part In mCollBomCompare
-        '    With ws3
-        '        .Range("A" & row).Value = part.PartNum
-        '        .Range("B" & row).Value = part.Description
-        '        .Range("C" & row).Value = part.Qty
-        '        If part.PartError = True Then
-        '            'color error rows
-        '            .Range("A" & row & ":" & "C" & row).Interior.Color = errorColor
-        '        End If
-        '    End With
-        '    row = row + 1
-        'Next
-
         'autosize columns
         ws1.Columns("A:J").AutoFit
         ws2.Columns("A:K").Autofit
-        'ws3.Columns("A:D").Autofit
 
         'autosort by part number on ws3
         'ws3.Columns("A:C").Sort(Key1:=ws3.Range("A2"), Order1:=Excel.XlSortOrder.xlAscending, Header:=Excel.XlYesNoGuess.xlYes)
