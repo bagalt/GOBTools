@@ -43,9 +43,9 @@ Partial Class frmBOMToolsHelp
         Me.ClientSize = New System.Drawing.Size(754, 311)
         Me.Controls.Add(Me.RichTextBox1)
         Me.MaximizeBox = False
-        Me.MaximumSize = New System.Drawing.Size(770, 350)
+        Me.MaximumSize = New System.Drawing.Size(770, 1000)
         Me.MinimizeBox = False
-        Me.MinimumSize = New System.Drawing.Size(770, 0)
+        Me.MinimumSize = New System.Drawing.Size(770, 39)
         Me.Name = "frmBOMToolsHelp"
         Me.Text = "frmBOMToolsHelp"
         Me.ResumeLayout(False)

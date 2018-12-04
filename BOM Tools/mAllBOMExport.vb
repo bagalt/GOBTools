@@ -775,7 +775,6 @@ Module mAllBOMExport
 
         'Build the Create Parts collection
         If Not KeyExists(mCollPartCreate, sPartCreateKey) Then
-
             'if include b49 is true and part is a b49 then do all this
             If (mPartCreateSettings.bPartCreatIncBassy = False) And (occurrenceType = PartType.BAssy) Then
                 'do nothing, b49 assemblies not added to part create collection if option is not checked
@@ -789,33 +788,10 @@ Module mAllBOMExport
                 'create instance of partinfo class for new parts
                 createOccurence = New cPartInfo
                 MakeEqual(createOccurence, occurrenceInfo)
-                'partcreatepartinfo = New cPartInfo
-                'add properties to partcreatepartinfo
-                'partcreatepartinfo.partnum = spartnum
-                'partcreatepartinfo.description = CommaReplacer(sdescription)
-                'partcreatepartinfo.servicecode = sservcode
-                'partcreatepartinfo.promancode = spromancode
-                'partcreatepartinfo.vendorcode = svendcode
-                'partcreatepartinfo.manufname = CommaReplacer(smanufname)
-                'partcreatepartinfo.manufnum = smanufnum
-                If ParentInfo.ErrorStatus = True Then
-                    createOccurence.ParentAssy = ParentInfo.ParentName
-                    createOccurence.PartError = True
-                    createOccurence.ErrorMsg = "Invalid Parent Assy"
-                    'partcreatepartinfo.parentassy = ParentInfo.ParentName
-                    'partcreatepartinfo.parterror = True
-                    'partcreatepartinfo.errormsg = "invalid parent assy"
-                Else
-                    createOccurence.ParentAssy = ParentInfo.ParentName
-                    createOccurence.PartError = False
-                End If
-                createOccurence.ParentAssy = FindParent(collBreadCrumb).ParentName
-                createOccurence.Breadcrumb = collBreadCrumb
-                'partcreatepartinfo.parentassy = FindParent(collBreadCrumb).ParentName
-                'partcreatepartinfo.breadcrumb = collBreadCrumb
+
                 'bump the quantity of the part (starts at 0)
                 createOccurence.IncrementQty(1)
-                'partcreatepartinfo.incrementqty(1)
+
                 'add the newly created mypartinfo to the myparts collection with the part number as the key
                 mCollPartCreate.Add(createOccurence, sPartCreateKey) 'partcreatepartinfo, (spartcreatekey))
             End If
@@ -830,9 +806,9 @@ Module mAllBOMExport
         'sub for copying information from one PartInfo to another
 
         part1.Breadcrumb = part2.Breadcrumb
-        part1.Description = part2.Description
+        part1.Description = CommaReplacer(part2.Description)
         part1.ErrorMsg = part2.ErrorMsg
-        part1.ManufName = part2.ManufName
+        part1.ManufName = CommaReplacer(part2.ManufName)
         part1.ManufNum = part2.ManufNum
         part1.ParentAssy = part2.ParentAssy
         part1.PartError = part2.PartError
