@@ -653,8 +653,9 @@ Module mAllBOMExport
                 'Get the part number from the status tab of the iProperties
                 occurrenceInfo.PartNum = partProps.Item("Design Tracking Properties").Item("Part Number").Value
                 Try
-                    'sPromanCode = partProps.Item("User Defined Properties").Item("Proman Class Code").Value
                     occurrenceInfo.PromanCode = "BPH"
+                    occurrenceInfo.PartError = True
+                    occurrenceInfo.ErrorMsg = "Invalid Part Type"
                 Catch
                     PromanErr(occurrenceInfo)
                 End Try
@@ -748,6 +749,8 @@ Module mAllBOMExport
             'if include B49 is true and part is a B49 then do all this
             If (mBomImportSettings.bBomImportIncBassy = False) And (occurrenceType = PartType.BAssy) Then
                 'do nothing
+            ElseIf occurrenceType = PartType.BPHPart Then
+                'do nothing, BPH parts should not be added to list
             ElseIf (occurrenceType = PartType.BGEPart) Then
                 'do nothing, BGE parts should never be added to collection
                 'ElseIf (IsBFourtyNine(BomImportFindParent(collBreadCrumb, occurrenceInfo.PartNum).ParentName)) And mBomImportSettings.bBomImportIncBassy Then
@@ -1164,6 +1167,8 @@ Module mAllBOMExport
                 Else
                     If IsBGE(parent) Then
                         'cant have BGE as parent
+                    ElseIf IsBPH(parent) Then
+                        'cant have BPH as parent
                     ElseIf IsBFourtyNine(parent) Then
                         'are B49s allowed to be parents??
                         If mBomImportSettings.bBomImportIncBassy = True Then
@@ -1184,9 +1189,6 @@ Module mAllBOMExport
                 mErrorStatus = True
             End Try
         Next
-
-        'AllPartsFindParent.ParentName = "****"
-        'AllPartsFindParent.ErrorStatus = True
 
     End Function
 
@@ -1236,6 +1238,26 @@ Module mAllBOMExport
 
         FindParent.ParentName = "****"
         FindParent.ErrorStatus = True
+
+    End Function
+
+    Private Function IsBPH(name As String) As Boolean
+        'determine if name is a BPH part number and return TRUE if it is
+
+        Dim iPeriodLoc As Integer
+        Dim sPrefix As String = ""
+
+        'identify where the period is in the Parent part
+        iPeriodLoc = InStr(name, ".")
+        If iPeriodLoc <> 0 Then
+            sPrefix = Left(name, iPeriodLoc - 1)
+        End If
+
+        If sPrefix = "BPH" Then
+            IsBPH = True
+        Else
+            IsBPH = False
+        End If
 
     End Function
 
