@@ -492,10 +492,9 @@ Module mAllBOMExport
 
                 Try
                     occurrenceInfo.Description = partProps.Item("User Defined Properties").Item("Description English").Value
-                    'sDescription = partProps.Item("User Defined Properties").Item("Description English").Value
+                    occurrenceInfo.Description = occurrenceInfo.Description.ToUpper()
                 Catch
                     DescriptionError(occurrenceInfo)
-                    'DescriptionErr(occurrenceInfo.Description, propertyError, mErrorStatus, occurrenceInfo.ErrorMsg)                    
                 End Try
 
                 Try
@@ -516,6 +515,7 @@ Module mAllBOMExport
 
                 Try
                     occurrenceInfo.Description = partProps.Item("User Defined Properties").Item("Description English").Value
+                    occurrenceInfo.Description = occurrenceInfo.Description.ToUpper
                 Catch
                     DescriptionError(occurrenceInfo)
                 End Try
@@ -537,6 +537,7 @@ Module mAllBOMExport
 
                 Try
                     occurrenceInfo.Description = partProps.Item("User Defined Properties").Item("Description English").Value
+                    occurrenceInfo.Description = occurrenceInfo.Description.ToUpper
                 Catch
                     DescriptionError(occurrenceInfo)
                 End Try
@@ -550,18 +551,21 @@ Module mAllBOMExport
                 Try
                     'may need to check the vendor code for standard parts, should be the 6-digit alpha code 
                     occurrenceInfo.VendorCode = partProps.Item("User Defined Properties").Item("Supplier").Value
+                    occurrenceInfo.VendorCode = occurrenceInfo.VendorCode.ToUpper
                 Catch
                     VendorCodeErr(occurrenceInfo)
                 End Try
 
                 Try
                     occurrenceInfo.ManufName = partProps.Item("User Defined Properties").Item("Manufacturer Name").Value
+                    occurrenceInfo.ManufName = occurrenceInfo.ManufName.ToUpper
                 Catch
                     ManufNameErr(occurrenceInfo)
                 End Try
 
                 Try
                     occurrenceInfo.ManufNum = partProps.Item("User Defined Properties").Item("Supplier Part Nb").Value
+                    occurrenceInfo.ManufName = occurrenceInfo.ManufNum.ToUpper
                 Catch
                     ManufNumErr(occurrenceInfo)
                 End Try
@@ -578,6 +582,7 @@ Module mAllBOMExport
                 'some parts may not have these items, such as proman class code, probably older items
                 Try
                     occurrenceInfo.Description = partProps.Item("User Defined Properties").Item("Description English").Value
+                    occurrenceInfo.Description = occurrenceInfo.Description.ToUpper
                 Catch
                     DescriptionError(occurrenceInfo)
                 End Try
@@ -590,18 +595,21 @@ Module mAllBOMExport
 
                 Try
                     occurrenceInfo.VendorCode = partProps.Item("User Defined Properties").Item("Supplier Mnem").Value
+                    occurrenceInfo.VendorCode = occurrenceInfo.VendorCode.ToUpper
                 Catch
                     VendorCodeErr(occurrenceInfo)
                 End Try
 
                 Try
                     occurrenceInfo.ManufName = partProps.Item("User Defined Properties").Item("Supplier").Value
+                    occurrenceInfo.ManufName = occurrenceInfo.ManufName.ToUpper
                 Catch
                     ManufNameErr(occurrenceInfo)
                 End Try
 
                 Try
                     occurrenceInfo.ManufNum = partProps.Item("User Defined Properties").Item("Supplier Part Nb").Value
+                    occurrenceInfo.ManufNum = occurrenceInfo.ManufNum.ToUpper
                 Catch
                     ManufNumErr(occurrenceInfo)
                 End Try
@@ -619,6 +627,7 @@ Module mAllBOMExport
 
                 Try
                     occurrenceInfo.Description = partProps.Item("User Defined Properties").Item("Description English").Value
+                    occurrenceInfo.Description = occurrenceInfo.Description.ToUpper
                 Catch
                     DescriptionError(occurrenceInfo)
                 End Try
@@ -635,6 +644,7 @@ Module mAllBOMExport
 
                 Try
                     occurrenceInfo.Description = partProps.Item("User Defined Properties").Item("Description English").Value
+                    occurrenceInfo.Description = occurrenceInfo.Description.ToUpper
                 Catch
                     DescriptionError(occurrenceInfo)
                 End Try
@@ -651,6 +661,7 @@ Module mAllBOMExport
 
                 Try
                     occurrenceInfo.Description = partProps.Item("User Defined Properties").Item("Description English").Value
+                    occurrenceInfo.Description = occurrenceInfo.Description.ToUpper
                 Catch
                     DescriptionError(occurrenceInfo)
                 End Try
@@ -666,6 +677,7 @@ Module mAllBOMExport
 
                 Try
                     occurrenceInfo.Description = partProps.Item("User Defined Properties").Item("Description English").Value
+                    occurrenceInfo.Description = occurrenceInfo.Description.ToUpper
                 Catch
                     DescriptionError(occurrenceInfo)
                 End Try
