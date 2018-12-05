@@ -783,6 +783,8 @@ Module mAllBOMExport
                 'do nothing, b49 assemblies not added to part create collection if option is not checked
             ElseIf (occurrenceType = PartType.BGEPart) Then
                 'do nothing, bge parts should never be created
+            ElseIf (occurrenceType = PartType.BPHPart) Then
+                'do nothing, BPH parts should never be created
             ElseIf (occurrenceType = PartType.OldPurchPart) Then
                 'do nothing, prior year purchased parts should never be created
             ElseIf occurrenceType = PartType.StandardPart Then
@@ -1118,7 +1120,7 @@ Module mAllBOMExport
         'settings are specific to the BOM Compare Settings
 
         Dim i As Integer
-        Dim parent As String
+        Dim parent As String = "Empty"
 
         For i = 0 To collBreadcrumb.Count
             Try
@@ -1132,13 +1134,11 @@ Module mAllBOMExport
                         'are B49s allowed to be parents??
                         If mBomCompSettings.bBomCompAllowBAssyParent Then
                             'B49s allowed to be parents
-                            BOMCompareFindParent.ParentName = parent
-                            Exit Function
+                            Exit For
                         End If
                     Else
                         'parent is not a B49 or a BGE so it is OK
-                        BOMCompareFindParent.ParentName = parent
-                        Exit Function
+                        Exit For
                     End If
                 End If
 
@@ -1146,8 +1146,14 @@ Module mAllBOMExport
                 BOMCompareFindParent.ParentName = "INVALID Parent"
                 BOMCompareFindParent.ErrorStatus = True
                 mErrorStatus = True
+                'exit the function and assign invalid parent error
+                Exit Function
             End Try
         Next
+
+        'for loop was finished or exited, assign parent
+        BOMCompareFindParent.ParentName = parent
+        BOMCompareFindParent.ErrorStatus = False
 
     End Function
 
@@ -1157,7 +1163,7 @@ Module mAllBOMExport
         'depending on settings, BGE and B49 parts will or will not be parents
 
         Dim i As Integer
-        Dim parent As String
+        Dim parent As String = "Empty Parent"
 
         For i = 0 To collBreadCrumb.Count
             Try
@@ -1173,13 +1179,11 @@ Module mAllBOMExport
                         'are B49s allowed to be parents??
                         If mBomImportSettings.bBomImportIncBassy = True Then
                             'B49s allowed to be parents
-                            BomImportFindParent.ParentName = parent
-                            Exit Function
+                            Exit For
                         End If
                     Else
                         'parent is not a B49 or a BGE so it is OK
-                        BomImportFindParent.ParentName = parent
-                        Exit Function
+                        Exit For
                     End If
                 End If
 
@@ -1187,8 +1191,14 @@ Module mAllBOMExport
                 BomImportFindParent.ParentName = "INVALID Parent"
                 BomImportFindParent.ErrorStatus = True
                 mErrorStatus = True
+                'exit the function and assign invalid parent error
+                Exit Function
             End Try
         Next
+
+        'for loop was finished or exited, assign values
+        BomImportFindParent.ParentName = parent
+        BomImportFindParent.ErrorStatus = False
 
     End Function
 
