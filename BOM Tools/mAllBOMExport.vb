@@ -1128,7 +1128,7 @@ Module mAllBOMExport
                 If sChild = parent Then
                     'cant have a child part have itself as a parent 
                 Else
-                    If IsBGE(parent) Then
+                    If IsPrefixMatch(parent, "BGE") Then
                         'cant have BGE as parent
                     ElseIf IsBFourtyNine(parent) Then
                         'are B49s allowed to be parents??
@@ -1171,9 +1171,9 @@ Module mAllBOMExport
                 If sChild = parent Then
                     'cant have a child part have itself as a parent 
                 Else
-                    If IsBGE(parent) Then
+                    If IsPrefixMatch(parent, "BGE") Then
                         'cant have BGE as parent
-                    ElseIf IsBPH(parent) Then
+                    ElseIf IsPrefixMatch(parent, "BPH") Then
                         'cant have BPH as parent
                     ElseIf IsBFourtyNine(parent) Then
                         'are B49s allowed to be parents??
@@ -1216,7 +1216,7 @@ Module mAllBOMExport
                 parent = coll.Item(coll.Count - i)
                 If mIsAssembly = False Then
                     'occurrence is a part, OK to have BGE or B49 as parent if setting is included
-                    If IsBGE(parent) = True Then
+                    If IsPrefixMatch(parent, "BGE") Then
                         'parent is a BGE part, check if BGEs are included
                     ElseIf IsBFourtyNine(parent) = True Then
                         'parent is B49, check if B49s are included
@@ -1233,7 +1233,7 @@ Module mAllBOMExport
 
                 Else
                     'occurrence is an assembly, NOT OK to have BGE or B49 as parent
-                    If Not (IsBGE(parent) Or IsBFourtyNine(parent)) Then
+                    If Not (IsPrefixMatch(parent, "BGE") Or IsBFourtyNine(parent)) Then
                         'parent is NOT a BGE or B49
                         FindParent.ParentName = parent
                         Exit Function
@@ -1251,42 +1251,21 @@ Module mAllBOMExport
 
     End Function
 
-    Private Function IsBPH(name As String) As Boolean
-        'determine if name is a BPH part number and return TRUE if it is
+    Private Function IsPrefixMatch(Name As String, MatchString As String) As Boolean
+        'function to determine if the prefix of Name matches MatchString
+        Dim periodLoc As Integer
+        Dim prefix As String = ""
 
-        Dim iPeriodLoc As Integer
-        Dim sPrefix As String = ""
-
-        'identify where the period is in the Parent part
-        iPeriodLoc = InStr(name, ".")
-        If iPeriodLoc <> 0 Then
-            sPrefix = Left(name, iPeriodLoc - 1)
+        'identify where the period is located in Name
+        periodLoc = InStr(Name, ".")
+        If periodLoc <> 0 Then
+            prefix = Left(Name, periodLoc - 1)
         End If
 
-        If sPrefix = "BPH" Then
-            IsBPH = True
+        If prefix = MatchString Then
+            IsPrefixMatch = True
         Else
-            IsBPH = False
-        End If
-
-    End Function
-
-    Private Function IsBGE(Name As String) As Boolean
-        'determine if Name is a BGE part number and return TRUE if it is
-
-        Dim iPeriodLoc As Integer
-        Dim sPrefix As String = ""
-
-        'identify where the period is in the Parent part
-        iPeriodLoc = InStr(Name, ".")
-        If iPeriodLoc <> 0 Then
-            sPrefix = Left(Name, iPeriodLoc - 1)
-        End If
-
-        If sPrefix = "BGE" Then
-            IsBGE = True
-        Else
-            IsBGE = False
+            IsPrefixMatch = False
         End If
 
     End Function
