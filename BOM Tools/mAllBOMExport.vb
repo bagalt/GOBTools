@@ -834,6 +834,7 @@ Module mAllBOMExport
         occurrence.PromanCode = "XXXX"
         occurrence.PartError = True
         occurrence.ErrorMsg = occurrence.ErrorMsg & "Missing Proman Class Code"
+        mErrorStatus = True
 
     End Sub
 
@@ -842,6 +843,7 @@ Module mAllBOMExport
         occurrence.Description = "XXXX XXXX"
         occurrence.PartError = True
         occurrence.ErrorMsg = occurrence.ErrorMsg & "," & "Missing Description"
+        mErrorStatus = True
     End Sub
 
     Private Sub ServiceCodeErr(ByVal occurrence As cPartInfo)
@@ -850,6 +852,7 @@ Module mAllBOMExport
         occurrence.ServiceCode = "XX"
         occurrence.PartError = True
         occurrence.ErrorMsg = occurrence.ErrorMsg & "," & "Missing Customer Service Code"
+        mErrorStatus = True
 
     End Sub
 
@@ -859,6 +862,7 @@ Module mAllBOMExport
         occurrence.VendorCode = "XXXXXX"
         occurrence.PartError = True
         occurrence.ErrorMsg = occurrence.ErrorMsg & "," & "Missing Vendor Code"
+        mErrorStatus = True
 
     End Sub
 
@@ -868,6 +872,7 @@ Module mAllBOMExport
         occurrence.ManufName = "XXXXXX"
         occurrence.PartError = True
         occurrence.ErrorMsg = occurrence.ErrorMsg & ", " & "Missing Manufacturer Name"
+        mErrorStatus = True
 
     End Sub
 
@@ -877,6 +882,7 @@ Module mAllBOMExport
         occurrence.ManufNum = "XXXXXX"
         occurrence.PartError = True
         occurrence.ErrorMsg = occurrence.ErrorMsg & ", " & "Missing Manufacturer Number"
+        mErrorStatus = True
 
     End Sub
 
@@ -884,6 +890,7 @@ Module mAllBOMExport
         'sub to handle error information for unknown parts
         occurrence.PartError = True
         occurrence.ErrorMsg = occurrence.ErrorMsg & "," & "Unknown Type: Verify Info"
+        mErrorStatus = True
     End Sub
 
 #End Region
@@ -1202,54 +1209,54 @@ Module mAllBOMExport
 
     End Function
 
-    Private Function FindParent(coll As Collection) As ParentStatus
-        'function to find the parent assembly by going backwards through the breadcrumb collection
-        'coll is the breadcrumb collection 
-        'depending on settings, BGE and B49 parts will or will not be parents
-        'This only really affects the mAllParts collection since that is the only collection that needs the parents.
+    'Private Function FindParent(coll As Collection) As ParentStatus
+    '    'function to find the parent assembly by going backwards through the breadcrumb collection
+    '    'coll is the breadcrumb collection 
+    '    'depending on settings, BGE and B49 parts will or will not be parents
+    '    'This only really affects the mAllParts collection since that is the only collection that needs the parents.
 
-        Dim i As Integer
-        Dim parent As String
+    '    Dim i As Integer
+    '    Dim parent As String
 
-        For i = 0 To coll.Count
-            Try
-                parent = coll.Item(coll.Count - i)
-                If mIsAssembly = False Then
-                    'occurrence is a part, OK to have BGE or B49 as parent if setting is included
-                    If IsPrefixMatch(parent, "BGE") Then
-                        'parent is a BGE part, check if BGEs are included
-                    ElseIf IsBFourtyNine(parent) = True Then
-                        'parent is B49, check if B49s are included
-                        If mBomImportSettings.bBomImportIncBassy = True Then
-                            'OK to have B49 parent
-                            FindParent.ParentName = parent
-                            Exit Function
-                        End If
-                    Else
-                        'not a B49 or BGE parent
-                        FindParent.ParentName = parent
-                        Exit Function
-                    End If
+    '    For i = 0 To coll.Count
+    '        Try
+    '            parent = coll.Item(coll.Count - i)
+    '            If mIsAssembly = False Then
+    '                'occurrence is a part, OK to have BGE or B49 as parent if setting is included
+    '                If IsPrefixMatch(parent, "BGE") Then
+    '                    'parent is a BGE part, check if BGEs are included
+    '                ElseIf IsBFourtyNine(parent) = True Then
+    '                    'parent is B49, check if B49s are included
+    '                    If mBomImportSettings.bBomImportIncBassy = True Then
+    '                        'OK to have B49 parent
+    '                        FindParent.ParentName = parent
+    '                        Exit Function
+    '                    End If
+    '                Else
+    '                    'not a B49 or BGE parent
+    '                    FindParent.ParentName = parent
+    '                    Exit Function
+    '                End If
 
-                Else
-                    'occurrence is an assembly, NOT OK to have BGE or B49 as parent
-                    If Not (IsPrefixMatch(parent, "BGE") Or IsBFourtyNine(parent)) Then
-                        'parent is NOT a BGE or B49
-                        FindParent.ParentName = parent
-                        Exit Function
-                    End If
-                End If
-            Catch ex As Exception
-                FindParent.ParentName = "INVALID BGE Parent"
-                FindParent.ErrorStatus = True
-                mErrorStatus = True
-            End Try
-        Next
+    '            Else
+    '                'occurrence is an assembly, NOT OK to have BGE or B49 as parent
+    '                If Not (IsPrefixMatch(parent, "BGE") Or IsBFourtyNine(parent)) Then
+    '                    'parent is NOT a BGE or B49
+    '                    FindParent.ParentName = parent
+    '                    Exit Function
+    '                End If
+    '            End If
+    '        Catch ex As Exception
+    '            FindParent.ParentName = "INVALID BGE Parent"
+    '            FindParent.ErrorStatus = True
+    '            mErrorStatus = True
+    '        End Try
+    '    Next
 
-        FindParent.ParentName = "****"
-        FindParent.ErrorStatus = True
+    '    FindParent.ParentName = "****"
+    '    FindParent.ErrorStatus = True
 
-    End Function
+    'End Function
 
     Private Function IsPrefixMatch(Name As String, MatchString As String) As Boolean
         'function to determine if the prefix of Name matches MatchString
