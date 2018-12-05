@@ -17,7 +17,7 @@ Module mAllBOMExport
     Private mStartAssy As String 'holds the top level assembly name
     Private mYear As String 'variable to hold the current year as a string
     Private mParentAssy As String 'variable to hold the name of the parent assembly for a part
-    Private mErrorStatus As Boolean 'variable to show if an error has occurred or not
+    Private mErrorStatus As Boolean 'variable to show if an error has occurred in any of the part info, used to display message about excel file
     Private mIsAssembly As Boolean 'flag for indicating if current occurrence is an assembly (true)
     Private mAddToBomCompCollection As Boolean 'flag for indicating if current part should be added to BOM compare collection or not
 
@@ -1152,7 +1152,6 @@ Module mAllBOMExport
             Catch ex As Exception
                 BOMCompareFindParent.ParentName = "INVALID Parent"
                 BOMCompareFindParent.ErrorStatus = True
-                mErrorStatus = True
                 'exit the function and assign invalid parent error
                 Exit Function
             End Try
