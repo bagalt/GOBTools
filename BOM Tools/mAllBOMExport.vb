@@ -564,8 +564,8 @@ Module mAllBOMExport
                 End Try
 
                 Try
-                    occurrenceInfo.ManufNum = partProps.Item("User Defined Properties").Item("Supplier Part Nb").Value
-                    occurrenceInfo.ManufName = occurrenceInfo.ManufNum.ToUpper
+                    occurrenceInfo.ManufNum = partProps.Item("User Defined Properties").Item("Manuf_PartNb").Value
+                    occurrenceInfo.ManufNum = occurrenceInfo.ManufNum.ToUpper
                 Catch
                     ManufNumErr(occurrenceInfo)
                 End Try
@@ -608,7 +608,7 @@ Module mAllBOMExport
                 End Try
 
                 Try
-                    occurrenceInfo.ManufNum = partProps.Item("User Defined Properties").Item("Supplier Part Nb").Value
+                    occurrenceInfo.ManufNum = partProps.Item("User Defined Properties").Item("Manuf_PartNo").Value
                     occurrenceInfo.ManufNum = occurrenceInfo.ManufNum.ToUpper
                 Catch
                     ManufNumErr(occurrenceInfo)
@@ -699,6 +699,7 @@ Module mAllBOMExport
         'BOM Compare collection, holds all the parts for the BOM compare listview, no part information required
         'occurrences should be added to collections based on user settings
 
+        Dim addPart As Boolean
         Dim sBomImportKey As String
         Dim sBomCompareKey As String
         Dim sPartCreateKey As String
@@ -717,31 +718,73 @@ Module mAllBOMExport
 
         'Build the BOM Compare collection of parts
         If Not KeyExists(mCollBomCompare, sBomCompareKey) Then
-            'if include B49 is true and part is a B49 then add the B49's information to the collection
-            If (mBomCompSettings.bBomCompAllowBAssyParent = False) And (occurrenceType = PartType.BAssy) Then
-                'do nothing, B49s are not included (children promoted) and part is an assembly
-            ElseIf (mBomCompSettings.bBomCompIncCAssy = False) And (occurrenceType = PartType.CAssy) Then
-                'do nothing
-            ElseIf occurrenceType = PartType.BGEPart Then
-                'do nothing
-            ElseIf occurrenceType = PartType.BPHPart Then
-                'do nothing
-            ElseIf (IsBFourtyNine(BOMCompareFindParent(collBreadCrumb, occurrenceInfo.PartNum).ParentName)) And mBomCompSettings.bBomCompAllowBAssyParent Then
-                'parent is a B49 and setting says to show only B49 parents so do not add child
-            Else
-                'create instance of the partinfo class for all parts
-                compOccurrence = New cPartInfo
-                MakeEqual(compOccurrence, occurrenceInfo)
-                compOccurrence.Description = CommaReplacer(occurrenceInfo.Description)
-                'bump the quantity of the part (starts at 0)
-                compOccurrence.IncrementQty(1)
-                'add the newly created BomCompPartInfo to the mCollBomCompare collection with the part number as the key
-                mCollBomCompare.Add(compOccurrence, sBomCompareKey)
+            addPart = True
+
+            If mBomCompSettings.bBomCompAllowBAssyParent = False And (occurrenceType = PartType.BAssy) Then
+                'B49s are not included (children promoted) and part is an assembly
+                addPart = False
             End If
-        Else
-            'key already exists, bump the quantity of the part
-            mCollBomCompare.Item(sBomCompareKey).IncrementQty(1)
+            If (mBomCompSettings.bBomCompIncCAssy = False) And (occurrenceType = PartType.CAssy) Then
+                'Cassys are not included if checked
+                addPart = False
+            End If
+            If occurrenceType = PartType.BGEPart Then
+                'BGE parts not added to collection
+                addPart = False
+            End If
+            If occurrenceType = PartType.BPHPart Then
+                'BPH parts not added to collection
+                addPart = False
+            End If
+            If (IsBFourtyNine(BOMCompareFindParent(collBreadCrumb, occurrenceInfo.PartNum).ParentName)) And mBomCompSettings.bBomCompAllowBAssyParent Then
+                'is parent a B49 and are B49s allowed to be parents?
+                If mStartAssy = (BOMCompareFindParent(collBreadCrumb, occurrenceInfo.PartNum).ParentName) Then
+                    'add parts if parent is the start assembly, add parts
+                    addPart = True
+                Else
+                    addPart = False
+                End If
+            End If
         End If
+
+        If addPart Then
+            'create instance of the partinfo class for all parts
+            compOccurrence = New cPartInfo
+            MakeEqual(compOccurrence, occurrenceInfo)
+            compOccurrence.Description = CommaReplacer(occurrenceInfo.Description)
+            'bump the quantity of the part (starts at 0)
+            compOccurrence.IncrementQty(1)
+            'add the newly created BomCompPartInfo to the mCollBomCompare collection with the part number as the key
+            mCollBomCompare.Add(compOccurrence, sBomCompareKey)
+        End If
+
+        'If Not KeyExists(mCollBomCompare, sBomCompareKey) Then
+        '    'if include B49 is true and part is a B49 then add the B49's information to the collection
+        '    If (mBomCompSettings.bBomCompAllowBAssyParent = False) And (occurrenceType = PartType.BAssy) Then
+        '        'do nothing, B49s are not included (children promoted) and part is an assembly
+        '    ElseIf (mBomCompSettings.bBomCompIncCAssy = False) And (occurrenceType = PartType.CAssy) Then
+        '        'do nothing
+        '    ElseIf occurrenceType = PartType.BGEPart Then
+        '        'do nothing, dont add BGE parts to the list
+        '    ElseIf occurrenceType = PartType.BPHPart Then
+        '        'do nothing, dont add BPH parts to the list
+        '    ElseIf (IsBFourtyNine(BOMCompareFindParent(collBreadCrumb, occurrenceInfo.PartNum).ParentName)) And mBomCompSettings.bBomCompAllowBAssyParent Then
+        '        'parent is a B49 and setting says to show only B49 parents so do not add child
+        '        'if a B49 is the start assembly then you need to add the children
+        '    Else
+        '        'create instance of the partinfo class for all parts
+        '        compOccurrence = New cPartInfo
+        '        MakeEqual(compOccurrence, occurrenceInfo)
+        '        compOccurrence.Description = CommaReplacer(occurrenceInfo.Description)
+        '        'bump the quantity of the part (starts at 0)
+        '        compOccurrence.IncrementQty(1)
+        '        'add the newly created BomCompPartInfo to the mCollBomCompare collection with the part number as the key
+        '        mCollBomCompare.Add(compOccurrence, sBomCompareKey)
+        '    End If
+        'Else
+        '    'key already exists, bump the quantity of the part
+        '    mCollBomCompare.Item(sBomCompareKey).IncrementQty(1)
+        'End If
 
         'Build the BOM Import collection of parts
         If Not KeyExists(mCollBomImport, sBomImportKey) Then
