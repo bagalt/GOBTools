@@ -564,7 +564,7 @@ Module mAllBOMExport
                 End Try
 
                 Try
-                    occurrenceInfo.ManufNum = partProps.Item("User Defined Properties").Item("Manuf_PartNb").Value
+                    occurrenceInfo.ManufNum = partProps.Item("User Defined Properties").Item("Supplier Part Nb").Value
                     occurrenceInfo.ManufNum = occurrenceInfo.ManufNum.ToUpper
                 Catch
                     ManufNumErr(occurrenceInfo)
