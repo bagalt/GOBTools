@@ -608,7 +608,7 @@ Module mAllBOMExport
                 End Try
 
                 Try
-                    occurrenceInfo.ManufNum = partProps.Item("User Defined Properties").Item("Manuf_PartNo").Value
+                    occurrenceInfo.ManufNum = partProps.Item("User Defined Properties").Item("Supplier Part Nb").Value
                     occurrenceInfo.ManufNum = occurrenceInfo.ManufNum.ToUpper
                 Catch
                     ManufNumErr(occurrenceInfo)
@@ -804,7 +804,7 @@ Module mAllBOMExport
                 'do nothing, bge parts should never be created
             ElseIf (occurrenceType = PartType.BPHPart) Then
                 'do nothing, BPH parts should never be created
-            ElseIf (occurrenceType = PartType.OldPurchPart) Then
+                'ElseIf (occurrenceType = PartType.OldPurchPart) Then
                 'do nothing, prior year purchased parts should never be created
             ElseIf occurrenceType = PartType.StandardPart Then
                 'do nothing, standard parts not added to part create collection
