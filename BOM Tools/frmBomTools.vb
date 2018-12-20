@@ -37,7 +37,7 @@ Public Class frmBomTools
             mAssyDoc = g_inventorApplication.ActiveDocument
             'get the top level assembly document name
             startAssy = mAssyDoc.PropertySets.Item("Design Tracking Properties").Item("Part Number").Value
-            lblVersion.Text = "v1.6"
+            lblVersion.Text = "v1.7"
 
             'define colors for row highlighting
             colorPartNotOnList = Color.DeepPink
@@ -71,11 +71,13 @@ Public Class frmBomTools
 
         'load the settings from the configuration file
         chkBomImportAllowBAssyParent.Checked = My.Settings.BomToolsBomImportAllowBAssyParent
+        chkBomImportShowFasteners.Checked = My.Settings.BomToolsBomImportShowFasteners
         chkPartCreateIncludeBAssy.Checked = My.Settings.BomToolsPartCreateIncludeB49Assemblies
         chkBomCompIncludeBAssy.Checked = My.Settings.BomToolsBomCompIncludeB49Assemblies
         chkBOMCompIncB39Children.Checked = My.Settings.BOMToolsBomCompIncludeB39Children
         chkBOMCompIncB45Children.Checked = My.Settings.BOMToolsBomCompIncludeB45Children
         chkBomCompIncludeCAssy.Checked = My.Settings.BomToolsBomCompIncludeC49Assemblies
+        chkBomCompShowFasteners.Checked = My.Settings.BomToolsBomCompShowFasteners
         Me.Location = My.Settings.BomToolsFormLocation
 
     End Sub
@@ -115,11 +117,19 @@ Public Class frmBomTools
     Private Sub InitInventorListView()
         'configure list view controls 
 
-        Dim inventorHeader1 As New System.Windows.Forms.ColumnHeader
-        Dim inventorHeader2 As New System.Windows.Forms.ColumnHeader
+        Dim bomCompHeader1 As New System.Windows.Forms.ColumnHeader
+        Dim bomCompHeader2 As New System.Windows.Forms.ColumnHeader
+        Dim partCreateHeader1 As New System.Windows.Forms.ColumnHeader
+        Dim partCreateHeader2 As New System.Windows.Forms.ColumnHeader
+        Dim partCreateHeader3 As New System.Windows.Forms.ColumnHeader
 
-        'configure inventor bom options
-        With lvInventorBom
+        Dim bomImportHeader1 As New System.Windows.Forms.ColumnHeader
+        Dim bomImportHeader2 As New System.Windows.Forms.ColumnHeader
+        Dim bomImportHeader3 As New System.Windows.Forms.ColumnHeader
+
+        'configure BOM Compare Inventor BOM listview options
+#Region "BOM Compare Listview Configuration"
+        With lvBomCompInventor
             .FullRowSelect = True
             .GridLines = True
             .HeaderStyle = Windows.Forms.ColumnHeaderStyle.Clickable
@@ -129,37 +139,107 @@ Public Class frmBomTools
             .View = View.Details
         End With
 
-        With inventorHeader1
+        With bomCompHeader1
             .Text = "Part Number"
             .Width = 105
         End With
-        With inventorHeader2
+        With bomCompHeader2
             .Text = "Qty"
             .Width = 45
         End With
 
         'add column headers to listviews
-        lvInventorBom.Columns.Add(inventorHeader1)
-        lvInventorBom.Columns.Add(inventorHeader2)
+        lvBomCompInventor.Columns.Add(bomCompHeader1)
+        lvBomCompInventor.Columns.Add(bomCompHeader2)
+#End Region
+
+        'configure Part Create Inventor BOM Listview options
+#Region "Part Create Listview Configuration"
+        With lvPartCreate
+            .FullRowSelect = True
+            .GridLines = True
+            .HeaderStyle = Windows.Forms.ColumnHeaderStyle.Clickable
+            .LabelEdit = False
+            .MultiSelect = False
+            .Sorting = Windows.Forms.SortOrder.Ascending
+            .View = View.Details
+        End With
+
+        With partCreateHeader1
+            .Text = "Part Number"
+            .Width = 105
+        End With
+        With partCreateHeader2
+            .Text = "Description"
+            .Width = 200
+        End With
+        With partCreateHeader3
+            .Text = "Qty"
+            .Width = 45
+        End With
+
+        'add column headers to listviews
+        lvPartCreate.Columns.Add(partCreateHeader1)
+        lvPartCreate.Columns.Add(partCreateHeader2)
+        lvPartCreate.Columns.Add(partCreateHeader3)
+
+#End Region
+
+
+        'configure BOM Import Inventor BOM Listview options
+#Region "BOM Import Listview Configuration"
+        With lvBomImport
+            .FullRowSelect = True
+            .GridLines = True
+            .HeaderStyle = Windows.Forms.ColumnHeaderStyle.Clickable
+            .LabelEdit = False
+            .MultiSelect = False
+            .Sorting = Windows.Forms.SortOrder.Ascending
+            .View = View.Details
+        End With
+
+        With bomImportHeader1
+            .Text = "Part Number"
+            .Width = 110
+        End With
+        With bomImportHeader2
+            .Text = "Qty"
+            .Width = 50
+        End With
+        With bomImportHeader3
+            .Text = "Parent"
+            .Width = 110
+        End With
+
+        'add column headers to listviews
+        lvBomImport.Columns.Add(bomImportHeader1)
+        lvBomImport.Columns.Add(bomImportHeader2)
+        lvBomImport.Columns.Add(bomImportHeader3)
+#End Region
+
 
     End Sub
 
-    Private Sub btnLoadInventorBom_Click(sender As Object, e As EventArgs) Handles btnLoadInventorBom.Click
+    Private Sub btnLoadInventorBom_Click(sender As Object, e As EventArgs) Handles btnLoadInventorBOM.Click
         'call all BOM export and load the results into the inventor bom listview
         Dim proc As New frmProcessing
 
-        'clear listview
-        lvInventorBom.Clear()
+        'clear listviews
+        lvBomCompInventor.Clear()
+        lvPartCreate.Clear()
+        lvBomImport.Clear()
         'initialize headers
         InitInventorListView()
 
         'assign the settings for all parts and new parts
         BomImportSettings.bBomImportIncBassy = chkBomImportAllowBAssyParent.Checked
+        BomImportSettings.bBomImportShowFasteners = chkBomImportShowFasteners.Checked
         PartCreateSettings.bPartCreatIncBassy = chkPartCreateIncludeBAssy.Checked
-        BomCompareSettings.bBomCompAllowBAssyParent = chkBomCompIncludeBAssy.Checked
+        BomCompareSettings.bBomCompIncludeBAssy = chkBomCompIncludeBAssy.Checked
         BomCompareSettings.bBomCompIncCAssy = chkBomCompIncludeCAssy.Checked
         BomCompareSettings.bBomCompIncB39Children = chkBOMCompIncB39Children.Checked
         BomCompareSettings.bBomCompIncB45Children = chkBOMCompIncB45Children.Checked
+        BomCompareSettings.bBomCompShowFasteners = chkBomCompShowFasteners.Checked
 
         'show the processing form
         proc.Show()
@@ -179,8 +259,10 @@ Public Class frmBomTools
         Me.Enabled = True
 
         'populate the listview with the data
-        PopulateListView(mAllBOMExport.PartsList, lvInventorBom, txtNumInventorParts)
-        ColorList(lvInventorBom)
+        PopulateListView(mAllBOMExport.bomCompareList, lvBomCompInventor, txtNumInventorParts)
+        PopulatePartCreateLV(mAllBOMExport.partCreateList, lvPartCreate, txtPCNumInventorParts)
+        PopulateBOMImportLV(mAllBOMExport.bomImportList, lvBomImport, txtBomImportNumParts)
+        ColorList(lvBomCompInventor)
     End Sub
 
     Private Sub PopulateListView(ByRef PartsList As Collection, MyList As System.Windows.Forms.ListView, TextBox As System.Windows.Forms.TextBox)
@@ -199,7 +281,41 @@ Public Class frmBomTools
 
     End Sub
 
-    Private Sub lvInventorBom_ColumnClick(sender As Object, e As ColumnClickEventArgs) Handles lvInventorBom.ColumnClick
+    Private Sub PopulatePartCreateLV(ByRef PartsList As Collection, MyList As System.Windows.Forms.ListView, TextBox As System.Windows.Forms.TextBox)
+        'sub to populate the listview based on the collection passed in
+
+        Dim part As cPartInfo
+        Dim myItem As System.Windows.Forms.ListViewItem
+
+        'add items to the listview
+        For Each part In PartsList
+            myItem = MyList.Items.Add(part.PartNum)
+            myItem.SubItems.Add(part.Description)
+            myItem.SubItems.Add(part.Qty)
+        Next
+        'display total parts count
+        TextBox.Text = PartsList.Count
+
+    End Sub
+
+    Private Sub PopulateBOMImportLV(ByRef PartsList As Collection, MyList As System.Windows.Forms.ListView, TextBox As System.Windows.Forms.TextBox)
+        'sub to populate the listview based on the collection passed in
+
+        Dim part As cPartInfo
+        Dim myItem As System.Windows.Forms.ListViewItem
+
+        'add items to the listview
+        For Each part In PartsList
+            myItem = MyList.Items.Add(part.PartNum)
+            myItem.SubItems.Add(part.Qty)
+            myItem.SubItems.Add(part.ParentAssy)
+        Next
+        'display total parts count
+        TextBox.Text = PartsList.Count
+
+    End Sub
+
+    Private Sub lvInventorBom_ColumnClick(sender As Object, e As ColumnClickEventArgs) Handles lvBomCompInventor.ColumnClick
         'sub to handle sorting the inventor bom in ascending/decending order.  will toggle the state
 
         'determine if the column is the same as the last column clicked
@@ -207,18 +323,18 @@ Public Class frmBomTools
             'set the sort column to the new column
             inventorSortCol = e.Column
             'set the sort order to ascending by default
-            lvInventorBom.Sorting = SortOrder.Ascending
+            lvBomCompInventor.Sorting = SortOrder.Ascending
         Else
             'determine what the last sort order was and change it
-            If lvInventorBom.Sorting = SortOrder.Ascending Then
-                lvInventorBom.Sorting = SortOrder.Descending
+            If lvBomCompInventor.Sorting = SortOrder.Ascending Then
+                lvBomCompInventor.Sorting = SortOrder.Descending
             Else
-                lvInventorBom.Sorting = SortOrder.Ascending
+                lvBomCompInventor.Sorting = SortOrder.Ascending
             End If
         End If
 
-        lvInventorBom.ListViewItemSorter = New ListViewItemComparer(e.Column, lvInventorBom.Sorting)
-        lvInventorBom.Sort()
+        lvBomCompInventor.ListViewItemSorter = New ListViewItemComparer(e.Column, lvBomCompInventor.Sorting)
+        lvBomCompInventor.Sort()
 
     End Sub
 
@@ -244,7 +360,7 @@ Public Class frmBomTools
         lvPromanBom.Sort()
     End Sub
 
-    Private Sub btnExportBOM_Click(sender As Object, e As EventArgs) Handles btnExportBOM.Click
+    Private Sub btnExportBOM_Click(sender As Object, e As EventArgs) Handles btnBCExportInventorBOM.Click
         'export bom button clicked
         'Pick file location
         'export BOM
@@ -352,19 +468,19 @@ Public Class frmBomTools
     Private Sub btnRunCompare_Click(sender As Object, e As EventArgs) Handles btnRunCompare.Click
         'run the comparison between the two listview boxes
 
-        If lvInventorBom.Items.Count = 0 Or lvPromanBom.Items.Count = 0 Then
+        If lvBomCompInventor.Items.Count = 0 Or lvPromanBom.Items.Count = 0 Then
             MsgBox("Both lists must be populated")
             Exit Sub
         End If
 
         'clear the formatting of the lists
-        ClearListColor(lvInventorBom)
+        ClearListColor(lvBomCompInventor)
         ClearListColor(lvPromanBom)
 
         'compare inventor bom to proman bom
-        CompareLists(lvInventorBom, lvPromanBom)
+        CompareLists(lvBomCompInventor, lvPromanBom)
         'compare proman bom to inventor bom
-        CompareLists(lvPromanBom, lvInventorBom)
+        CompareLists(lvPromanBom, lvBomCompInventor)
 
     End Sub
 
@@ -589,11 +705,13 @@ Public Class frmBomTools
 
         'form closing, need to save settings
         My.Settings.BomToolsBomImportAllowBAssyParent = chkBomImportAllowBAssyParent.Checked
+        My.Settings.BomToolsBomImportShowFasteners = chkBomImportShowFasteners.Checked
         My.Settings.BomToolsPartCreateIncludeB49Assemblies = chkPartCreateIncludeBAssy.Checked
         My.Settings.BomToolsBomCompIncludeB49Assemblies = chkBomCompIncludeBAssy.Checked
         My.Settings.BOMToolsBomCompIncludeB39Children = chkBOMCompIncB39Children.Checked
         My.Settings.BOMToolsBomCompIncludeB45Children = chkBOMCompIncB45Children.Checked
         My.Settings.BomToolsBomCompIncludeC49Assemblies = chkBomCompIncludeCAssy.Checked
+        My.Settings.BomToolsBomCompShowFasteners = chkBomCompShowFasteners.Checked
         My.Settings.BomToolsFormLocation = Me.Location
 
     End Sub
@@ -612,30 +730,30 @@ Public Class frmBomTools
     Private Sub InventorMenuStrip_Opening(sender As Object, e As CancelEventArgs) Handles InventorMenuStrip.Opening
         'check to see if the listview has items before displaying the context menu strip
         'if there is nothing in the listview, it cancels the event and does not appear
-        If lvInventorBom.Items.Count = 0 Then
+        If lvBomCompInventor.Items.Count = 0 Then
             e.Cancel = True
         End If
     End Sub
 
     Private Sub InventorMenuStripCOPY_Click(sender As Object, e As EventArgs) Handles InventorMenuStripCOPY.Click
-        If lvInventorBom.SelectedItems.Count = 0 Then
+        If lvBomCompInventor.SelectedItems.Count = 0 Then
             Exit Sub
         End If
 
         'Copy item to clipboard
         Clipboard.Clear()
-        Clipboard.SetText(lvInventorBom.SelectedItems(0).Text)
+        Clipboard.SetText(lvBomCompInventor.SelectedItems(0).Text)
     End Sub
 
-    Private Sub lvInventorBom_KeyDown(sender As Object, e As KeyEventArgs) Handles lvInventorBom.KeyDown
+    Private Sub lvInventorBom_KeyDown(sender As Object, e As KeyEventArgs) Handles lvBomCompInventor.KeyDown
         'Handles keydown event on listview.  Allows user to copy selected row (part number only)
 
         If e.KeyCode = Keys.C AndAlso e.Modifiers = Keys.Control Then
             'Ctrl+c selected            
-            If lvInventorBom.SelectedItems.Count > 0 Then
+            If lvBomCompInventor.SelectedItems.Count > 0 Then
                 'something selected on inventor BOM
                 Clipboard.Clear()
-                Clipboard.SetText(lvInventorBom.SelectedItems(0).Text)
+                Clipboard.SetText(lvBomCompInventor.SelectedItems(0).Text)
             End If
         End If
     End Sub
@@ -652,4 +770,6 @@ Public Class frmBomTools
             End If
         End If
     End Sub
+
+
 End Class
