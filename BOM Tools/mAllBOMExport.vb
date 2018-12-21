@@ -1099,7 +1099,7 @@ Module mAllBOMExport
 
 #End Region
 
-    Public Function CreateExcelDoc(FilePath As String) As Boolean
+    Public Function PartCreateExportExcel(FilePath As String) As Boolean
         'sub to create an excel document from the parts list that was created from the assembly
 
         Dim XLApp As Excel.Application
@@ -1112,7 +1112,7 @@ Module mAllBOMExport
         If IsNothing(mCollPartCreate) Then
             'Empty parts list
             MsgBox("Parts List Empty, try loading Inventor BOM")
-            CreateExcelDoc = False
+            PartCreateExportExcel = False
             Exit Function
         End If
 
@@ -1133,7 +1133,7 @@ Module mAllBOMExport
             End If
             mResults = mResults & "Excel file NOT created" & vbNewLine & vbNewLine & "Num Unique Parts: " & CStr(bomCompareList.Count)
             'dont try to create excel document
-            CreateExcelDoc = False
+            PartCreateExportExcel = False
             Exit Function
         End If
 
@@ -1260,16 +1260,125 @@ Module mAllBOMExport
 
         Try
             wb.SaveAs(Filename:=FilePath, AccessMode:=Excel.XlSaveAsAccessMode.xlExclusive, ConflictResolution:=Excel.XlSaveConflictResolution.xlLocalSessionChanges)
-            CreateExcelDoc = True
+            PartCreateExportExcel = True
             wb.Close()
             XLApp.Quit()
         Catch ex As Exception
-            CreateExcelDoc = False
+            PartCreateExportExcel = False
             wb.Close()
             XLApp.Quit()
         End Try
 
     End Function
+
+    Public Function BomCompExportExcel(FilePath As String) As Boolean
+        'sub to create BOM Compare excel document from the parts list that was created from the assembly
+        'uses the bom compare collection mCollBomCompare
+
+        Dim XLApp As Excel.Application
+        Dim wb As Excel.Workbook
+        Dim ws1 As Excel.Worksheet 'for Part Create info
+        Dim sFilePath As String = ""
+
+        'Check if mNewParts contains items
+        If IsNothing(mCollPartCreate) Then
+            'Empty parts list
+            MsgBox("Parts List Empty, try loading Inventor BOM")
+            BomCompExportExcel = False
+            Exit Function
+        End If
+
+        'Check the file path and directory
+        If IsValidFileNameOrPath(FilePath) Then
+            'valid file path
+            'valid file path
+            If mErrorStatus = True Then
+                Debug.Print("***** ERRORS Found See Excel Document *****")
+                mResults = "**** ERRORS Found See Excel Document ****" & vbNewLine & vbNewLine
+            End If
+            'Add results to Results String
+            mResults = mResults & "File Path: " & FilePath & vbNewLine & vbNewLine & "Num Unique Parts: " & CStr(bomCompareList.Count)
+        Else
+            'File Path not valid
+            If mErrorStatus = True Then
+                mResults = "**** ERRORS Found Some Parts Missing Info ****" & vbNewLine & vbNewLine
+            End If
+            mResults = mResults & "Excel file NOT created" & vbNewLine & vbNewLine & "Num Unique Parts: " & CStr(bomCompareList.Count)
+            'dont try to create excel document
+            BomCompExportExcel = False
+            Exit Function
+        End If
+
+        'create the excel application, workbook and worksheet
+        XLApp = CreateObject("Excel.Application")
+        XLApp.DisplayAlerts = False 'dont display alert for overwriting file on save
+        wb = XLApp.Workbooks.Add
+        ws1 = wb.Sheets(1)
+
+        'name sheets
+        ws1.Name = "BOM Compare"
+        ws1.Activate()
+
+        'add items to the worksheet
+        Dim part As cPartInfo
+        Dim row As Integer
+        Dim mikronBlue As Integer
+        Dim headingTextColor As Integer
+        Dim errorColor As Integer
+
+        'define mikron blue color
+        mikronBlue = RGB(0, 51, 153)
+        'define heading text color
+        headingTextColor = RGB(255, 255, 255)
+        'define error color
+        errorColor = RGB(255, 97, 161)
+
+        'start filling in table on row 2
+        row = 2
+
+        'create column headings for ws1
+        With ws1
+            .Range("A1").Value = "Part Number"
+            .Range("B1").Value = "Description"
+            .Range("C1").Value = "QPA"
+            'color heading row gray
+            .Range("A1:C1").Interior.Color = mikronBlue
+            'Color heading text white
+            .Range("A1:C1").Font.Color = headingTextColor
+            'bold heading row column headings
+            .Range("A1:C1").Font.Bold = True
+        End With
+
+        'populate the remaining cells for WS1
+        For Each part In mCollPartCreate
+            With ws1
+                .Range("A" & row).Value = part.PartNum
+                .Range("B" & row).Value = part.Description
+                .Range("C" & row).Value = part.Qty
+                If part.PartError = True Then
+                    'color error rows
+                    .Range("A" & row & ":" & "C" & row).Interior.Color = errorColor
+                End If
+            End With
+            row = row + 1
+        Next
+
+        'autosize columns
+        ws1.Columns("A:C").AutoFit
+
+        Try
+            wb.SaveAs(Filename:=FilePath, AccessMode:=Excel.XlSaveAsAccessMode.xlExclusive, ConflictResolution:=Excel.XlSaveConflictResolution.xlLocalSessionChanges)
+            BomCompExportExcel = True
+            wb.Close()
+            XLApp.Quit()
+        Catch ex As Exception
+            BomCompExportExcel = False
+            wb.Close()
+            XLApp.Quit()
+        End Try
+
+    End Function
+
 
     Private Sub PrintColl(PartCollection As Collection)
         'sub to debug print the parts collection

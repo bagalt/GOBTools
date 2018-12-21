@@ -33,6 +33,8 @@ Partial Class frmBomTools
         Me.chkBOMCompIncB45Children = New System.Windows.Forms.CheckBox()
         Me.chkBOMCompIncB39Children = New System.Windows.Forms.CheckBox()
         Me.TabPage2 = New System.Windows.Forms.TabPage()
+        Me.GroupBox1 = New System.Windows.Forms.GroupBox()
+        Me.chkPartCreateIncludeBAssy = New System.Windows.Forms.CheckBox()
         Me.lblVersion = New System.Windows.Forms.Label()
         Me.btnBCExportInventorBOM = New System.Windows.Forms.Button()
         Me.TabPage1 = New System.Windows.Forms.TabPage()
@@ -53,30 +55,28 @@ Partial Class frmBomTools
         Me.btnLoadInventorBOM = New System.Windows.Forms.Button()
         Me.TabControl1 = New System.Windows.Forms.TabControl()
         Me.TabPage3 = New System.Windows.Forms.TabPage()
+        Me.btnPartCreateExport = New System.Windows.Forms.Button()
         Me.txtPCNumInventorParts = New System.Windows.Forms.TextBox()
         Me.Label2 = New System.Windows.Forms.Label()
         Me.Label1 = New System.Windows.Forms.Label()
         Me.lvPartCreate = New System.Windows.Forms.ListView()
         Me.TabPage4 = New System.Windows.Forms.TabPage()
+        Me.btnBomImportExport = New System.Windows.Forms.Button()
         Me.txtBomImportNumParts = New System.Windows.Forms.TextBox()
         Me.Label3 = New System.Windows.Forms.Label()
         Me.Label4 = New System.Windows.Forms.Label()
         Me.lvBomImport = New System.Windows.Forms.ListView()
         Me.SaveFileDialog1 = New System.Windows.Forms.SaveFileDialog()
-        Me.btnPartCreateExport = New System.Windows.Forms.Button()
-        Me.GroupBox1 = New System.Windows.Forms.GroupBox()
-        Me.chkPartCreateIncludeBAssy = New System.Windows.Forms.CheckBox()
-        Me.btnBomImportExport = New System.Windows.Forms.Button()
         Me.GroupBox2.SuspendLayout()
         Me.GroupBox3.SuspendLayout()
         Me.TabPage2.SuspendLayout()
+        Me.GroupBox1.SuspendLayout()
         Me.TabPage1.SuspendLayout()
         Me.InventorMenuStrip.SuspendLayout()
         Me.PromanMenuStrip.SuspendLayout()
         Me.TabControl1.SuspendLayout()
         Me.TabPage3.SuspendLayout()
         Me.TabPage4.SuspendLayout()
-        Me.GroupBox1.SuspendLayout()
         Me.SuspendLayout()
         '
         'GroupBox2
@@ -199,6 +199,28 @@ Partial Class frmBomTools
         Me.TabPage2.TabIndex = 1
         Me.TabPage2.Text = "Settings"
         Me.TabPage2.UseVisualStyleBackColor = True
+        '
+        'GroupBox1
+        '
+        Me.GroupBox1.Controls.Add(Me.chkPartCreateIncludeBAssy)
+        Me.GroupBox1.Location = New System.Drawing.Point(15, 196)
+        Me.GroupBox1.Name = "GroupBox1"
+        Me.GroupBox1.Size = New System.Drawing.Size(180, 52)
+        Me.GroupBox1.TabIndex = 19
+        Me.GroupBox1.TabStop = False
+        Me.GroupBox1.Text = "Part Create Options"
+        '
+        'chkPartCreateIncludeBAssy
+        '
+        Me.chkPartCreateIncludeBAssy.AutoSize = True
+        Me.chkPartCreateIncludeBAssy.Checked = True
+        Me.chkPartCreateIncludeBAssy.CheckState = System.Windows.Forms.CheckState.Checked
+        Me.chkPartCreateIncludeBAssy.Location = New System.Drawing.Point(6, 28)
+        Me.chkPartCreateIncludeBAssy.Name = "chkPartCreateIncludeBAssy"
+        Me.chkPartCreateIncludeBAssy.Size = New System.Drawing.Size(144, 17)
+        Me.chkPartCreateIncludeBAssy.TabIndex = 15
+        Me.chkPartCreateIncludeBAssy.Text = "Include B49 Assemblies?"
+        Me.chkPartCreateIncludeBAssy.UseVisualStyleBackColor = True
         '
         'lblVersion
         '
@@ -401,6 +423,15 @@ Partial Class frmBomTools
         Me.TabPage3.Text = "Part Create"
         Me.TabPage3.UseVisualStyleBackColor = True
         '
+        'btnPartCreateExport
+        '
+        Me.btnPartCreateExport.Location = New System.Drawing.Point(219, 416)
+        Me.btnPartCreateExport.Name = "btnPartCreateExport"
+        Me.btnPartCreateExport.Size = New System.Drawing.Size(144, 41)
+        Me.btnPartCreateExport.TabIndex = 18
+        Me.btnPartCreateExport.Text = "Part Create Export"
+        Me.btnPartCreateExport.UseVisualStyleBackColor = True
+        '
         'txtPCNumInventorParts
         '
         Me.txtPCNumInventorParts.Anchor = System.Windows.Forms.AnchorStyles.Bottom
@@ -457,6 +488,15 @@ Partial Class frmBomTools
         Me.TabPage4.Text = "BOM Import"
         Me.TabPage4.UseVisualStyleBackColor = True
         '
+        'btnBomImportExport
+        '
+        Me.btnBomImportExport.Location = New System.Drawing.Point(154, 416)
+        Me.btnBomImportExport.Name = "btnBomImportExport"
+        Me.btnBomImportExport.Size = New System.Drawing.Size(144, 41)
+        Me.btnBomImportExport.TabIndex = 21
+        Me.btnBomImportExport.Text = "Export BOM Import"
+        Me.btnBomImportExport.UseVisualStyleBackColor = True
+        '
         'txtBomImportNumParts
         '
         Me.txtBomImportNumParts.Anchor = System.Windows.Forms.AnchorStyles.Bottom
@@ -498,46 +538,6 @@ Partial Class frmBomTools
         Me.lvBomImport.UseCompatibleStateImageBehavior = False
         Me.lvBomImport.View = System.Windows.Forms.View.Details
         '
-        'btnPartCreateExport
-        '
-        Me.btnPartCreateExport.Location = New System.Drawing.Point(219, 416)
-        Me.btnPartCreateExport.Name = "btnPartCreateExport"
-        Me.btnPartCreateExport.Size = New System.Drawing.Size(144, 41)
-        Me.btnPartCreateExport.TabIndex = 18
-        Me.btnPartCreateExport.Text = "Export Part Create BOM"
-        Me.btnPartCreateExport.UseVisualStyleBackColor = True
-        '
-        'GroupBox1
-        '
-        Me.GroupBox1.Controls.Add(Me.chkPartCreateIncludeBAssy)
-        Me.GroupBox1.Location = New System.Drawing.Point(15, 196)
-        Me.GroupBox1.Name = "GroupBox1"
-        Me.GroupBox1.Size = New System.Drawing.Size(180, 52)
-        Me.GroupBox1.TabIndex = 19
-        Me.GroupBox1.TabStop = False
-        Me.GroupBox1.Text = "Part Create Options"
-        '
-        'chkPartCreateIncludeBAssy
-        '
-        Me.chkPartCreateIncludeBAssy.AutoSize = True
-        Me.chkPartCreateIncludeBAssy.Checked = True
-        Me.chkPartCreateIncludeBAssy.CheckState = System.Windows.Forms.CheckState.Checked
-        Me.chkPartCreateIncludeBAssy.Location = New System.Drawing.Point(6, 28)
-        Me.chkPartCreateIncludeBAssy.Name = "chkPartCreateIncludeBAssy"
-        Me.chkPartCreateIncludeBAssy.Size = New System.Drawing.Size(144, 17)
-        Me.chkPartCreateIncludeBAssy.TabIndex = 15
-        Me.chkPartCreateIncludeBAssy.Text = "Include B49 Assemblies?"
-        Me.chkPartCreateIncludeBAssy.UseVisualStyleBackColor = True
-        '
-        'btnBomImportExport
-        '
-        Me.btnBomImportExport.Location = New System.Drawing.Point(154, 416)
-        Me.btnBomImportExport.Name = "btnBomImportExport"
-        Me.btnBomImportExport.Size = New System.Drawing.Size(144, 41)
-        Me.btnBomImportExport.TabIndex = 21
-        Me.btnBomImportExport.Text = "Export BOM Import"
-        Me.btnBomImportExport.UseVisualStyleBackColor = True
-        '
         'frmBomTools
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -558,6 +558,8 @@ Partial Class frmBomTools
         Me.GroupBox3.PerformLayout()
         Me.TabPage2.ResumeLayout(False)
         Me.TabPage2.PerformLayout()
+        Me.GroupBox1.ResumeLayout(False)
+        Me.GroupBox1.PerformLayout()
         Me.TabPage1.ResumeLayout(False)
         Me.TabPage1.PerformLayout()
         Me.InventorMenuStrip.ResumeLayout(False)
@@ -567,8 +569,6 @@ Partial Class frmBomTools
         Me.TabPage3.PerformLayout()
         Me.TabPage4.ResumeLayout(False)
         Me.TabPage4.PerformLayout()
-        Me.GroupBox1.ResumeLayout(False)
-        Me.GroupBox1.PerformLayout()
         Me.ResumeLayout(False)
 
     End Sub

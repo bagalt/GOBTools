@@ -388,7 +388,7 @@ Public Class frmBomTools
                 proc.Location = LocateInCenter(Me, proc)
 
                 'create excel document
-                If mAllBOMExport.CreateExcelDoc(SaveFileDialog1.FileName) Then
+                If mAllBOMExport.PartCreateExportExcel(SaveFileDialog1.FileName) Then
                     'display results
                     proc.Close()
                     MsgBox(mAllBOMExport.mResults)
@@ -405,6 +405,62 @@ Public Class frmBomTools
         Me.Enabled = True
 
     End Sub
+
+    Private Sub btnPartCreateExport_Click(sender As Object, e As EventArgs) Handles btnPartCreateExport.Click
+        'handles clicking the part create export button
+        Dim proc As New frmProcessing
+        Dim path As String
+
+        path = GetFilePath("-Part Create Export")
+
+        If Not path = "" Then
+            'file path is not empty
+            'show processing message
+            proc.Show()
+
+            'set the processing form owner to keep it on top of the BOM tools form
+            proc.Owner = Me
+            'disable the bom tools form to grey it out
+            Me.Enabled = False
+            'locate the processing form on the BOM tools form
+            proc.Location = LocateInCenter(Me, proc)
+
+            'create excel document
+
+            If mAllBOMExport.PartCreateExportExcel(path) Then
+                'display results
+                proc.Close()
+                MsgBox(mAllBOMExport.mResults)
+            Else
+                proc.Close()
+                MsgBox("No Excel Document Created")
+            End If
+        End If
+
+        'enable the BOM tools form to activate it
+        Me.Enabled = True
+
+    End Sub
+
+    Private Function GetFilePath(ByVal suffix As String) As String
+        'opens a file dialog and prompts user for input and returns the result
+        Dim proc As New frmProcessing
+
+        'set save file dialog properties
+        SaveFileDialog1.Filter = "Excel Documents|*.xlsx;*.xls"
+        SaveFileDialog1.Title = "Select Location to Save Export File"
+        SaveFileDialog1.AddExtension = True
+        SaveFileDialog1.CheckFileExists = False
+        SaveFileDialog1.InitialDirectory = Environment.SpecialFolder.MyComputer
+        SaveFileDialog1.OverwritePrompt = True
+        SaveFileDialog1.FileName = startAssy & suffix
+
+        If SaveFileDialog1.ShowDialog = Windows.Forms.DialogResult.OK Then
+            Return SaveFileDialog1.FileName
+        Else
+            Return ""
+        End If
+    End Function
 
     Private Function LocateInCenter(ByVal parent As Form, ByVal child As Form) As Point
         'function to find the center point of the parent form 
