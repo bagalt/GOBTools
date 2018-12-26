@@ -10,8 +10,7 @@ Public Class frmBomTools
     Private mAssyDoc As Inventor.AssemblyDocument
     Private mAssyCompDef As Inventor.AssemblyComponentDefinition
     Private invApp As Inventor.Application
-    Private inventorSortCol As Integer
-    Private promanSortCol As Integer
+    Private sortCol As Integer
     Private BomImportSettings As mAllBOMExport.BomImportSettings 'settings for BOM Import collection
     Private PartCreateSettings As mAllBOMExport.PartCreateSettings 'settings for Part Create collection
     Private BomCompareSettings As mAllBOMExport.BomCompareSettings 'settings for BOM compare collection
@@ -188,7 +187,7 @@ Public Class frmBomTools
 
         'configure BOM Import Inventor BOM Listview options
 #Region "BOM Import Listview Configuration"
-        With lvBomImport
+        With lvFullBOM
             .FullRowSelect = True
             .GridLines = True
             .HeaderStyle = Windows.Forms.ColumnHeaderStyle.Clickable
@@ -212,9 +211,9 @@ Public Class frmBomTools
         End With
 
         'add column headers to listviews
-        lvBomImport.Columns.Add(bomImportHeader1)
-        lvBomImport.Columns.Add(bomImportHeader2)
-        lvBomImport.Columns.Add(bomImportHeader3)
+        lvFullBOM.Columns.Add(bomImportHeader1)
+        lvFullBOM.Columns.Add(bomImportHeader2)
+        lvFullBOM.Columns.Add(bomImportHeader3)
 #End Region
 
 
@@ -227,7 +226,7 @@ Public Class frmBomTools
         'clear listviews
         lvBomCompInventor.Clear()
         lvPartCreate.Clear()
-        lvBomImport.Clear()
+        lvFullBOM.Clear()
         'initialize headers
         InitInventorListView()
 
@@ -261,7 +260,7 @@ Public Class frmBomTools
         'populate the listview with the data
         PopulateListView(mAllBOMExport.bomCompareList, lvBomCompInventor, txtNumInventorParts)
         PopulatePartCreateLV(mAllBOMExport.partCreateList, lvPartCreate, txtPCNumInventorParts)
-        PopulateBOMImportLV(mAllBOMExport.bomImportList, lvBomImport, txtBomImportNumParts)
+        PopulateBOMImportLV(mAllBOMExport.bomImportList, lvFullBOM, txtBomImportNumParts)
         ColorList(lvBomCompInventor)
     End Sub
 
@@ -315,50 +314,8 @@ Public Class frmBomTools
 
     End Sub
 
-    Private Sub lvInventorBom_ColumnClick(sender As Object, e As ColumnClickEventArgs) Handles lvBomCompInventor.ColumnClick
-        'sub to handle sorting the inventor bom in ascending/decending order.  will toggle the state
 
-        'determine if the column is the same as the last column clicked
-        If e.Column <> inventorSortCol Then
-            'set the sort column to the new column
-            inventorSortCol = e.Column
-            'set the sort order to ascending by default
-            lvBomCompInventor.Sorting = SortOrder.Ascending
-        Else
-            'determine what the last sort order was and change it
-            If lvBomCompInventor.Sorting = SortOrder.Ascending Then
-                lvBomCompInventor.Sorting = SortOrder.Descending
-            Else
-                lvBomCompInventor.Sorting = SortOrder.Ascending
-            End If
-        End If
 
-        lvBomCompInventor.ListViewItemSorter = New ListViewItemComparer(e.Column, lvBomCompInventor.Sorting)
-        lvBomCompInventor.Sort()
-
-    End Sub
-
-    Private Sub lvPromanBom_ColumnClick(sender As Object, e As ColumnClickEventArgs) Handles lvPromanBom.ColumnClick
-        'sub to handle sorting the proman bom in ascending/decending order.  will toggle the state
-
-        'determine if the column is the same as the last column clicked
-        If e.Column <> promanSortCol Then
-            'set the sort column to the new column
-            promanSortCol = e.Column
-            'set the sort order to ascending by default
-            lvPromanBom.Sorting = SortOrder.Ascending
-        Else
-            'determine what the last sort order was and change it
-            If lvPromanBom.Sorting = SortOrder.Ascending Then
-                lvPromanBom.Sorting = SortOrder.Descending
-            Else
-                lvPromanBom.Sorting = SortOrder.Ascending
-            End If
-        End If
-
-        lvPromanBom.ListViewItemSorter = New ListViewItemComparer(e.Column, lvPromanBom.Sorting)
-        lvPromanBom.Sort()
-    End Sub
 
     Private Sub btnExportBOM_Click(sender As Object, e As EventArgs) Handles btnBCExportInventorBOM.Click
         'export bom button clicked
@@ -388,7 +345,7 @@ Public Class frmBomTools
                 proc.Location = LocateInCenter(Me, proc)
 
                 'create excel document
-                If mAllBOMExport.PartCreateExportExcel(SaveFileDialog1.FileName) Then
+                If mAllBOMExport.PartExportExcel(SaveFileDialog1.FileName) Then
                     'display results
                     proc.Close()
                     MsgBox(mAllBOMExport.mResults)
@@ -406,12 +363,12 @@ Public Class frmBomTools
 
     End Sub
 
-    Private Sub btnPartCreateExport_Click(sender As Object, e As EventArgs) Handles btnPartCreateExport.Click
+    Private Sub btnPartCreateExport_Click(sender As Object, e As EventArgs) Handles btnExportPartList.Click
         'handles clicking the part create export button
         Dim proc As New frmProcessing
         Dim path As String
 
-        path = GetFilePath("-Part Create Export")
+        path = GetFilePath("-Part Export")
 
         If Not path = "" Then
             'file path is not empty
@@ -427,7 +384,7 @@ Public Class frmBomTools
 
             'create excel document
 
-            If mAllBOMExport.PartCreateExportExcel(path) Then
+            If mAllBOMExport.PartExportExcel(path) Then
                 'display results
                 proc.Close()
                 MsgBox(mAllBOMExport.mResults)
@@ -441,6 +398,42 @@ Public Class frmBomTools
         Me.Enabled = True
 
     End Sub
+
+    Private Sub btnBomImportExport_Click(sender As Object, e As EventArgs) Handles btnBOMExport.Click
+        'handles clicking the export buton on the BOM Import tab
+        Dim proc As New frmProcessing
+        Dim path As String
+
+        path = GetFilePath("-BOM Export")
+
+        If Not path = "" Then
+            'file path is not empty
+            'show processing message
+            proc.Show()
+
+            'set the processing form owner to keep it on top of the BOM tools form
+            proc.Owner = Me
+            'disable the bom tools form to grey it out
+            Me.Enabled = False
+            'locate the processing form on the BOM tools form
+            proc.Location = LocateInCenter(Me, proc)
+
+            'create excel document
+
+            If mAllBOMExport.BOMExportExcel(path) Then
+                'display results
+                proc.Close()
+                MsgBox(mAllBOMExport.mResults)
+            Else
+                proc.Close()
+                MsgBox("No Excel Document Created")
+            End If
+        End If
+
+        'enable the BOM tools form to activate it
+        Me.Enabled = True
+    End Sub
+
 
     Private Function GetFilePath(ByVal suffix As String) As String
         'opens a file dialog and prompts user for input and returns the result
@@ -731,17 +724,6 @@ Public Class frmBomTools
 
     End Sub
 
-    Private Sub PromanMenuStrip_Opening(sender As Object, e As CancelEventArgs) Handles PromanMenuStrip.Opening
-        'check to see if the listview has items before displaying the context menu strip
-        'if there is nothing in the listview, it cancels the event and does not appear
-        If lvPromanBom.Items.Count = 0 Then
-            e.Cancel = True
-        End If
-        'tempory: disable menustrip until I can figure out how to use it better
-        'e.Cancel = True
-
-    End Sub
-
     Private Sub RunCmd(ByVal cmd As String)
         'sub to run a command through command manager
 
@@ -772,15 +754,107 @@ Public Class frmBomTools
 
     End Sub
 
-    Private Sub PromanLVMenuCopyItem_Click(sender As Object, e As EventArgs) Handles PromanLVMenuCopyItem.Click
+#Region "Sorting functionality for listviews"
+    Private Sub lvInventorBom_ColumnClick(sender As Object, e As ColumnClickEventArgs) Handles lvBomCompInventor.ColumnClick
+        'sub to handle sorting the inventor bom in ascending/decending order.  will toggle the state
 
-        If lvPromanBom.SelectedItems.Count = 0 Then
-            Exit Sub
+        'determine if the column is the same as the last column clicked
+        If e.Column <> sortCol Then
+            'set the sort column to the new column
+            sortCol = e.Column
+            'set the sort order to ascending by default
+            lvBomCompInventor.Sorting = SortOrder.Ascending
+        Else
+            'determine what the last sort order was and change it
+            If lvBomCompInventor.Sorting = SortOrder.Ascending Then
+                lvBomCompInventor.Sorting = SortOrder.Descending
+            Else
+                lvBomCompInventor.Sorting = SortOrder.Ascending
+            End If
         End If
 
-        'Copy item to clipboard
-        Clipboard.Clear()
-        Clipboard.SetText(lvPromanBom.SelectedItems(0).Text)
+        lvBomCompInventor.ListViewItemSorter = New ListViewItemComparer(e.Column, lvBomCompInventor.Sorting)
+        lvBomCompInventor.Sort()
+
+    End Sub
+
+    Private Sub lvPromanBom_ColumnClick(sender As Object, e As ColumnClickEventArgs) Handles lvPromanBom.ColumnClick
+        'sub to handle sorting the proman bom in ascending/decending order.  will toggle the state
+
+        'determine if the column is the same as the last column clicked
+        If e.Column <> sortCol Then
+            'set the sort column to the new column
+            sortCol = e.Column
+            'set the sort order to ascending by default
+            lvPromanBom.Sorting = SortOrder.Ascending
+        Else
+            'determine what the last sort order was and change it
+            If lvPromanBom.Sorting = SortOrder.Ascending Then
+                lvPromanBom.Sorting = SortOrder.Descending
+            Else
+                lvPromanBom.Sorting = SortOrder.Ascending
+            End If
+        End If
+
+        lvPromanBom.ListViewItemSorter = New ListViewItemComparer(e.Column, lvPromanBom.Sorting)
+        lvPromanBom.Sort()
+    End Sub
+
+    Private Sub lvPartCreate_ColumnClick(sender As Object, e As ColumnClickEventArgs) Handles lvPartCreate.ColumnClick
+        'sub to handle sorting the proman bom in ascending/decending order.  will toggle the state
+
+        'determine if the column is the same as the last column clicked
+        If e.Column <> sortCol Then
+            'set the sort column to the new column
+            sortCol = e.Column
+            'set the sort order to ascending by default
+            lvPartCreate.Sorting = SortOrder.Ascending
+        Else
+            'determine what the last sort order was and change it
+            If lvPartCreate.Sorting = SortOrder.Ascending Then
+                lvPartCreate.Sorting = SortOrder.Descending
+            Else
+                lvPartCreate.Sorting = SortOrder.Ascending
+            End If
+        End If
+
+        lvPartCreate.ListViewItemSorter = New ListViewItemComparer(e.Column, lvPartCreate.Sorting)
+        lvPartCreate.Sort()
+    End Sub
+
+    Private Sub lvFullBOM_ColumnClick(sender As Object, e As ColumnClickEventArgs) Handles lvFullBOM.ColumnClick
+        'sub to handle sorting the proman bom in ascending/decending order.  will toggle the state
+
+        'determine if the column is the same as the last column clicked
+        If e.Column <> sortCol Then
+            'set the sort column to the new column
+            sortCol = e.Column
+            'set the sort order to ascending by default
+            lvFullBOM.Sorting = SortOrder.Ascending
+        Else
+            'determine what the last sort order was and change it
+            If lvFullBOM.Sorting = SortOrder.Ascending Then
+                lvFullBOM.Sorting = SortOrder.Descending
+            Else
+                lvFullBOM.Sorting = SortOrder.Ascending
+            End If
+        End If
+
+        lvFullBOM.ListViewItemSorter = New ListViewItemComparer(e.Column, lvFullBOM.Sorting)
+        lvFullBOM.Sort()
+    End Sub
+#End Region
+
+#Region "Menu strip functionality for the listviews"
+
+    Private Sub PromanMenuStrip_Opening(sender As Object, e As CancelEventArgs) Handles PromanMenuStrip.Opening
+        'check to see if the listview has items before displaying the context menu strip
+        'if there is nothing in the listview, it cancels the event and does not appear
+        If lvPromanBom.Items.Count = 0 Then
+            e.Cancel = True
+        End If
+        'tempory: disable menustrip until I can figure out how to use it better
+        'e.Cancel = True
     End Sub
 
     Private Sub InventorMenuStrip_Opening(sender As Object, e As CancelEventArgs) Handles InventorMenuStrip.Opening
@@ -789,6 +863,32 @@ Public Class frmBomTools
         If lvBomCompInventor.Items.Count = 0 Then
             e.Cancel = True
         End If
+    End Sub
+
+    Private Sub FullBomMenuStrip_Opening(sender As Object, e As CancelEventArgs) Handles FullBomMenuStrip.Opening
+        'check to see if the listview has items before displaying the context menu strip
+        'if there is nothing in the listview, it cancels the event and does not appear
+        If FullBomMenuStrip.Items.Count = 0 Then
+            e.Cancel = True
+        End If
+    End Sub
+
+    Private Sub PartMenuStrip_Opening(sender As Object, e As CancelEventArgs) Handles PartMenuStrip.Opening
+        'check to see if the listview has items before displaying the context menu strip
+        'if there is nothing in the listview, it cancels the event and does not appear
+        If PartMenuStrip.Items.Count = 0 Then
+            e.Cancel = True
+        End If
+    End Sub
+
+    Private Sub PromanLVMenuCopyItem_Click(sender As Object, e As EventArgs) Handles PromanLVMenuCopyItem.Click
+        If lvPromanBom.SelectedItems.Count = 0 Then
+            Exit Sub
+        End If
+
+        'Copy item to clipboard
+        Clipboard.Clear()
+        Clipboard.SetText(lvPromanBom.SelectedItems(0).Text)
     End Sub
 
     Private Sub InventorMenuStripCOPY_Click(sender As Object, e As EventArgs) Handles InventorMenuStripCOPY.Click
@@ -801,6 +901,28 @@ Public Class frmBomTools
         Clipboard.SetText(lvBomCompInventor.SelectedItems(0).Text)
     End Sub
 
+    Private Sub PartMenuStripCopy_Click(sender As Object, e As EventArgs) Handles PartMenuStripCopy.Click
+        If lvPartCreate.SelectedItems.Count = 0 Then
+            Exit Sub
+        End If
+
+        'Copy item to clipboard
+        Clipboard.Clear()
+        Clipboard.SetText(lvPartCreate.SelectedItems(0).Text)
+    End Sub
+
+    Private Sub FullBomMenuStripCopy_Click(sender As Object, e As EventArgs) Handles FullBomMenuStripCopy.Click
+        If lvFullBOM.SelectedItems.Count = 0 Then
+            Exit Sub
+        End If
+
+        'Copy item to clipboard
+        Clipboard.Clear()
+        Clipboard.SetText(lvFullBOM.SelectedItems(0).Text)
+    End Sub
+#End Region
+
+#Region "Key Down events to handle Copy (Ctrl+C) of selected item"
     Private Sub lvInventorBom_KeyDown(sender As Object, e As KeyEventArgs) Handles lvBomCompInventor.KeyDown
         'Handles keydown event on listview.  Allows user to copy selected row (part number only)
 
@@ -827,5 +949,32 @@ Public Class frmBomTools
         End If
     End Sub
 
+    Private Sub lvPartCreate_KeyDown(sender As Object, e As KeyEventArgs) Handles lvPartCreate.KeyDown
+        'Handles keydown event on listview.  Allows user to copy selected row (part number only)
+
+        If e.KeyCode = Keys.C AndAlso e.Modifiers = Keys.Control Then
+            'Ctrl+c selected            
+            If lvPartCreate.SelectedItems.Count > 0 Then
+                'something selected on inventor BOM
+                Clipboard.Clear()
+                Clipboard.SetText(lvPartCreate.SelectedItems(0).Text)
+            End If
+        End If
+    End Sub
+
+    Private Sub lvFullBOM_KeyDown(sender As Object, e As KeyEventArgs) Handles lvFullBOM.KeyDown
+        'Handles keydown event on listview.  Allows user to copy selected row (part number only)
+
+        If e.KeyCode = Keys.C AndAlso e.Modifiers = Keys.Control Then
+            'Ctrl+c selected            
+            If lvFullBOM.SelectedItems.Count > 0 Then
+                'something selected on inventor BOM
+                Clipboard.Clear()
+                Clipboard.SetText(lvFullBOM.SelectedItems(0).Text)
+            End If
+        End If
+    End Sub
+
+#End Region
 
 End Class
