@@ -69,7 +69,7 @@ Module mAllBOMExport
 
     Public mResults As String = "" 'variable used for displaying the results
     Public bomCompareList As Collection 'collection for all unique parts in an assembly
-    Public partCreateList As Collection
+    Public partExportList As Collection
     Public bomImportList As Collection
     Public collAllParts As Collection 'public collection to show all parts
 
@@ -102,6 +102,10 @@ Module mAllBOMExport
         Dim assyDoc As Inventor.AssemblyDocument
         Dim colBreadCrumb As Collection
         Dim sFilePath As String
+        'variables to hold information for each occurrence
+        Dim occDoc As Inventor.Document
+        Dim occProps As Inventor.PropertySets
+        Dim occPartNum As String
 
         'Assign All parts and New Parts settings
         mBomImportSettings = BomImportConfig
@@ -130,6 +134,14 @@ Module mAllBOMExport
             colBreadCrumb = New Collection
             colBreadCrumb.Add(mStartAssy)
 
+            Try
+                occDoc = oCompOcc.Definition.Document
+                occProps = occDoc.PropertySets
+                occPartNum = occProps.Item("Design Tracking Properties").Item("Part Number").Value
+            Catch ex As Exception
+                occPartNum = oCompOcc.Name
+            End Try
+
             'check if occurrence is marked as reference or suppressed, dont do anything if it is reference or suppressed
             If Not ((oCompOcc.BOMStructure = Inventor.BOMStructureEnum.kReferenceBOMStructure) Or (oCompOcc.Suppressed = True)) Then  'if not reference or suppressed or phantom then continue
                 'Check if it's child occurrence (leaf node)
@@ -138,7 +150,7 @@ Module mAllBOMExport
                     If Not (oCompOcc.BOMStructure = Inventor.BOMStructureEnum.kPhantomBOMStructure) Then 'ignore phantom parts
                         mParentAssy = mStartAssy
                         mIsAssembly = False
-                        GetProps(oCompOcc, GetOccType(oCompOcc.Name), colBreadCrumb)
+                        GetProps(oCompOcc, GetOccType(occPartNum), colBreadCrumb)
                         iLeafNodes = iLeafNodes + 1
                     End If
                 Else
@@ -147,7 +159,7 @@ Module mAllBOMExport
                     iSubAssemblies = iSubAssemblies + 1
                     assyDoc = oCompOcc.Definition.Document
                     'add subassembly part number to breadcrumb
-                    sSubAssyName = BGENamePicker(oCompOcc.Name, mStartAssy)
+                    sSubAssyName = BGENamePicker(occPartNum, mStartAssy)
 
                     'determine if assembly should be explored deeper or not
                     If DiveDeeper(oCompOcc) Then
@@ -155,7 +167,7 @@ Module mAllBOMExport
                         'add assembly part number to breadcrumb if going further into sub assembly                        
                         colBreadCrumb.Add(assyDoc.PropertySets.Item("Design Tracking Properties").Item("Part Number").Value)
                         'sort the part
-                        GetProps(oCompOcc, GetOccType(oCompOcc.Name), colBreadCrumb)
+                        GetProps(oCompOcc, GetOccType(occPartNum), colBreadCrumb)
                         'subassembly
                         processAllSubOcc(oCompOcc, sMsg, iLeafNodes, iSubAssemblies, sSubAssyName, colBreadCrumb)
                     Else
@@ -165,7 +177,7 @@ Module mAllBOMExport
                         If oCompOcc.Definition.Type = Inventor.ObjectTypeEnum.kVirtualComponentDefinitionObject Then
                             GetProps(oCompOcc, PartType.VirtualPart, colBreadCrumb)
                         Else
-                            GetProps(oCompOcc, GetOccType(oCompOcc.Name), colBreadCrumb) 'how to detect virtual parts?
+                            GetProps(oCompOcc, GetOccType(occPartNum), colBreadCrumb) 'how to detect virtual parts?
                         End If
                     End If
                 End If
@@ -181,7 +193,7 @@ Module mAllBOMExport
         Debug.Print("")
         PrintColl(mCollFullBOM)
         bomCompareList = mCollBomCompare
-        partCreateList = mCollPartCreate
+        partExportList = mCollPartCreate
         bomImportList = mCollFullBOM
 
     End Sub
@@ -193,9 +205,12 @@ Module mAllBOMExport
         ' to iterate through the entire assembly tree.
 
         Dim oSubCompOcc As Inventor.ComponentOccurrence
-
         Dim sSubAssyName As String
         Dim subDoc As Inventor.Document
+        'variables for sub occurrence properties
+        Dim subCompOccDoc As Inventor.Document
+        Dim subCompOccProps As Inventor.PropertySets
+        Dim subCompOccPartNum As String
 
         'make a new breadcrumb collection for each time this sub is run
         Dim subBreadCrumb As Collection
@@ -210,6 +225,14 @@ Module mAllBOMExport
             'append prevBreadCrumb to the newly created breadcrumb
             AppendColl(subBreadCrumb, prevBreadCrumb)
 
+            Try
+                subCompOccDoc = oSubCompOcc.Definition.Document
+                subCompOccProps = subCompOccDoc.PropertySets
+                subCompOccPartNum = subCompOccProps.Item("Design Tracking Properties").Item("Part Number").Value
+            Catch ex As Exception
+                subCompOccPartNum = oSubCompOcc.Name
+            End Try
+
             If Not ((oSubCompOcc.BOMStructure = Inventor.BOMStructureEnum.kReferenceBOMStructure) Or (oSubCompOcc.Suppressed = True)) Then  'if not reference or suppressed or phantom then continue
                 'If (Not oSubCompOcc.BOMStructure = Inventor.BOMStructureEnum.kReferenceBOMStructure) And (Not oSubCompOcc.Suppressed = True) Then  'if not reference or suppressed then continue
                 ' Check if it's child occurrence (leaf node)
@@ -217,24 +240,24 @@ Module mAllBOMExport
                     'Debug.Print oSubCompOcc.Name
                     If Not (oSubCompOcc.BOMStructure = Inventor.BOMStructureEnum.kPhantomBOMStructure) Then 'ignore phantom parts only
                         mIsAssembly = False
-                        GetProps(oSubCompOcc, GetOccType(oSubCompOcc.Name), subBreadCrumb)
+                        GetProps(oSubCompOcc, GetOccType(subCompOccPartNum), subBreadCrumb)
                         iLeafNodes = iLeafNodes + 1
                     End If
                 Else 'it is a subassembly
                     mIsAssembly = True
-                    sMsg = sMsg + oSubCompOcc.Name + vbCr
+                    sMsg = sMsg + subCompOccPartNum + vbCr
                     iSubAssemblies = iSubAssemblies + 1
                     'add subassembly to breadcrumb collection
                     subDoc = oSubCompOcc.Definition.Document
                     'check if  subassembly is a BGE
-                    sSubAssyName = BGENamePicker(oSubCompOcc.Name, mParentAssy)
+                    sSubAssyName = BGENamePicker(subCompOccPartNum, mParentAssy)
 
                     'determine if the sub assembly should be explored deeper or not
                     If DiveDeeper(oSubCompOcc) Then
                         'dive deeper into sub assembly
                         'Add oSubCompOcc.Name to breadcrumb if going further into a sub assembly
                         subBreadCrumb.Add(subDoc.PropertySets.Item("Design Tracking Properties").Item("Part Number").Value)
-                        GetProps(oSubCompOcc, GetOccType(oSubCompOcc.Name), subBreadCrumb)
+                        GetProps(oSubCompOcc, GetOccType(subCompOccPartNum), subBreadCrumb)
 
                         'recursive call to this function to continue down the branch
                         processAllSubOcc(oSubCompOcc, sMsg, iLeafNodes, iSubAssemblies, sSubAssyName, subBreadCrumb)
@@ -245,7 +268,7 @@ Module mAllBOMExport
                         If oSubCompOcc.Definition.Type = Inventor.ObjectTypeEnum.kVirtualComponentDefinitionObject Then
                             GetProps(oSubCompOcc, PartType.VirtualPart, subBreadCrumb)
                         Else
-                            GetProps(oSubCompOcc, GetOccType(oSubCompOcc.Name), subBreadCrumb) 'how to detect virtual parts?
+                            GetProps(oSubCompOcc, GetOccType(subCompOccPartNum), subBreadCrumb) 'how to detect virtual parts?
                         End If
                     End If
                 End If
@@ -308,31 +331,17 @@ Module mAllBOMExport
                     Case Else
                         Select Case sPrefix
                             Case "B49", "B0049"
-                                'go into B49 assemblies based on setting
-                                If mBomCompSettings.bBomCompIncludeBAssy Then 'true = dont go deeper, show no children
-                                    'do not go deeper into assembly, no children
-                                    '***********
-                                    'want to go deeper, the filtering of what parts go onto what collections is handled in AddToCollection sub
-                                    '**********
-                                    Return True 'currently true to go into all B49 sub assemblies
-                                Else
-                                    'go deeper into assembly, children will be shown
-                                    Return True
-                                End If
-                                ' True = Do not go into assy (no children), False = OK to go into sub assy
-                                'Return Not mBomCompSettings.bBomCompIncBassy
+                                'need to go into B49s for BOM Export functionality
+                                Return True
                             Case "B47", "BGE", "BPH"
                                 'Ok to go into assemblies
                                 Return True
                             Case "B39"
-                                'check if B39 children are included
-                                'Return mBomCompSettings.bBomCompIncB39Children 'return state of checkbox checked = true
+                                'need to go into B39 assemblies for BOM Export functionality
                                 Return True
                             Case "B45"
                                 'check if B45 children are included
-                                'Return mBomCompSettings.bBomCompIncB45Children
                                 Return True
-
                             Case Else
                                 Return False
                         End Select
@@ -370,112 +379,112 @@ Module mAllBOMExport
 
     End Function
 
-    Private Sub SortPart(ByVal oCompOcc As Inventor.ComponentOccurrence, ByVal collBreadCrumb As Collection)
-        'sub to filter out desired parts and take further action
+    'Private Sub SortPart(ByVal oCompOcc As Inventor.ComponentOccurrence, ByVal collBreadCrumb As Collection)
+    '    'sub to filter out desired parts and take further action
 
-        Dim partProps As Inventor.PropertySets  'variable for the property sets object of the occurrence
-        Dim sFirstTwo As String 'variable for first two letters of part number/name
-        Dim sFirstLetter As String 'variable for holding the first letter of the part number/name
-        Dim docDef As Inventor.ComponentDefinition
-        Dim sCurrentYear As String
+    '    Dim partProps As Inventor.PropertySets  'variable for the property sets object of the occurrence
+    '    Dim sFirstTwo As String 'variable for first two letters of part number/name
+    '    Dim sFirstLetter As String 'variable for holding the first letter of the part number/name
+    '    Dim docDef As Inventor.ComponentDefinition
+    '    Dim sCurrentYear As String
 
-        sCurrentYear = "BY" & mYear
+    '    sCurrentYear = "BY" & mYear
 
-        docDef = oCompOcc.Definition
-        partProps = oCompOcc.Definition.Document.PropertySets
+    '    docDef = oCompOcc.Definition
+    '    partProps = oCompOcc.Definition.Document.PropertySets
 
-        'get first letter of occurrence name, may want to use part number property instead
-        sFirstLetter = Left(oCompOcc.Name, 1)
-        'get first two letters of occurrence name, may want to use part number property instead
-        sFirstTwo = Left(oCompOcc.Name, 2)
+    '    'get first letter of occurrence name, may want to use part number property instead
+    '    sFirstLetter = Left(oCompOcc.Name, 1)
+    '    'get first two letters of occurrence name, may want to use part number property instead
+    '    sFirstTwo = Left(oCompOcc.Name, 2)
 
-        'check if occurrence is a virtual component
-        If docDef.Type = Inventor.ObjectTypeEnum.kVirtualComponentDefinitionObject Then
-            'Get the properties of the virtual component
-            GetProps(oCompOcc, PartType.VirtualPart, collBreadCrumb)
-            Exit Sub
-        End If
+    '    'check if occurrence is a virtual component
+    '    If docDef.Type = Inventor.ObjectTypeEnum.kVirtualComponentDefinitionObject Then
+    '        'Get the properties of the virtual component
+    '        GetProps(oCompOcc, PartType.VirtualPart, collBreadCrumb)
+    '        Exit Sub
+    '    End If
 
-        Dim sPrefix As String
-        sPrefix = GetPrefix(oCompOcc.Name)
+    '    Dim sPrefix As String
+    '    sPrefix = GetPrefix(oCompOcc.Name)
 
-        Select Case sFirstLetter
-            Case "N", "S", "K", "D"
-                'standard parts
-                GetProps(oCompOcc, PartType.StandardPart, collBreadCrumb)
-            Case "B"
-                'MDE parts
-                Select Case sFirstTwo
-                    Case "BY"
-                        'purchased part
-                        If sPrefix = sCurrentYear Then
-                            'current year purch part
-                            GetProps(oCompOcc, PartType.PurchPart, collBreadCrumb)
-                        Else
-                            GetProps(oCompOcc, PartType.OldPurchPart, collBreadCrumb)
-                        End If
+    '    Select Case sFirstLetter
+    '        Case "N", "S", "K", "D"
+    '            'standard parts
+    '            GetProps(oCompOcc, PartType.StandardPart, collBreadCrumb)
+    '        Case "B"
+    '            'MDE parts
+    '            Select Case sFirstTwo
+    '                Case "BY"
+    '                    'purchased part
+    '                    If sPrefix = sCurrentYear Then
+    '                        'current year purch part
+    '                        GetProps(oCompOcc, PartType.PurchPart, collBreadCrumb)
+    '                    Else
+    '                        GetProps(oCompOcc, PartType.OldPurchPart, collBreadCrumb)
+    '                    End If
 
-                    Case Else
-                        Select Case sPrefix
-                            Case "B20", "B30", "B40", "B47", "B61", "B62", "B82", "B87", "B92", "B39", "B45"
-                                GetProps(oCompOcc, PartType.ManufPart, collBreadCrumb)
-                            Case "B0049", "B49"
-                                'add the B49 assy to the parts list
-                                GetProps(oCompOcc, PartType.BAssy, collBreadCrumb)
-                            Case "BGE"
-                                'BGE part generic
-                                GetProps(oCompOcc, PartType.BGEPart, collBreadCrumb)
-                            Case "BPH"
-                                'BPH part, phantom part same as BGE
-                                GetProps(oCompOcc, PartType.BPHPart, collBreadCrumb)
-                            Case Else
-                                'unknown part
-                                GetProps(oCompOcc, PartType.Unknown, collBreadCrumb)
-                        End Select
-                End Select
+    '                Case Else
+    '                    Select Case sPrefix
+    '                        Case "B20", "B30", "B40", "B47", "B61", "B62", "B82", "B87", "B92", "B39", "B45"
+    '                            GetProps(oCompOcc, PartType.ManufPart, collBreadCrumb)
+    '                        Case "B0049", "B49"
+    '                            'add the B49 assy to the parts list
+    '                            GetProps(oCompOcc, PartType.BAssy, collBreadCrumb)
+    '                        Case "BGE"
+    '                            'BGE part generic
+    '                            GetProps(oCompOcc, PartType.BGEPart, collBreadCrumb)
+    '                        Case "BPH"
+    '                            'BPH part, phantom part same as BGE
+    '                            GetProps(oCompOcc, PartType.BPHPart, collBreadCrumb)
+    '                        Case Else
+    '                            'unknown part
+    '                            GetProps(oCompOcc, PartType.Unknown, collBreadCrumb)
+    '                    End Select
+    '            End Select
 
-            Case "C"
-                'MBO parts
-                Select Case sFirstTwo
-                    Case "CY"
-                        'purchased part
-                        If sPrefix = sCurrentYear Then
-                            'current year purch part
-                            GetProps(oCompOcc, PartType.PurchPart, collBreadCrumb)
-                        Else
-                            GetProps(oCompOcc, PartType.OldPurchPart, collBreadCrumb)
-                        End If
-                    Case Else
-                        Select Case sPrefix
-                            Case "C20", "C30", "C40", "C47", "C61", "C62", "C82", "C87", "C92", "C39", "C45"
-                                GetProps(oCompOcc, PartType.ManufPart, collBreadCrumb)
-                            Case "C0049", "C49"
-                                'case to allow C49 assemblies to be parts in the list
-                                'add the C49 assy to the parts list
-                                GetProps(oCompOcc, PartType.CAssy, collBreadCrumb)
-                            Case "CGE"
-                                'BGE part
-                                GetProps(oCompOcc, PartType.BGEPart, collBreadCrumb)
-                            Case "CPH"
-                                'phantom part
-                                GetProps(oCompOcc, PartType.BPHPart, collBreadCrumb)
-                            Case Else
-                                'unknown part
-                                GetProps(oCompOcc, PartType.Unknown, collBreadCrumb)
-                        End Select
-                End Select
-            Case "M"
-                If sPrefix = "M900" Then 'fasteners
-                    GetProps(oCompOcc, PartType.M900Part, collBreadCrumb)
-                Else
-                    GetProps(oCompOcc, PartType.Unknown, collBreadCrumb)
-                End If
-            Case Else
-                'some unknown part
-                GetProps(oCompOcc, PartType.Unknown, collBreadCrumb)
-        End Select
+    '        Case "C"
+    '            'MBO parts
+    '            Select Case sFirstTwo
+    '                Case "CY"
+    '                    'purchased part
+    '                    If sPrefix = sCurrentYear Then
+    '                        'current year purch part
+    '                        GetProps(oCompOcc, PartType.PurchPart, collBreadCrumb)
+    '                    Else
+    '                        GetProps(oCompOcc, PartType.OldPurchPart, collBreadCrumb)
+    '                    End If
+    '                Case Else
+    '                    Select Case sPrefix
+    '                        Case "C20", "C30", "C40", "C47", "C61", "C62", "C82", "C87", "C92", "C39", "C45"
+    '                            GetProps(oCompOcc, PartType.ManufPart, collBreadCrumb)
+    '                        Case "C0049", "C49"
+    '                            'case to allow C49 assemblies to be parts in the list
+    '                            'add the C49 assy to the parts list
+    '                            GetProps(oCompOcc, PartType.CAssy, collBreadCrumb)
+    '                        Case "CGE"
+    '                            'BGE part
+    '                            GetProps(oCompOcc, PartType.BGEPart, collBreadCrumb)
+    '                        Case "CPH"
+    '                            'phantom part
+    '                            GetProps(oCompOcc, PartType.BPHPart, collBreadCrumb)
+    '                        Case Else
+    '                            'unknown part
+    '                            GetProps(oCompOcc, PartType.Unknown, collBreadCrumb)
+    '                    End Select
+    '            End Select
+    '        Case "M"
+    '            If sPrefix = "M900" Then 'fasteners
+    '                GetProps(oCompOcc, PartType.M900Part, collBreadCrumb)
+    '            Else
+    '                GetProps(oCompOcc, PartType.Unknown, collBreadCrumb)
+    '            End If
+    '        Case Else
+    '            'some unknown part
+    '            GetProps(oCompOcc, PartType.Unknown, collBreadCrumb)
+    '    End Select
 
-    End Sub
+    'End Sub
 
     Private Function GetOccType(ByVal sOcccName As String) As PartType
         'function to get the type of the part based on the occurrence name as a string
@@ -500,8 +509,13 @@ Module mAllBOMExport
 
         Select Case sFirstLetter
             Case "N", "S", "K", "D"
-                'standard parts                
-                GetOccType = PartType.StandardPart
+                'check the length of the prefix to see if it is a standard part
+                'and not just S.
+                If Len(sPrefix) > 1 Then
+                    GetOccType = PartType.StandardPart
+                Else
+                    GetOccType = PartType.Unknown
+                End If
             Case "B"
                 'MDE parts
                 Select Case sFirstTwo
@@ -589,6 +603,7 @@ Module mAllBOMExport
         'assign part properties object
         partProps = oCompOcc.Definition.Document.PropertySets
 
+
         'get the occurrence properties based on the current occurrence type, unfortunately locations for info change based on type
         Select Case currentOccurrenceType
             Case PartType.VirtualPart
@@ -608,10 +623,12 @@ Module mAllBOMExport
                 Try
                     'some parts may not have these items, such as proman class code, probably older items
                     occurrenceInfo.PromanCode = partProps.Item("User Defined Properties").Item("Proman Class Code").Value
-                    'sPromanCode = partProps.Item("User Defined Properties").Item("Proman Class Code").Value
+                    'need to raise error if proman code is empty
+                    If occurrenceInfo.PromanCode = "" Then
+                        PromanErr(occurrenceInfo)
+                    End If
                 Catch
                     PromanErr(occurrenceInfo)
-                    'PromanErr(occurrenceInfo.Description, propertyError, mErrorStatus, occurrenceInfo.ErrorMsg)
                 End Try
 
                 Try
@@ -855,7 +872,6 @@ Module mAllBOMExport
 
         'find parent for occurrence
         Try
-            'sParentInstance = occurrence.ParentOccurrence.Name
             sParentInstance = FindParentOccurrence(occurrence)
             parentOccType = GetOccType(sParentInstance)
         Catch ex As Exception
@@ -864,11 +880,10 @@ Module mAllBOMExport
             parentOccType = PartType.Toplevel
         End Try
 
-        ParentInfo = BomImportFindParent(collBreadCrumb, occurrenceInfo.PartNum)
+        ParentInfo = BomExportFindParent(collBreadCrumb, occurrenceInfo.PartNum)
         parentType = GetOccType(ParentInfo.ParentName)
 
-        'build the keys for the part collections
-
+        'build the keys for the collections
         sBomImportKey = occurrenceInfo.PartNum & "-" & ParentInfo.ParentName
         sBomInstanceKey = occurrenceInfo.PartNum & "-" & sParentInstance
         sBomCompareKey = occurrenceInfo.PartNum
@@ -878,7 +893,6 @@ Module mAllBOMExport
         If Not KeyExists(mCollBomCompare, sBomCompareKey) Then
             'if the part does not exist in collection then add the part
             addPart = True
-
             Select Case parentType
                 Case PartType.BAssy
                     'check settings for B49 parents
@@ -896,58 +910,57 @@ Module mAllBOMExport
                     Else
                         addPart = CheckPartSettings(occurrenceType)
                     End If
+                Case PartType.M900Part
+                    addPart = mBomCompSettings.bBomCompShowFasteners
                 Case Else
                     'check other settings
-                    addPart = CheckPartSettings(occurrenceType)
+                    If IsB39(ParentInfo.ParentName) Then
+                        'check settings for B39 children
+                        addPart = mBomCompSettings.bBomCompIncB39Children
+                    ElseIf GetPrefix(ParentInfo.ParentName) = "B45" Then
+                        addPart = mBomCompSettings.bBomCompIncB45Children
+                    Else
+                        addPart = CheckPartSettings(occurrenceType)
+                    End If
+
+                    If addPart Then
+                        'create instance of the partinfo class for all parts
+                        compOccurrence = New cPartInfo
+                        MakeEqual(compOccurrence, occurrenceInfo)
+                        compOccurrence.Description = CommaReplacer(occurrenceInfo.Description)
+                        'bump the quantity of the part (starts at 0)
+                        compOccurrence.IncrementQty(1)
+                        'add the newly created BomCompPartInfo to the mCollBomCompare collection with the part number as the key
+                        mCollBomCompare.Add(compOccurrence, sBomCompareKey)
+                    End If
             End Select
         Else
             'part already exists in list, increment qty
             mCollBomCompare.Item(sBomCompareKey).IncrementQty(1)
         End If
 
-        If addPart Then
-            'create instance of the partinfo class for all parts
-            compOccurrence = New cPartInfo
-            MakeEqual(compOccurrence, occurrenceInfo)
-            compOccurrence.Description = CommaReplacer(occurrenceInfo.Description)
-            'bump the quantity of the part (starts at 0)
-            compOccurrence.IncrementQty(1)
-            'add the newly created BomCompPartInfo to the mCollBomCompare collection with the part number as the key
-            mCollBomCompare.Add(compOccurrence, sBomCompareKey)
-        End If
 
-        Dim addToBOMImportColl As Boolean
-        addToBOMImportColl = True
+        Dim addToBOMColl As Boolean
+        addToBOMColl = True
 
-        'build BOM Import collection of parts NEW VERSION
-        'If Not (KeyExists(mCollBomImport, sBomImportKey)) Then
-        '    ParentInfo = BomImportFindParent(collBreadCrumb, occurrenceInfo.PartNum)
-        '    Select Case occurrenceType
-        '        Case PartType.BAssy
-        '            'occurrence is an assembly
-        '            If mBomImportSettings.bBomImportIncBassy Then
-        '                addToBOMImportColl = True
-        '            Else
-        '                addToBOMImportColl = False
-        '            End If
-        '        Case PartType.BPHPart
-        '            addToBOMImportColl = False
-        '        Case PartType.BGEPart
-        '            addToBOMImportColl = False
-        '    End Select
-        'End If
-
+        'build the Bom Export list
         If Not KeyExists(mCollBOMInstances, sBomInstanceKey) Then
-            'part does not exist so add the part to the collection
+            'part does not exist in the collection
             If Not KeyExists(mCollFullBOM, sBomImportKey) Then
-                'if include B49 is true and part is a B49 then do all this
-                If (mBomImportSettings.bBomImportIncBassy = False) And (occurrenceType = PartType.BAssy) Then
-                    'do nothing
-                ElseIf occurrenceType = PartType.BPHPart Then
-                    'do nothing, BPH parts should not be added to list
-                ElseIf (occurrenceType = PartType.BGEPart) Then
-                    'do nothing, BGE parts should never be added to collection
-                Else
+                'part does not exist in the collection
+                Select Case occurrenceType
+                    Case PartType.BAssy
+                        'add assembly based on settings
+                        addToBOMColl = mBomImportSettings.bBomImportIncBassy
+                    Case PartType.M900Part
+                        addToBOMColl = mBomImportSettings.bBomImportShowFasteners
+                    Case PartType.BPHPart, PartType.BGEPart
+                        addToBOMColl = False
+                    Case Else
+                        addToBOMColl = True
+                End Select
+                'add to collection
+                If addToBOMColl Then
                     importOccurrence = New cPartInfo
                     MakeEqual(importOccurrence, occurrenceInfo)
                     If ParentInfo.ErrorStatus = True Then
@@ -966,47 +979,10 @@ Module mAllBOMExport
                 End If
             Else
                 'key already exists, bump the quantity of the part
-                'If parent type is a BGE or BPH then increment the qty
             End If
         Else
             mCollFullBOM.Item(sBomImportKey).incrementqty(1)
-
         End If
-
-
-
-        'Build the BOM Import collection of parts
-        'If Not KeyExists(mCollFullBOM, sBomImportKey) Then
-        '    ParentInfo = BomImportFindParent(collBreadCrumb, occurrenceInfo.PartNum)
-        '    'if include B49 is true and part is a B49 then do all this
-        '    If (mBomImportSettings.bBomImportIncBassy = False) And (occurrenceType = PartType.BAssy) Then
-        '        'do nothing
-        '    ElseIf occurrenceType = PartType.BPHPart Then
-        '        'do nothing, BPH parts should not be added to list
-        '    ElseIf (occurrenceType = PartType.BGEPart) Then
-        '        'do nothing, BGE parts should never be added to collection
-        '        'ElseIf (IsBFourtyNine(BomImportFindParent(collBreadCrumb, occurrenceInfo.PartNum).ParentName)) And mBomImportSettings.bBomImportIncBassy Then
-        '        'parent is a B49 and setting says to show only B49 parents so do not add child
-        '    Else
-        '        importOccurrence = New cPartInfo
-        '        MakeEqual(importOccurrence, occurrenceInfo)
-        '        If ParentInfo.ErrorStatus = True Then
-        '            importOccurrence.ParentAssy = ParentInfo.ParentName
-        '            importOccurrence.PartError = True
-        '            importOccurrence.ErrorMsg = "Invalid Parent Assy"
-        '        Else
-        '            importOccurrence.ParentAssy = ParentInfo.ParentName
-        '        End If
-        '        importOccurrence.Breadcrumb = collBreadCrumb
-        '        'bump the quantity of the part (starts at 0)
-        '        importOccurrence.IncrementQty(1)
-        '        'add the newly created AllPartInfo to the mAllParts collection with the part number + parent as the key
-        '        mCollFullBOM.Add(importOccurrence, sBomImportKey)
-        '    End If
-        'Else
-        '    'key already exists, bump the quantity of the part
-        '    mCollFullBOM.Item(sBomImportKey).IncrementQty(1)
-        'End If
 
         'Build the Parts collection
         If Not KeyExists(mCollPartCreate, sPartCreateKey) Then
@@ -1017,8 +993,6 @@ Module mAllBOMExport
                 'do nothing, bge parts should never be created
             ElseIf (occurrenceType = PartType.BPHPart) Then
                 'do nothing, BPH parts should never be created
-                'ElseIf (occurrenceType = PartType.OldPurchPart) Then
-                'do nothing, prior year purchased parts should never be created
             ElseIf occurrenceType = PartType.StandardPart Then
                 'do nothing, standard parts not added to part create collection
             Else
@@ -1054,10 +1028,15 @@ Module mAllBOMExport
             Select Case parentOccType
                 Case PartType.BPHPart, PartType.BGEPart
                     'part types cannot be parents, keep looking
-                    FindParentOccurrence(occ.ParentOccurrence)
+                    Return FindParentOccurrence(occ.ParentOccurrence)
                 Case PartType.BAssy
-                    'check settings
-
+                    'check setting
+                    If mBomImportSettings.bBomImportIncBassy Then
+                        'b49s allowed to be parents
+                        Return occ.ParentOccurrence.Name
+                    Else
+                        Return FindParentOccurrence(occ.ParentOccurrence)
+                    End If
                 Case Else
                     'found valid parent, return the name
                     Return occ.ParentOccurrence.Name
@@ -1067,8 +1046,8 @@ Module mAllBOMExport
     End Function
 
     Private Function CheckPartSettings(occurrenceType As PartType) As Boolean
-        'function to check the settings as they relate to parts and return a boolean value to 
-        'add or not add part to the collection
+        'function to check the settings as they relate to the occurrence and return a boolean value to 
+        'add or not add the occurrence to a collection
 
         Select Case occurrenceType
             'add parts based on part level settings settings
@@ -1205,13 +1184,13 @@ Module mAllBOMExport
                 mResults = "**** ERRORS Found See Excel Document ****" & vbNewLine & vbNewLine
             End If
             'Add results to Results String
-            mResults = mResults & "File Path: " & FilePath & vbNewLine & vbNewLine & "Num Unique Parts: " & CStr(bomCompareList.Count)
+            mResults = mResults & "File Path: " & FilePath & vbNewLine & vbNewLine & "Num Unique Parts: " & CStr(bomImportList.Count)
         Else
             'File Path not valid
             If mErrorStatus = True Then
                 mResults = "**** ERRORS Found Some Parts Missing Info ****" & vbNewLine & vbNewLine
             End If
-            mResults = mResults & "Excel file NOT created" & vbNewLine & vbNewLine & "Num Unique Parts: " & CStr(bomCompareList.Count)
+            mResults = mResults & "Excel file NOT created" & vbNewLine & vbNewLine & "Num Unique Parts: " & CStr(bomImportList.Count)
             'dont try to create excel document
             BOMExportExcel = False
             Exit Function
@@ -1253,13 +1232,14 @@ Module mAllBOMExport
             .Range("H1").Value = "QPA"
             .Range("I1").Value = "Parent Assy"
             .Range("J1").Value = "Plan Type"
-            .Range("K1").Value = "Errors"
+            .Range("K1").Value = "Item Nbr"
+            .Range("L1").Value = "Errors"
             'color heading row gray
-            .Range("A1:K1").Interior.Color = mikronBlue 'RGB(178, 178, 178)
+            .Range("A1:L1").Interior.Color = mikronBlue 'RGB(178, 178, 178)
             'color heading text
-            .Range("A1:K1").Font.Color = headingTextColor
+            .Range("A1:L1").Font.Color = headingTextColor
             'bold heading row column headings
-            .Range("A1:K1").Font.Bold = True
+            .Range("A1:L1").Font.Bold = True
         End With
 
         'start filling in table on row 2
@@ -1278,17 +1258,18 @@ Module mAllBOMExport
                 .Range("H" & row).Value = part.Qty
                 .Range("I" & row).Value = part.ParentAssy
                 .Range("J" & row).Value = 1 'default plan type will always be 1
-                .Range("K" & row).Value = part.ErrorMsg
+                .Range("K" & row).Value = "" 'default to a blank cell
+                .Range("L" & row).Value = part.ErrorMsg
                 If part.PartError = True Then
                     'color error rows
-                    .Range("A" & row & ":" & "K" & row).Interior.Color = errorColor
+                    .Range("A" & row & ":" & "L" & row).Interior.Color = errorColor
                 End If
             End With
             row = row + 1
         Next
 
         'autosize columns
-        ws1.Columns("A:K").Autofit
+        ws1.Columns("A:L").Autofit
 
         Try
             wb.SaveAs(Filename:=FilePath, AccessMode:=Excel.XlSaveAsAccessMode.xlExclusive, ConflictResolution:=Excel.XlSaveConflictResolution.xlLocalSessionChanges)
@@ -1329,13 +1310,13 @@ Module mAllBOMExport
                 mResults = "**** ERRORS Found See Excel Document ****" & vbNewLine & vbNewLine
             End If
             'Add results to Results String
-            mResults = mResults & "File Path: " & FilePath & vbNewLine & vbNewLine & "Num Unique Parts: " & CStr(bomCompareList.Count)
+            mResults = mResults & "File Path: " & FilePath & vbNewLine & vbNewLine & "Num Unique Parts: " & CStr(partExportList.Count)
         Else
             'File Path not valid
             If mErrorStatus = True Then
                 mResults = "**** ERRORS Found Some Parts Missing Info ****" & vbNewLine & vbNewLine
             End If
-            mResults = mResults & "Excel file NOT created" & vbNewLine & vbNewLine & "Num Unique Parts: " & CStr(bomCompareList.Count)
+            mResults = mResults & "Excel file NOT created" & vbNewLine & vbNewLine & "Num Unique Parts: " & CStr(partExportList.Count)
             'dont try to create excel document
             PartExportExcel = False
             Exit Function
@@ -1682,7 +1663,7 @@ Module mAllBOMExport
 
     End Function
 
-    Private Function BomImportFindParent(collBreadCrumb As Collection, sChild As String) As ParentStatus
+    Private Function BomExportFindParent(collBreadCrumb As Collection, sChild As String) As ParentStatus
         'function to find the parent assembly by going backwards through the breadcrumb collection
         'coll is the breadcrumb collection 
         'depending on settings, BGE and B49 parts will or will not be parents
@@ -1707,14 +1688,14 @@ Module mAllBOMExport
                             Exit For
                         End If
                     Else
-                        'parent is not a B49 or a BGE so it is OK
+                        'parent is not a B49, BPH or a BGE so it is OK
                         Exit For
                     End If
                 End If
 
             Catch ex As Exception
-                BomImportFindParent.ParentName = "INVALID Parent"
-                BomImportFindParent.ErrorStatus = True
+                BomExportFindParent.ParentName = "INVALID Parent"
+                BomExportFindParent.ErrorStatus = True
                 mErrorStatus = True
                 'exit the function and assign invalid parent error
                 Exit Function
@@ -1722,59 +1703,10 @@ Module mAllBOMExport
         Next
 
         'for loop was finished or exited, assign values
-        BomImportFindParent.ParentName = parent
-        BomImportFindParent.ErrorStatus = False
+        BomExportFindParent.ParentName = parent
+        BomExportFindParent.ErrorStatus = False
 
     End Function
-
-    'Private Function FindParent(coll As Collection) As ParentStatus
-    '    'function to find the parent assembly by going backwards through the breadcrumb collection
-    '    'coll is the breadcrumb collection 
-    '    'depending on settings, BGE and B49 parts will or will not be parents
-    '    'This only really affects the mAllParts collection since that is the only collection that needs the parents.
-
-    '    Dim i As Integer
-    '    Dim parent As String
-
-    '    For i = 0 To coll.Count
-    '        Try
-    '            parent = coll.Item(coll.Count - i)
-    '            If mIsAssembly = False Then
-    '                'occurrence is a part, OK to have BGE or B49 as parent if setting is included
-    '                If IsPrefixMatch(parent, "BGE") Then
-    '                    'parent is a BGE part, check if BGEs are included
-    '                ElseIf IsBFourtyNine(parent) = True Then
-    '                    'parent is B49, check if B49s are included
-    '                    If mBomImportSettings.bBomImportIncBassy = True Then
-    '                        'OK to have B49 parent
-    '                        FindParent.ParentName = parent
-    '                        Exit Function
-    '                    End If
-    '                Else
-    '                    'not a B49 or BGE parent
-    '                    FindParent.ParentName = parent
-    '                    Exit Function
-    '                End If
-
-    '            Else
-    '                'occurrence is an assembly, NOT OK to have BGE or B49 as parent
-    '                If Not (IsPrefixMatch(parent, "BGE") Or IsBFourtyNine(parent)) Then
-    '                    'parent is NOT a BGE or B49
-    '                    FindParent.ParentName = parent
-    '                    Exit Function
-    '                End If
-    '            End If
-    '        Catch ex As Exception
-    '            FindParent.ParentName = "INVALID BGE Parent"
-    '            FindParent.ErrorStatus = True
-    '            mErrorStatus = True
-    '        End Try
-    '    Next
-
-    '    FindParent.ParentName = "****"
-    '    FindParent.ErrorStatus = True
-
-    'End Function
 
     Private Function IsPrefixMatch(Name As String, MatchString As String) As Boolean
         'function to determine if the prefix of Name matches MatchString

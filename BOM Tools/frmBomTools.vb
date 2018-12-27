@@ -170,11 +170,11 @@ Public Class frmBomTools
         End With
         With partCreateHeader2
             .Text = "Description"
-            .Width = 200
+            .Width = 210
         End With
         With partCreateHeader3
             .Text = "Qty"
-            .Width = 45
+            .Width = 40
         End With
 
         'add column headers to listviews
@@ -183,7 +183,6 @@ Public Class frmBomTools
         lvPartCreate.Columns.Add(partCreateHeader3)
 
 #End Region
-
 
         'configure BOM Import Inventor BOM Listview options
 #Region "BOM Import Listview Configuration"
@@ -203,11 +202,11 @@ Public Class frmBomTools
         End With
         With bomImportHeader2
             .Text = "Qty"
-            .Width = 50
+            .Width = 40
         End With
         With bomImportHeader3
             .Text = "Parent"
-            .Width = 110
+            .Width = 150
         End With
 
         'add column headers to listviews
@@ -215,7 +214,6 @@ Public Class frmBomTools
         lvFullBOM.Columns.Add(bomImportHeader2)
         lvFullBOM.Columns.Add(bomImportHeader3)
 #End Region
-
 
     End Sub
 
@@ -259,8 +257,8 @@ Public Class frmBomTools
 
         'populate the listview with the data
         PopulateListView(mAllBOMExport.bomCompareList, lvBomCompInventor, txtNumInventorParts)
-        PopulatePartCreateLV(mAllBOMExport.partCreateList, lvPartCreate, txtPCNumInventorParts)
-        PopulateBOMImportLV(mAllBOMExport.bomImportList, lvFullBOM, txtBomImportNumParts)
+        PopulatePartCreateLV(mAllBOMExport.partExportList, lvPartCreate, txtPCNumInventorParts)
+        PopulateBOMExportLV(mAllBOMExport.bomImportList, lvFullBOM, txtBomImportNumParts)
         ColorList(lvBomCompInventor)
     End Sub
 
@@ -297,7 +295,7 @@ Public Class frmBomTools
 
     End Sub
 
-    Private Sub PopulateBOMImportLV(ByRef PartsList As Collection, MyList As System.Windows.Forms.ListView, TextBox As System.Windows.Forms.TextBox)
+    Private Sub PopulateBOMExportLV(ByRef PartsList As Collection, MyList As System.Windows.Forms.ListView, TextBox As System.Windows.Forms.TextBox)
         'sub to populate the listview based on the collection passed in
 
         Dim part As cPartInfo
@@ -313,9 +311,6 @@ Public Class frmBomTools
         TextBox.Text = PartsList.Count
 
     End Sub
-
-
-
 
     Private Sub btnExportBOM_Click(sender As Object, e As EventArgs) Handles btnBCExportInventorBOM.Click
         'export bom button clicked
@@ -399,7 +394,7 @@ Public Class frmBomTools
 
     End Sub
 
-    Private Sub btnBomImportExport_Click(sender As Object, e As EventArgs) Handles btnBOMExport.Click
+    Private Sub btnBomExport_Click(sender As Object, e As EventArgs) Handles btnBOMExport.Click
         'handles clicking the export buton on the BOM Import tab
         Dim proc As New frmProcessing
         Dim path As String
@@ -433,7 +428,6 @@ Public Class frmBomTools
         'enable the BOM tools form to activate it
         Me.Enabled = True
     End Sub
-
 
     Private Function GetFilePath(ByVal suffix As String) As String
         'opens a file dialog and prompts user for input and returns the result
@@ -751,6 +745,8 @@ Public Class frmBomTools
         My.Settings.BomToolsBomCompIncludeC49Assemblies = chkBomCompIncludeCAssy.Checked
         My.Settings.BomToolsBomCompShowFasteners = chkBomCompShowFasteners.Checked
         My.Settings.BomToolsFormLocation = Me.Location
+        'save settings
+        My.Settings.Save()
 
     End Sub
 
@@ -865,10 +861,10 @@ Public Class frmBomTools
         End If
     End Sub
 
-    Private Sub FullBomMenuStrip_Opening(sender As Object, e As CancelEventArgs) Handles FullBomMenuStrip.Opening
+    Private Sub FullBomMenuStrip_Opening(sender As Object, e As CancelEventArgs) Handles BomMenuStrip.Opening
         'check to see if the listview has items before displaying the context menu strip
         'if there is nothing in the listview, it cancels the event and does not appear
-        If FullBomMenuStrip.Items.Count = 0 Then
+        If BomMenuStrip.Items.Count = 0 Then
             e.Cancel = True
         End If
     End Sub
@@ -881,14 +877,13 @@ Public Class frmBomTools
         End If
     End Sub
 
-    Private Sub PromanLVMenuCopyItem_Click(sender As Object, e As EventArgs) Handles PromanLVMenuCopyItem.Click
+    Private Sub PromanLVMenuCopyItem_Click(sender As Object, e As EventArgs) Handles PromanMenuStripCOPY.Click
         If lvPromanBom.SelectedItems.Count = 0 Then
             Exit Sub
         End If
 
         'Copy item to clipboard
-        Clipboard.Clear()
-        Clipboard.SetText(lvPromanBom.SelectedItems(0).Text)
+        CopyToClipboard(lvPromanBom.SelectedItems(0).Text)
     End Sub
 
     Private Sub InventorMenuStripCOPY_Click(sender As Object, e As EventArgs) Handles InventorMenuStripCOPY.Click
@@ -897,28 +892,51 @@ Public Class frmBomTools
         End If
 
         'Copy item to clipboard
-        Clipboard.Clear()
-        Clipboard.SetText(lvBomCompInventor.SelectedItems(0).Text)
+        CopyToClipboard(lvBomCompInventor.SelectedItems(0).Text)
+    End Sub
+
+    Private Sub InventorMenuStripFIND_Click(sender As Object, e As EventArgs) Handles InventorMenuStripFIND.Click
+        'handles selecting find in the menu strip
+        If lvBomCompInventor.SelectedItems.Count = 0 Then
+            Exit Sub
+        End If
+        'search fpr the selected item
+        SearchBox(lvBomCompInventor.SelectedItems(0).Text)
     End Sub
 
     Private Sub PartMenuStripCopy_Click(sender As Object, e As EventArgs) Handles PartMenuStripCopy.Click
         If lvPartCreate.SelectedItems.Count = 0 Then
             Exit Sub
         End If
-
         'Copy item to clipboard
-        Clipboard.Clear()
-        Clipboard.SetText(lvPartCreate.SelectedItems(0).Text)
+        CopyToClipboard(lvPartCreate.SelectedItems(0).Text)
     End Sub
 
-    Private Sub FullBomMenuStripCopy_Click(sender As Object, e As EventArgs) Handles FullBomMenuStripCopy.Click
+    Private Sub PartMenuStripFIND_Click(sender As Object, e As EventArgs) Handles PartMenuStripFIND.Click
+        'handles selecting find in the menu strip
+        If lvPartCreate.SelectedItems.Count = 0 Then
+            Exit Sub
+        End If
+        'search fpr the selected item
+        SearchBox(lvPartCreate.SelectedItems(0).Text)
+    End Sub
+
+    Private Sub BomMenuStripCopy_Click(sender As Object, e As EventArgs) Handles BomMenuStripCopy.Click
+        'handles selecting find in the menu strip
         If lvFullBOM.SelectedItems.Count = 0 Then
             Exit Sub
         End If
-
         'Copy item to clipboard
-        Clipboard.Clear()
-        Clipboard.SetText(lvFullBOM.SelectedItems(0).Text)
+        CopyToClipboard(lvFullBOM.SelectedItems(0).Text)
+    End Sub
+
+    Private Sub BomMenuStripFIND_Click(sender As Object, e As EventArgs) Handles BomMenuStripFIND.Click
+        'handles selecting find in the menu strip
+        If lvFullBOM.SelectedItems.Count = 0 Then
+            Exit Sub
+        End If
+        'search fpr the selected item
+        SearchBox(lvFullBOM.SelectedItems(0).Text)
     End Sub
 #End Region
 
@@ -976,5 +994,30 @@ Public Class frmBomTools
     End Sub
 
 #End Region
+
+    Private Sub CopyToClipboard(ByVal copyText As String)
+        'sub to copy text to the clipboard
+        'Copy item to clipboard
+        Clipboard.Clear()
+        Clipboard.SetText(copyText)
+    End Sub
+
+    Private Sub SearchBox(ByVal searchText As String)
+        'sub to use the search box by right clicking on listview item
+        Dim oPane As Inventor.BrowserPane
+
+        'get the broweser pane that supports the search box
+        oPane = mAssyDoc.BrowserPanes("AmBrowserArrangement")
+
+        Dim oSearchBox As Inventor.SearchBox
+        oSearchBox = oPane.SearchBox
+
+        'enable search box and display it in the browser pane for search text
+        oSearchBox.Enabled = True
+        oSearchBox.Visible = True
+        oSearchBox.Search(searchText)
+
+    End Sub
+
 
 End Class
