@@ -922,18 +922,18 @@ Module mAllBOMExport
                     Else
                         addPart = CheckPartSettings(occurrenceType)
                     End If
-
-                    If addPart Then
-                        'create instance of the partinfo class for all parts
-                        compOccurrence = New cPartInfo
-                        MakeEqual(compOccurrence, occurrenceInfo)
-                        compOccurrence.Description = CommaReplacer(occurrenceInfo.Description)
-                        'bump the quantity of the part (starts at 0)
-                        compOccurrence.IncrementQty(1)
-                        'add the newly created BomCompPartInfo to the mCollBomCompare collection with the part number as the key
-                        mCollBomCompare.Add(compOccurrence, sBomCompareKey)
-                    End If
             End Select
+
+            If addPart Then
+                'create instance of the partinfo class for all parts
+                compOccurrence = New cPartInfo
+                MakeEqual(compOccurrence, occurrenceInfo)
+                compOccurrence.Description = CommaReplacer(occurrenceInfo.Description)
+                'bump the quantity of the part (starts at 0)
+                compOccurrence.IncrementQty(1)
+                'add the newly created BomCompPartInfo to the mCollBomCompare collection with the part number as the key
+                mCollBomCompare.Add(compOccurrence, sBomCompareKey)
+            End If
         Else
             'part already exists in list, increment qty
             mCollBomCompare.Item(sBomCompareKey).IncrementQty(1)

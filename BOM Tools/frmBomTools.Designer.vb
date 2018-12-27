@@ -45,6 +45,7 @@ Partial Class frmBomTools
         Me.lvPromanBom = New System.Windows.Forms.ListView()
         Me.PromanMenuStrip = New System.Windows.Forms.ContextMenuStrip(Me.components)
         Me.PromanMenuStripCOPY = New System.Windows.Forms.ToolStripMenuItem()
+        Me.PromanMenuStripFIND = New System.Windows.Forms.ToolStripMenuItem()
         Me.btnLoadInventorBOM = New System.Windows.Forms.Button()
         Me.TabControl1 = New System.Windows.Forms.TabControl()
         Me.TabPage3 = New System.Windows.Forms.TabPage()
@@ -56,6 +57,7 @@ Partial Class frmBomTools
         Me.lvPartCreate = New System.Windows.Forms.ListView()
         Me.PartMenuStrip = New System.Windows.Forms.ContextMenuStrip(Me.components)
         Me.PartMenuStripCopy = New System.Windows.Forms.ToolStripMenuItem()
+        Me.PartMenuStripFIND = New System.Windows.Forms.ToolStripMenuItem()
         Me.TabPage4 = New System.Windows.Forms.TabPage()
         Me.chkBomImportShowFasteners = New System.Windows.Forms.CheckBox()
         Me.chkBomImportAllowBAssyParent = New System.Windows.Forms.CheckBox()
@@ -66,11 +68,9 @@ Partial Class frmBomTools
         Me.lvFullBOM = New System.Windows.Forms.ListView()
         Me.BomMenuStrip = New System.Windows.Forms.ContextMenuStrip(Me.components)
         Me.BomMenuStripCopy = New System.Windows.Forms.ToolStripMenuItem()
+        Me.BomMenuStripFIND = New System.Windows.Forms.ToolStripMenuItem()
         Me.SaveFileDialog1 = New System.Windows.Forms.SaveFileDialog()
         Me.lblVersion = New System.Windows.Forms.Label()
-        Me.PromanMenuStripFIND = New System.Windows.Forms.ToolStripMenuItem()
-        Me.PartMenuStripFIND = New System.Windows.Forms.ToolStripMenuItem()
-        Me.BomMenuStripFIND = New System.Windows.Forms.ToolStripMenuItem()
         Me.TabPage1.SuspendLayout()
         Me.InventorMenuStrip.SuspendLayout()
         Me.PromanMenuStrip.SuspendLayout()
@@ -83,9 +83,9 @@ Partial Class frmBomTools
         '
         'btnBCExportInventorBOM
         '
-        Me.btnBCExportInventorBOM.Location = New System.Drawing.Point(183, 371)
+        Me.btnBCExportInventorBOM.Location = New System.Drawing.Point(184, 371)
         Me.btnBCExportInventorBOM.Name = "btnBCExportInventorBOM"
-        Me.btnBCExportInventorBOM.Size = New System.Drawing.Size(123, 43)
+        Me.btnBCExportInventorBOM.Size = New System.Drawing.Size(120, 45)
         Me.btnBCExportInventorBOM.TabIndex = 13
         Me.btnBCExportInventorBOM.Text = "Export Inventor BOM" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "<--"
         Me.btnBCExportInventorBOM.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
@@ -217,9 +217,9 @@ Partial Class frmBomTools
         '
         'btnRunCompare
         '
-        Me.btnRunCompare.Location = New System.Drawing.Point(183, 282)
+        Me.btnRunCompare.Location = New System.Drawing.Point(184, 282)
         Me.btnRunCompare.Name = "btnRunCompare"
-        Me.btnRunCompare.Size = New System.Drawing.Size(123, 52)
+        Me.btnRunCompare.Size = New System.Drawing.Size(120, 50)
         Me.btnRunCompare.TabIndex = 6
         Me.btnRunCompare.Text = "Run Compare"
         Me.btnRunCompare.UseVisualStyleBackColor = True
@@ -236,9 +236,9 @@ Partial Class frmBomTools
         '
         'btnLoadPromanBom
         '
-        Me.btnLoadPromanBom.Location = New System.Drawing.Point(183, 27)
+        Me.btnLoadPromanBom.Location = New System.Drawing.Point(184, 27)
         Me.btnLoadPromanBom.Name = "btnLoadPromanBom"
-        Me.btnLoadPromanBom.Size = New System.Drawing.Size(123, 44)
+        Me.btnLoadPromanBom.Size = New System.Drawing.Size(120, 45)
         Me.btnLoadPromanBom.TabIndex = 4
         Me.btnLoadPromanBom.Text = "Load Proman BOM" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "                            -->"
         Me.btnLoadPromanBom.TextAlign = System.Drawing.ContentAlignment.MiddleRight
@@ -305,6 +305,12 @@ Partial Class frmBomTools
         Me.PromanMenuStripCOPY.Name = "PromanMenuStripCOPY"
         Me.PromanMenuStripCOPY.Size = New System.Drawing.Size(124, 22)
         Me.PromanMenuStripCOPY.Text = "Copy"
+        '
+        'PromanMenuStripFIND
+        '
+        Me.PromanMenuStripFIND.Name = "PromanMenuStripFIND"
+        Me.PromanMenuStripFIND.Size = New System.Drawing.Size(124, 22)
+        Me.PromanMenuStripFIND.Text = "Find Item"
         '
         'btnLoadInventorBOM
         '
@@ -418,6 +424,12 @@ Partial Class frmBomTools
         Me.PartMenuStripCopy.Size = New System.Drawing.Size(124, 22)
         Me.PartMenuStripCopy.Text = "Copy"
         '
+        'PartMenuStripFIND
+        '
+        Me.PartMenuStripFIND.Name = "PartMenuStripFIND"
+        Me.PartMenuStripFIND.Size = New System.Drawing.Size(124, 22)
+        Me.PartMenuStripFIND.Text = "Find Item"
+        '
         'TabPage4
         '
         Me.TabPage4.Controls.Add(Me.chkBomImportShowFasteners)
@@ -514,13 +526,19 @@ Partial Class frmBomTools
         '
         Me.BomMenuStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.BomMenuStripCopy, Me.BomMenuStripFIND})
         Me.BomMenuStrip.Name = "FullBomMenuStrip"
-        Me.BomMenuStrip.Size = New System.Drawing.Size(181, 70)
+        Me.BomMenuStrip.Size = New System.Drawing.Size(125, 48)
         '
         'BomMenuStripCopy
         '
         Me.BomMenuStripCopy.Name = "BomMenuStripCopy"
-        Me.BomMenuStripCopy.Size = New System.Drawing.Size(180, 22)
+        Me.BomMenuStripCopy.Size = New System.Drawing.Size(124, 22)
         Me.BomMenuStripCopy.Text = "Copy"
+        '
+        'BomMenuStripFIND
+        '
+        Me.BomMenuStripFIND.Name = "BomMenuStripFIND"
+        Me.BomMenuStripFIND.Size = New System.Drawing.Size(124, 22)
+        Me.BomMenuStripFIND.Text = "Find Item"
         '
         'lblVersion
         '
@@ -530,24 +548,6 @@ Partial Class frmBomTools
         Me.lblVersion.TabIndex = 25
         Me.lblVersion.Text = "Version"
         Me.lblVersion.TextAlign = System.Drawing.ContentAlignment.MiddleRight
-        '
-        'PromanMenuStripFIND
-        '
-        Me.PromanMenuStripFIND.Name = "PromanMenuStripFIND"
-        Me.PromanMenuStripFIND.Size = New System.Drawing.Size(124, 22)
-        Me.PromanMenuStripFIND.Text = "Find Item"
-        '
-        'PartMenuStripFIND
-        '
-        Me.PartMenuStripFIND.Name = "PartMenuStripFIND"
-        Me.PartMenuStripFIND.Size = New System.Drawing.Size(124, 22)
-        Me.PartMenuStripFIND.Text = "Find Item"
-        '
-        'BomMenuStripFIND
-        '
-        Me.BomMenuStripFIND.Name = "BomMenuStripFIND"
-        Me.BomMenuStripFIND.Size = New System.Drawing.Size(180, 22)
-        Me.BomMenuStripFIND.Text = "Find Item"
         '
         'frmBomTools
         '
