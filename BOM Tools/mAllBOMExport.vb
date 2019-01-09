@@ -137,7 +137,14 @@ Module mAllBOMExport
             Try
                 occDoc = oCompOcc.Definition.Document
                 occProps = occDoc.PropertySets
-                occPartNum = occProps.Item("Design Tracking Properties").Item("Part Number").Value
+                If oCompOcc.Definition.Type = Inventor.ObjectTypeEnum.kVirtualComponentDefinitionObject Then
+                    'virtual parts have the part number in a different location for some reason
+                    occPartNum = oCompOcc.Definition.propertysets.item("Design Tracking Properties").item("Part Number").value
+                Else
+                    'get occurrence part number
+                    occPartNum = occProps.Item("Design Tracking Properties").Item("Part Number").Value
+                End If
+
             Catch ex As Exception
                 occPartNum = oCompOcc.Name
             End Try
@@ -147,7 +154,11 @@ Module mAllBOMExport
                 'Check if it's child occurrence (leaf node)
                 If oCompOcc.SubOccurrences.Count = 0 Then
                     'not a sub assembly
-                    If Not (oCompOcc.BOMStructure = Inventor.BOMStructureEnum.kPhantomBOMStructure) Then 'ignore phantom parts
+                    If oCompOcc.Definition.Type = Inventor.ObjectTypeEnum.kVirtualComponentDefinitionObject Then
+                        mParentAssy = mStartAssy
+                        mIsAssembly = False
+                        GetProps(oCompOcc, PartType.VirtualPart, colBreadCrumb)
+                    ElseIf Not (oCompOcc.BOMStructure = Inventor.BOMStructureEnum.kPhantomBOMStructure) Then 'ignore phantom parts
                         mParentAssy = mStartAssy
                         mIsAssembly = False
                         GetProps(oCompOcc, GetOccType(occPartNum), colBreadCrumb)
@@ -228,17 +239,27 @@ Module mAllBOMExport
             Try
                 subCompOccDoc = oSubCompOcc.Definition.Document
                 subCompOccProps = subCompOccDoc.PropertySets
-                subCompOccPartNum = subCompOccProps.Item("Design Tracking Properties").Item("Part Number").Value
+
+                If oSubCompOcc.Definition.Type = Inventor.ObjectTypeEnum.kVirtualComponentDefinitionObject Then
+                    'virtual parts have the part number in a different location for some reason
+                    subCompOccPartNum = oSubCompOcc.Definition.propertysets.item("Design Tracking Properties").item("Part Number").value
+                Else
+                    'get part number
+                    subCompOccPartNum = subCompOccProps.Item("Design Tracking Properties").Item("Part Number").Value
+                End If
             Catch ex As Exception
                 subCompOccPartNum = oSubCompOcc.Name
             End Try
 
             If Not ((oSubCompOcc.BOMStructure = Inventor.BOMStructureEnum.kReferenceBOMStructure) Or (oSubCompOcc.Suppressed = True)) Then  'if not reference or suppressed or phantom then continue
-                'If (Not oSubCompOcc.BOMStructure = Inventor.BOMStructureEnum.kReferenceBOMStructure) And (Not oSubCompOcc.Suppressed = True) Then  'if not reference or suppressed then continue
                 ' Check if it's child occurrence (leaf node)
                 If oSubCompOcc.SubOccurrences.Count = 0 Then
                     'Debug.Print oSubCompOcc.Name
-                    If Not (oSubCompOcc.BOMStructure = Inventor.BOMStructureEnum.kPhantomBOMStructure) Then 'ignore phantom parts only
+                    If oSubCompOcc.Definition.Type = Inventor.ObjectTypeEnum.kVirtualComponentDefinitionObject Then
+                        mParentAssy = mStartAssy
+                        mIsAssembly = False
+                        GetProps(oSubCompOcc, PartType.VirtualPart, subBreadCrumb)
+                    ElseIf Not (oSubCompOcc.BOMStructure = Inventor.BOMStructureEnum.kPhantomBOMStructure) Then 'ignore phantom parts only
                         mIsAssembly = False
                         GetProps(oSubCompOcc, GetOccType(subCompOccPartNum), subBreadCrumb)
                         iLeafNodes = iLeafNodes + 1
