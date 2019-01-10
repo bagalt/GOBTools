@@ -16,7 +16,6 @@ Module mAllBOMExport
     Private mCollBomCompare As Collection 'collection to hold all the parts for the BOM compare listview
 
     Private mStartAssy As String 'holds the top level assembly name
-    Private mYear As String 'variable to hold the current year as a string
     Private mParentAssy As String 'variable to hold the name of the parent assembly for a part
     Private mErrorStatus As Boolean 'variable to show if an error has occurred in any of the part info, used to display message about excel file
     Private mIsAssembly As Boolean 'flag for indicating if current occurrence is an assembly (true)
@@ -116,9 +115,6 @@ Module mAllBOMExport
         mParentAssy = ""
         mErrorStatus = False
         mResults = ""
-
-        'Get the current year,  then get the last two characters to get the year string
-        mYear = Right(CStr(System.DateTime.Today.Year), 2)
 
         'get the starting assembly name, for display and excel file naming purposes
         mStartAssy = oDoc.PropertySets.Item("Design Tracking Properties").Item("Part Number").Value
@@ -320,12 +316,10 @@ Module mAllBOMExport
 
         Dim sFirstLetter As String
         Dim sFirstTwo As String
-        Dim sCurrentYear As String
         Dim sPrefix As String
         Dim assyDoc As Inventor.AssemblyDocument
         Dim partNumber As String
 
-        sCurrentYear = "BY" & mYear
         assyDoc = oCompOcc.Definition.Document
 
         Try
@@ -400,125 +394,21 @@ Module mAllBOMExport
 
     End Function
 
-    'Private Sub SortPart(ByVal oCompOcc As Inventor.ComponentOccurrence, ByVal collBreadCrumb As Collection)
-    '    'sub to filter out desired parts and take further action
-
-    '    Dim partProps As Inventor.PropertySets  'variable for the property sets object of the occurrence
-    '    Dim sFirstTwo As String 'variable for first two letters of part number/name
-    '    Dim sFirstLetter As String 'variable for holding the first letter of the part number/name
-    '    Dim docDef As Inventor.ComponentDefinition
-    '    Dim sCurrentYear As String
-
-    '    sCurrentYear = "BY" & mYear
-
-    '    docDef = oCompOcc.Definition
-    '    partProps = oCompOcc.Definition.Document.PropertySets
-
-    '    'get first letter of occurrence name, may want to use part number property instead
-    '    sFirstLetter = Left(oCompOcc.Name, 1)
-    '    'get first two letters of occurrence name, may want to use part number property instead
-    '    sFirstTwo = Left(oCompOcc.Name, 2)
-
-    '    'check if occurrence is a virtual component
-    '    If docDef.Type = Inventor.ObjectTypeEnum.kVirtualComponentDefinitionObject Then
-    '        'Get the properties of the virtual component
-    '        GetProps(oCompOcc, PartType.VirtualPart, collBreadCrumb)
-    '        Exit Sub
-    '    End If
-
-    '    Dim sPrefix As String
-    '    sPrefix = GetPrefix(oCompOcc.Name)
-
-    '    Select Case sFirstLetter
-    '        Case "N", "S", "K", "D"
-    '            'standard parts
-    '            GetProps(oCompOcc, PartType.StandardPart, collBreadCrumb)
-    '        Case "B"
-    '            'MDE parts
-    '            Select Case sFirstTwo
-    '                Case "BY"
-    '                    'purchased part
-    '                    If sPrefix = sCurrentYear Then
-    '                        'current year purch part
-    '                        GetProps(oCompOcc, PartType.PurchPart, collBreadCrumb)
-    '                    Else
-    '                        GetProps(oCompOcc, PartType.OldPurchPart, collBreadCrumb)
-    '                    End If
-
-    '                Case Else
-    '                    Select Case sPrefix
-    '                        Case "B20", "B30", "B40", "B47", "B61", "B62", "B82", "B87", "B92", "B39", "B45"
-    '                            GetProps(oCompOcc, PartType.ManufPart, collBreadCrumb)
-    '                        Case "B0049", "B49"
-    '                            'add the B49 assy to the parts list
-    '                            GetProps(oCompOcc, PartType.BAssy, collBreadCrumb)
-    '                        Case "BGE"
-    '                            'BGE part generic
-    '                            GetProps(oCompOcc, PartType.BGEPart, collBreadCrumb)
-    '                        Case "BPH"
-    '                            'BPH part, phantom part same as BGE
-    '                            GetProps(oCompOcc, PartType.BPHPart, collBreadCrumb)
-    '                        Case Else
-    '                            'unknown part
-    '                            GetProps(oCompOcc, PartType.Unknown, collBreadCrumb)
-    '                    End Select
-    '            End Select
-
-    '        Case "C"
-    '            'MBO parts
-    '            Select Case sFirstTwo
-    '                Case "CY"
-    '                    'purchased part
-    '                    If sPrefix = sCurrentYear Then
-    '                        'current year purch part
-    '                        GetProps(oCompOcc, PartType.PurchPart, collBreadCrumb)
-    '                    Else
-    '                        GetProps(oCompOcc, PartType.OldPurchPart, collBreadCrumb)
-    '                    End If
-    '                Case Else
-    '                    Select Case sPrefix
-    '                        Case "C20", "C30", "C40", "C47", "C61", "C62", "C82", "C87", "C92", "C39", "C45"
-    '                            GetProps(oCompOcc, PartType.ManufPart, collBreadCrumb)
-    '                        Case "C0049", "C49"
-    '                            'case to allow C49 assemblies to be parts in the list
-    '                            'add the C49 assy to the parts list
-    '                            GetProps(oCompOcc, PartType.CAssy, collBreadCrumb)
-    '                        Case "CGE"
-    '                            'BGE part
-    '                            GetProps(oCompOcc, PartType.BGEPart, collBreadCrumb)
-    '                        Case "CPH"
-    '                            'phantom part
-    '                            GetProps(oCompOcc, PartType.BPHPart, collBreadCrumb)
-    '                        Case Else
-    '                            'unknown part
-    '                            GetProps(oCompOcc, PartType.Unknown, collBreadCrumb)
-    '                    End Select
-    '            End Select
-    '        Case "M"
-    '            If sPrefix = "M900" Then 'fasteners
-    '                GetProps(oCompOcc, PartType.M900Part, collBreadCrumb)
-    '            Else
-    '                GetProps(oCompOcc, PartType.Unknown, collBreadCrumb)
-    '            End If
-    '        Case Else
-    '            'some unknown part
-    '            GetProps(oCompOcc, PartType.Unknown, collBreadCrumb)
-    '    End Select
-
-    'End Sub
-
     Private Function GetOccType(ByVal sOcccName As String) As PartType
         'function to get the type of the part based on the occurrence name as a string
 
         Dim sFirstTwo As String 'variable for first two letters of part number/name
         Dim sFirstLetter As String 'variable for holding the first letter of the part number/name
-        Dim sCurrentYear As String
+        Dim occurrenceYear As Integer
+        Dim vaultTransitionYear As Integer
+
+        'the year we switch to new numbering system with vault
+        'all purchased parts older than this year will be Old Purchased Parts
+        vaultTransitionYear = 17
 
         If sOcccName = "-TL" Then
             Return PartType.Toplevel
         End If
-
-        sCurrentYear = "BY" & mYear
 
         'get first letter of occurrence name, may want to use part number property instead
         sFirstLetter = Left(sOcccName, 1)
@@ -542,7 +432,9 @@ Module mAllBOMExport
                 Select Case sFirstTwo
                     Case "BY"
                         'purchased part
-                        If sPrefix = sCurrentYear Then
+                        'find the year for the occurrence, get the last two digits of the BY number
+                        occurrenceYear = Right(sPrefix, 2)
+                        If occurrenceYear < vaultTransitionYear Then
                             'current year purch part
                             GetOccType = PartType.PurchPart
                         Else
@@ -573,7 +465,9 @@ Module mAllBOMExport
                 Select Case sFirstTwo
                     Case "CY"
                         'purchased part
-                        If sPrefix = sCurrentYear Then
+                        'find the year for the occurrence, get the last two digits of the BY number
+                        occurrenceYear = Right(sPrefix, 2)
+                        If occurrenceYear < vaultTransitionYear Then
                             'current year purch part
                             GetOccType = PartType.PurchPart
                         Else
