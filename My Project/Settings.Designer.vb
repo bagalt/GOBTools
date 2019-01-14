@@ -232,6 +232,30 @@ Partial Friend NotInheritable Class Settings
             Me("BomToolsBomCompShowFasteners") = value
         End Set
     End Property
+    
+    <Global.System.Configuration.UserScopedSettingAttribute(),  _
+     Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+     Global.System.Configuration.DefaultSettingValueAttribute("False")>  _
+    Public Property BomToolsPartExportIncludeTopLevelAssy() As Boolean
+        Get
+            Return CType(Me("BomToolsPartExportIncludeTopLevelAssy"),Boolean)
+        End Get
+        Set
+            Me("BomToolsPartExportIncludeTopLevelAssy") = value
+        End Set
+    End Property
+    
+    <Global.System.Configuration.UserScopedSettingAttribute(),  _
+     Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+     Global.System.Configuration.DefaultSettingValueAttribute("False")>  _
+    Public Property BomToolsBomExportIncludeTopLevelAssy() As Boolean
+        Get
+            Return CType(Me("BomToolsBomExportIncludeTopLevelAssy"),Boolean)
+        End Get
+        Set
+            Me("BomToolsBomExportIncludeTopLevelAssy") = value
+        End Set
+    End Property
 End Class
 
 Namespace My

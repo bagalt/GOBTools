@@ -49,7 +49,7 @@ Partial Class frmBomTools
         Me.btnLoadInventorBOM = New System.Windows.Forms.Button()
         Me.TabControl1 = New System.Windows.Forms.TabControl()
         Me.TabPage3 = New System.Windows.Forms.TabPage()
-        Me.chkPartCreateIncludeBAssy = New System.Windows.Forms.CheckBox()
+        Me.chkPartExportShowB49 = New System.Windows.Forms.CheckBox()
         Me.btnExportPartList = New System.Windows.Forms.Button()
         Me.txtPCNumInventorParts = New System.Windows.Forms.TextBox()
         Me.Label2 = New System.Windows.Forms.Label()
@@ -71,6 +71,9 @@ Partial Class frmBomTools
         Me.BomMenuStripFIND = New System.Windows.Forms.ToolStripMenuItem()
         Me.SaveFileDialog1 = New System.Windows.Forms.SaveFileDialog()
         Me.lblVersion = New System.Windows.Forms.Label()
+        Me.chkBOMExportShowTLAssy = New System.Windows.Forms.CheckBox()
+        Me.chkPartExportShowTLAssy = New System.Windows.Forms.CheckBox()
+        Me.chkBomCompShowTLAssy = New System.Windows.Forms.CheckBox()
         Me.TabPage1.SuspendLayout()
         Me.InventorMenuStrip.SuspendLayout()
         Me.PromanMenuStrip.SuspendLayout()
@@ -93,6 +96,7 @@ Partial Class frmBomTools
         '
         'TabPage1
         '
+        Me.TabPage1.Controls.Add(Me.chkBomCompShowTLAssy)
         Me.TabPage1.Controls.Add(Me.chkBOMCompIncB45Children)
         Me.TabPage1.Controls.Add(Me.chkBOMCompIncB39Children)
         Me.TabPage1.Controls.Add(Me.chkBomCompIncludeCAssy)
@@ -120,7 +124,7 @@ Partial Class frmBomTools
         'chkBOMCompIncB45Children
         '
         Me.chkBOMCompIncB45Children.AutoSize = True
-        Me.chkBOMCompIncB45Children.Location = New System.Drawing.Point(183, 236)
+        Me.chkBOMCompIncB45Children.Location = New System.Drawing.Point(183, 255)
         Me.chkBOMCompIncB45Children.Name = "chkBOMCompIncB45Children"
         Me.chkBOMCompIncB45Children.Size = New System.Drawing.Size(116, 17)
         Me.chkBOMCompIncB45Children.TabIndex = 24
@@ -132,7 +136,7 @@ Partial Class frmBomTools
         Me.chkBOMCompIncB39Children.AutoSize = True
         Me.chkBOMCompIncB39Children.Checked = True
         Me.chkBOMCompIncB39Children.CheckState = System.Windows.Forms.CheckState.Checked
-        Me.chkBOMCompIncB39Children.Location = New System.Drawing.Point(183, 213)
+        Me.chkBOMCompIncB39Children.Location = New System.Drawing.Point(183, 232)
         Me.chkBOMCompIncB39Children.Name = "chkBOMCompIncB39Children"
         Me.chkBOMCompIncB39Children.Size = New System.Drawing.Size(116, 17)
         Me.chkBOMCompIncB39Children.TabIndex = 23
@@ -144,7 +148,7 @@ Partial Class frmBomTools
         Me.chkBomCompIncludeCAssy.AutoSize = True
         Me.chkBomCompIncludeCAssy.Checked = True
         Me.chkBomCompIncludeCAssy.CheckState = System.Windows.Forms.CheckState.Checked
-        Me.chkBomCompIncludeCAssy.Location = New System.Drawing.Point(183, 177)
+        Me.chkBomCompIncludeCAssy.Location = New System.Drawing.Point(183, 196)
         Me.chkBomCompIncludeCAssy.Name = "chkBomCompIncludeCAssy"
         Me.chkBomCompIncludeCAssy.Size = New System.Drawing.Size(84, 30)
         Me.chkBomCompIncludeCAssy.TabIndex = 22
@@ -156,7 +160,7 @@ Partial Class frmBomTools
         Me.chkBomCompIncludeBAssy.AutoSize = True
         Me.chkBomCompIncludeBAssy.Checked = True
         Me.chkBomCompIncludeBAssy.CheckState = System.Windows.Forms.CheckState.Checked
-        Me.chkBomCompIncludeBAssy.Location = New System.Drawing.Point(183, 141)
+        Me.chkBomCompIncludeBAssy.Location = New System.Drawing.Point(183, 160)
         Me.chkBomCompIncludeBAssy.Name = "chkBomCompIncludeBAssy"
         Me.chkBomCompIncludeBAssy.Size = New System.Drawing.Size(84, 30)
         Me.chkBomCompIncludeBAssy.TabIndex = 21
@@ -168,7 +172,7 @@ Partial Class frmBomTools
         Me.chkBomCompShowFasteners.AutoSize = True
         Me.chkBomCompShowFasteners.Checked = True
         Me.chkBomCompShowFasteners.CheckState = System.Windows.Forms.CheckState.Checked
-        Me.chkBomCompShowFasteners.Location = New System.Drawing.Point(183, 105)
+        Me.chkBomCompShowFasteners.Location = New System.Drawing.Point(183, 124)
         Me.chkBomCompShowFasteners.Name = "chkBomCompShowFasteners"
         Me.chkBomCompShowFasteners.Size = New System.Drawing.Size(102, 30)
         Me.chkBomCompShowFasteners.TabIndex = 20
@@ -217,7 +221,7 @@ Partial Class frmBomTools
         '
         'btnRunCompare
         '
-        Me.btnRunCompare.Location = New System.Drawing.Point(184, 282)
+        Me.btnRunCompare.Location = New System.Drawing.Point(184, 301)
         Me.btnRunCompare.Name = "btnRunCompare"
         Me.btnRunCompare.Size = New System.Drawing.Size(120, 50)
         Me.btnRunCompare.TabIndex = 6
@@ -335,7 +339,8 @@ Partial Class frmBomTools
         '
         'TabPage3
         '
-        Me.TabPage3.Controls.Add(Me.chkPartCreateIncludeBAssy)
+        Me.TabPage3.Controls.Add(Me.chkPartExportShowTLAssy)
+        Me.TabPage3.Controls.Add(Me.chkPartExportShowB49)
         Me.TabPage3.Controls.Add(Me.btnExportPartList)
         Me.TabPage3.Controls.Add(Me.txtPCNumInventorParts)
         Me.TabPage3.Controls.Add(Me.Label2)
@@ -349,17 +354,17 @@ Partial Class frmBomTools
         Me.TabPage3.Text = "Part Export"
         Me.TabPage3.UseVisualStyleBackColor = True
         '
-        'chkPartCreateIncludeBAssy
+        'chkPartExportShowB49
         '
-        Me.chkPartCreateIncludeBAssy.AutoSize = True
-        Me.chkPartCreateIncludeBAssy.Checked = True
-        Me.chkPartCreateIncludeBAssy.CheckState = System.Windows.Forms.CheckState.Checked
-        Me.chkPartCreateIncludeBAssy.Location = New System.Drawing.Point(380, 28)
-        Me.chkPartCreateIncludeBAssy.Name = "chkPartCreateIncludeBAssy"
-        Me.chkPartCreateIncludeBAssy.Size = New System.Drawing.Size(84, 30)
-        Me.chkPartCreateIncludeBAssy.TabIndex = 19
-        Me.chkPartCreateIncludeBAssy.Text = "Show B49s" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "(no children)"
-        Me.chkPartCreateIncludeBAssy.UseVisualStyleBackColor = True
+        Me.chkPartExportShowB49.AutoSize = True
+        Me.chkPartExportShowB49.Checked = True
+        Me.chkPartExportShowB49.CheckState = System.Windows.Forms.CheckState.Checked
+        Me.chkPartExportShowB49.Location = New System.Drawing.Point(379, 64)
+        Me.chkPartExportShowB49.Name = "chkPartExportShowB49"
+        Me.chkPartExportShowB49.Size = New System.Drawing.Size(84, 30)
+        Me.chkPartExportShowB49.TabIndex = 19
+        Me.chkPartExportShowB49.Text = "Show B49s" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "(no children)"
+        Me.chkPartExportShowB49.UseVisualStyleBackColor = True
         '
         'btnExportPartList
         '
@@ -432,6 +437,7 @@ Partial Class frmBomTools
         '
         'TabPage4
         '
+        Me.TabPage4.Controls.Add(Me.chkBOMExportShowTLAssy)
         Me.TabPage4.Controls.Add(Me.chkBomImportShowFasteners)
         Me.TabPage4.Controls.Add(Me.chkBomImportAllowBAssyParent)
         Me.TabPage4.Controls.Add(Me.btnBOMExport)
@@ -452,7 +458,7 @@ Partial Class frmBomTools
         Me.chkBomImportShowFasteners.AutoSize = True
         Me.chkBomImportShowFasteners.Checked = True
         Me.chkBomImportShowFasteners.CheckState = System.Windows.Forms.CheckState.Checked
-        Me.chkBomImportShowFasteners.Location = New System.Drawing.Point(336, 51)
+        Me.chkBomImportShowFasteners.Location = New System.Drawing.Point(332, 73)
         Me.chkBomImportShowFasteners.Name = "chkBomImportShowFasteners"
         Me.chkBomImportShowFasteners.Size = New System.Drawing.Size(138, 17)
         Me.chkBomImportShowFasteners.TabIndex = 23
@@ -464,7 +470,7 @@ Partial Class frmBomTools
         Me.chkBomImportAllowBAssyParent.AutoSize = True
         Me.chkBomImportAllowBAssyParent.Checked = True
         Me.chkBomImportAllowBAssyParent.CheckState = System.Windows.Forms.CheckState.Checked
-        Me.chkBomImportAllowBAssyParent.Location = New System.Drawing.Point(336, 28)
+        Me.chkBomImportAllowBAssyParent.Location = New System.Drawing.Point(332, 50)
         Me.chkBomImportAllowBAssyParent.Name = "chkBomImportAllowBAssyParent"
         Me.chkBomImportAllowBAssyParent.Size = New System.Drawing.Size(80, 17)
         Me.chkBomImportAllowBAssyParent.TabIndex = 22
@@ -549,6 +555,36 @@ Partial Class frmBomTools
         Me.lblVersion.Text = "Version"
         Me.lblVersion.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
+        'chkBOMExportShowTLAssy
+        '
+        Me.chkBOMExportShowTLAssy.AutoSize = True
+        Me.chkBOMExportShowTLAssy.Location = New System.Drawing.Point(332, 28)
+        Me.chkBOMExportShowTLAssy.Name = "chkBOMExportShowTLAssy"
+        Me.chkBOMExportShowTLAssy.Size = New System.Drawing.Size(129, 17)
+        Me.chkBOMExportShowTLAssy.TabIndex = 24
+        Me.chkBOMExportShowTLAssy.Text = "Show Top Level Assy"
+        Me.chkBOMExportShowTLAssy.UseVisualStyleBackColor = True
+        '
+        'chkPartExportShowTLAssy
+        '
+        Me.chkPartExportShowTLAssy.AutoSize = True
+        Me.chkPartExportShowTLAssy.Location = New System.Drawing.Point(379, 28)
+        Me.chkPartExportShowTLAssy.Name = "chkPartExportShowTLAssy"
+        Me.chkPartExportShowTLAssy.Size = New System.Drawing.Size(78, 30)
+        Me.chkPartExportShowTLAssy.TabIndex = 25
+        Me.chkPartExportShowTLAssy.Text = "Show Top " & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "Level Assy"
+        Me.chkPartExportShowTLAssy.UseVisualStyleBackColor = True
+        '
+        'chkBomCompShowTLAssy
+        '
+        Me.chkBomCompShowTLAssy.AutoSize = True
+        Me.chkBomCompShowTLAssy.Location = New System.Drawing.Point(182, 88)
+        Me.chkBomCompShowTLAssy.Name = "chkBomCompShowTLAssy"
+        Me.chkBomCompShowTLAssy.Size = New System.Drawing.Size(78, 30)
+        Me.chkBomCompShowTLAssy.TabIndex = 26
+        Me.chkBomCompShowTLAssy.Text = "Show Top " & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "Level Assy"
+        Me.chkBomCompShowTLAssy.UseVisualStyleBackColor = True
+        '
         'frmBomTools
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -611,7 +647,7 @@ Partial Class frmBomTools
     Friend WithEvents btnBOMExport As Windows.Forms.Button
     Friend WithEvents chkBomImportAllowBAssyParent As Windows.Forms.CheckBox
     Friend WithEvents chkBomImportShowFasteners As Windows.Forms.CheckBox
-    Friend WithEvents chkPartCreateIncludeBAssy As Windows.Forms.CheckBox
+    Friend WithEvents chkPartExportShowB49 As Windows.Forms.CheckBox
     Friend WithEvents PartMenuStrip As Windows.Forms.ContextMenuStrip
     Friend WithEvents PartMenuStripCopy As Windows.Forms.ToolStripMenuItem
     Friend WithEvents BomMenuStrip As Windows.Forms.ContextMenuStrip
@@ -626,4 +662,7 @@ Partial Class frmBomTools
     Friend WithEvents PromanMenuStripFIND As Windows.Forms.ToolStripMenuItem
     Friend WithEvents PartMenuStripFIND As Windows.Forms.ToolStripMenuItem
     Friend WithEvents BomMenuStripFIND As Windows.Forms.ToolStripMenuItem
+    Friend WithEvents chkPartExportShowTLAssy As Windows.Forms.CheckBox
+    Friend WithEvents chkBOMExportShowTLAssy As Windows.Forms.CheckBox
+    Friend WithEvents chkBomCompShowTLAssy As Windows.Forms.CheckBox
 End Class

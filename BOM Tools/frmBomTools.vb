@@ -11,7 +11,7 @@ Public Class frmBomTools
     Private mAssyCompDef As Inventor.AssemblyComponentDefinition
     Private invApp As Inventor.Application
     Private sortCol As Integer
-    Private BomImportSettings As mAllBOMExport.BomImportSettings 'settings for BOM Import collection
+    Private BomImportSettings As mAllBOMExport.BomExportSettings 'settings for BOM Import collection
     Private PartCreateSettings As mAllBOMExport.PartCreateSettings 'settings for Part Create collection
     Private BomCompareSettings As mAllBOMExport.BomCompareSettings 'settings for BOM compare collection
     Private startAssy As String 'holds the name of the top level assembly
@@ -69,15 +69,22 @@ Public Class frmBomTools
         End Try
 
         'load the settings from the configuration file
-        chkBomImportAllowBAssyParent.Checked = My.Settings.BomToolsBomImportAllowBAssyParent
-        chkBomImportShowFasteners.Checked = My.Settings.BomToolsBomImportShowFasteners
-        chkPartCreateIncludeBAssy.Checked = My.Settings.BomToolsPartCreateIncludeB49Assemblies
+        'bom compare tab settings
         chkBomCompIncludeBAssy.Checked = My.Settings.BomToolsBomCompIncludeB49Assemblies
         chkBOMCompIncB39Children.Checked = My.Settings.BOMToolsBomCompIncludeB39Children
         chkBOMCompIncB45Children.Checked = My.Settings.BOMToolsBomCompIncludeB45Children
         chkBomCompIncludeCAssy.Checked = My.Settings.BomToolsBomCompIncludeC49Assemblies
         chkBomCompShowFasteners.Checked = My.Settings.BomToolsBomCompShowFasteners
         Me.Location = My.Settings.BomToolsFormLocation
+
+        'Part export tab settings
+        chkPartExportShowB49.Checked = My.Settings.BomToolsPartCreateIncludeB49Assemblies
+        chkPartExportShowTLAssy.Checked = My.Settings.BomToolsPartExportIncludeTopLevelAssy
+
+        'bom export tab settings
+        chkBomImportAllowBAssyParent.Checked = My.Settings.BomToolsBomImportAllowBAssyParent
+        chkBomImportShowFasteners.Checked = My.Settings.BomToolsBomImportShowFasteners
+        chkBOMExportShowTLAssy.Checked = My.Settings.BomToolsBomExportIncludeTopLevelAssy
 
     End Sub
 
@@ -229,14 +236,22 @@ Public Class frmBomTools
         InitInventorListView()
 
         'assign the settings for all parts and new parts
-        BomImportSettings.bBomImportIncBassy = chkBomImportAllowBAssyParent.Checked
-        BomImportSettings.bBomImportShowFasteners = chkBomImportShowFasteners.Checked
-        PartCreateSettings.bPartCreatIncBassy = chkPartCreateIncludeBAssy.Checked
+        'bom compare settings
         BomCompareSettings.bBomCompIncludeBAssy = chkBomCompIncludeBAssy.Checked
         BomCompareSettings.bBomCompIncCAssy = chkBomCompIncludeCAssy.Checked
         BomCompareSettings.bBomCompIncB39Children = chkBOMCompIncB39Children.Checked
         BomCompareSettings.bBomCompIncB45Children = chkBOMCompIncB45Children.Checked
         BomCompareSettings.bBomCompShowFasteners = chkBomCompShowFasteners.Checked
+        BomCompareSettings.bBomCompShowTopLevelAssy = chkBomCompShowTLAssy.Checked
+
+        'part export settings
+        PartCreateSettings.bPartExportShowB49 = chkPartExportShowB49.Checked
+        PartCreateSettings.bPartExportShowTopLevelAssy = chkPartExportShowTLAssy.Checked
+
+        'bom export settings
+        BomImportSettings.bBomExportIncBassy = chkBomImportAllowBAssyParent.Checked
+        BomImportSettings.bBomExportShowFasteners = chkBomImportShowFasteners.Checked
+        BomImportSettings.bBomExportShowTopLevelAssy = chkBOMExportShowTLAssy.Checked
 
         'show the processing form
         proc.Show()
@@ -736,15 +751,24 @@ Public Class frmBomTools
     Private Sub frmBomTools_Closing(sender As Object, e As CancelEventArgs) Handles Me.Closing
 
         'form closing, need to save settings
-        My.Settings.BomToolsBomImportAllowBAssyParent = chkBomImportAllowBAssyParent.Checked
-        My.Settings.BomToolsBomImportShowFasteners = chkBomImportShowFasteners.Checked
-        My.Settings.BomToolsPartCreateIncludeB49Assemblies = chkPartCreateIncludeBAssy.Checked
+        'bom compare settings
         My.Settings.BomToolsBomCompIncludeB49Assemblies = chkBomCompIncludeBAssy.Checked
         My.Settings.BOMToolsBomCompIncludeB39Children = chkBOMCompIncB39Children.Checked
         My.Settings.BOMToolsBomCompIncludeB45Children = chkBOMCompIncB45Children.Checked
         My.Settings.BomToolsBomCompIncludeC49Assemblies = chkBomCompIncludeCAssy.Checked
         My.Settings.BomToolsBomCompShowFasteners = chkBomCompShowFasteners.Checked
         My.Settings.BomToolsFormLocation = Me.Location
+
+        'part export settings
+        My.Settings.BomToolsPartCreateIncludeB49Assemblies = chkPartExportShowB49.Checked
+        My.Settings.BomToolsPartExportIncludeTopLevelAssy = chkPartExportShowTLAssy.Checked
+
+        'bom export settings
+        My.Settings.BomToolsBomImportAllowBAssyParent = chkBomImportAllowBAssyParent.Checked
+        My.Settings.BomToolsBomImportShowFasteners = chkBomImportShowFasteners.Checked
+        My.Settings.BomToolsBomExportIncludeTopLevelAssy = chkBOMExportShowTLAssy.Checked
+
+
         'save settings
         My.Settings.Save()
 

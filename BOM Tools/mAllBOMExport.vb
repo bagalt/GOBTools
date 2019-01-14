@@ -26,13 +26,15 @@ Module mAllBOMExport
         Public ParentName As String
     End Structure
 
-    Public Structure BomImportSettings
-        Public bBomImportIncBassy As Boolean
-        Public bBomImportShowFasteners As Boolean
+    Public Structure BomExportSettings
+        Public bBomExportIncBassy As Boolean
+        Public bBomExportShowFasteners As Boolean
+        Public bBomExportShowTopLevelAssy As Boolean
     End Structure
 
     Public Structure PartCreateSettings
-        Public bPartCreatIncBassy As Boolean
+        Public bPartExportShowB49 As Boolean
+        Public bPartExportShowTopLevelAssy As Boolean
     End Structure
 
     Public Structure BomCompareSettings
@@ -41,10 +43,11 @@ Module mAllBOMExport
         Public bBomCompIncB39Children As Boolean 'include B39 children?
         Public bBomCompIncB45Children As Boolean 'include B45 children?
         Public bBomCompShowFasteners As Boolean 'toggle for showing fasteners, M900 parts
+        Public bBomCompShowTopLevelAssy As Boolean
     End Structure
 
-    Private mBomImportSettings As BomImportSettings
-    Private mPartCreateSettings As PartCreateSettings
+    Private mBomImportSettings As BomExportSettings
+    Private mPartExportSettings As PartCreateSettings
     Private mBomCompSettings As BomCompareSettings
 
 
@@ -73,7 +76,7 @@ Module mAllBOMExport
     Public collAllParts As Collection 'public collection to show all parts
 
 
-    Public Sub AssemblyCount(ThisApplication As Inventor.Application, BomImportConfig As BomImportSettings, PartCreateConfig As PartCreateSettings, BomCompConfig As BomCompareSettings, sDirectoryPath As String)
+    Public Sub AssemblyCount(ThisApplication As Inventor.Application, BomImportConfig As BomExportSettings, PartExportConfig As PartCreateSettings, BomCompConfig As BomCompareSettings, sDirectoryPath As String)
         ' Set reference to active document.
         ' This assumes the active document is an assembly
         Dim oDoc As Inventor.AssemblyDocument
@@ -99,7 +102,7 @@ Module mAllBOMExport
         Dim iSubAssemblies As Long
         Dim sSubAssyName As String
         Dim assyDoc As Inventor.AssemblyDocument
-        Dim colBreadCrumb As Collection
+        Dim colBreadCrumb As New Collection
         Dim sFilePath As String
         'variables to hold information for each occurrence
         Dim occDoc As Inventor.Document
@@ -108,7 +111,7 @@ Module mAllBOMExport
 
         'Assign All parts and New Parts settings
         mBomImportSettings = BomImportConfig
-        mPartCreateSettings = PartCreateConfig
+        mPartExportSettings = PartExportConfig
         mBomCompSettings = BomCompConfig
 
         sMsg = ""
@@ -117,16 +120,24 @@ Module mAllBOMExport
         mResults = ""
 
         'get the starting assembly name, for display and excel file naming purposes
-        mStartAssy = oDoc.PropertySets.Item("Design Tracking Properties").Item("Part Number").Value
-        If mStartAssy = "" Then
+        Try
+            mStartAssy = oDoc.PropertySets.Item("Design Tracking Properties").Item("Part Number").Value
+            If mStartAssy = "" Then
+                mStartAssy = oDoc.DisplayName
+            End If
+        Catch ex As Exception
             mStartAssy = oDoc.DisplayName
-        End If
+        End Try
+
+        'get info for the top level assembly in case it should be included in collections
+        colBreadCrumb.Clear()
+        GetTopLevelProps(oDoc, colBreadCrumb)
 
         ' Get all occurrences from component definition for Assembly document
         Dim oCompOcc As Inventor.ComponentOccurrence
         For Each oCompOcc In oCompDef.Occurrences
             'clear out breadcrumb collection, and add the starting assembly
-            colBreadCrumb = Nothing
+            colBreadCrumb.Clear()
             colBreadCrumb = New Collection
             colBreadCrumb.Add(mStartAssy)
 
@@ -518,7 +529,6 @@ Module mAllBOMExport
         'assign part properties object
         partProps = oCompOcc.Definition.Document.PropertySets
 
-
         'get the occurrence properties based on the current occurrence type, unfortunately locations for info change based on type
         Select Case currentOccurrenceType
             Case PartType.VirtualPart
@@ -766,6 +776,70 @@ Module mAllBOMExport
 
     End Sub
 
+    Private Sub GetTopLevelProps(ByVal topLevelAssyDoc As Inventor.AssemblyDocument, ByVal topLevelColl As Collection)
+        'sub to get the properties of the top level assembly for possible inclusion in the collections
+
+        Dim topLevelPartInfo As New cPartInfo
+        Dim topLevelPartProps As Inventor.PropertySets
+        Dim topLevelType As PartType
+        Dim topLevelOcc As Inventor.ComponentOccurrence
+
+        topLevelPartProps = topLevelAssyDoc.PropertySets
+        topLevelOcc = Nothing
+
+        'get the part number of the top level part
+        topLevelPartInfo.PartNum = topLevelPartProps.Item("Design Tracking Properties").Item("Part Number").Value
+
+        'determine the type of top level part
+        topLevelType = GetOccType(topLevelPartInfo.PartNum)
+
+        Select Case topLevelType
+            Case PartType.BAssy
+
+                'get description
+                Try
+                    topLevelPartInfo.Description = topLevelPartProps.Item("User Defined Properties").Item("Description English").Value
+                Catch ex As Exception
+                    topLevelPartInfo.Description = "TL XXXX"
+                    topLevelPartInfo.ErrorMsg = "*Missing Description*"
+                    topLevelPartInfo.PartError = True
+                End Try
+
+                'get proman class code
+                Try
+                    topLevelPartInfo.PromanCode = topLevelPartProps.Item("User Defined Properties").Item("Proman Class Code").Value
+                Catch ex As Exception
+                    topLevelPartInfo.PromanCode = "XXXX"
+                    topLevelPartInfo.ErrorMsg = "*Invalid Class Code*"
+                    topLevelPartInfo.PartError = True
+                End Try
+
+                'get service code
+                Try
+                    topLevelPartInfo.ServiceCode = topLevelPartProps.Item("User Defined Properties").Item("Cust Serv Code").Value
+                Catch ex As Exception
+                    topLevelPartInfo.ServiceCode = "XX"
+                    topLevelPartInfo.ErrorMsg = "*Missing Service Code*"
+                    topLevelPartInfo.PartError = True
+                End Try
+
+                'assign no parent and list as error so it will be highlighted
+                topLevelPartInfo.ParentAssy = "ENTER PARENT"
+                topLevelPartInfo.ErrorMsg = "Top Level Assembly, must enter parent"
+                topLevelPartInfo.PartError = True
+            Case Else
+                'all other assembly types should not be valid for a top level assembly that would need to be created
+                'possibly a B39?
+        End Select
+
+        'set top level type to top level so it is not categorized as something else
+        topLevelType = PartType.Toplevel
+
+        'build BOM Collections
+        AddToCollection(topLevelColl, topLevelPartInfo, topLevelType, topLevelOcc)
+
+    End Sub
+
     Private Sub AddToCollection(ByRef collBreadCrumb As Collection, ByVal occurrenceInfo As cPartInfo, ByRef occurrenceType As PartType, ByVal occurrence As Inventor.ComponentOccurrence)
         'sub to add occurrences to collections
         'BOM Import collection, holds all parts and correct hierarchy with part information for proman
@@ -827,6 +901,8 @@ Module mAllBOMExport
                     End If
                 Case PartType.M900Part
                     addPart = mBomCompSettings.bBomCompShowFasteners
+                Case PartType.Toplevel
+                    addPart = mBomCompSettings.bBomCompShowTopLevelAssy
                 Case Else
                     'check other settings
                     If IsB39(ParentInfo.ParentName) Then
@@ -854,7 +930,6 @@ Module mAllBOMExport
             mCollBomCompare.Item(sBomCompareKey).IncrementQty(1)
         End If
 
-
         Dim addToBOMColl As Boolean
         addToBOMColl = True
 
@@ -866,11 +941,13 @@ Module mAllBOMExport
                 Select Case occurrenceType
                     Case PartType.BAssy
                         'add assembly based on settings
-                        addToBOMColl = mBomImportSettings.bBomImportIncBassy
+                        addToBOMColl = mBomImportSettings.bBomExportIncBassy
                     Case PartType.M900Part
-                        addToBOMColl = mBomImportSettings.bBomImportShowFasteners
+                        addToBOMColl = mBomImportSettings.bBomExportShowFasteners
                     Case PartType.BPHPart, PartType.BGEPart
                         addToBOMColl = False
+                    Case PartType.Toplevel
+                        addToBOMColl = mBomImportSettings.bBomExportShowTopLevelAssy
                     Case Else
                         addToBOMColl = True
                 End Select
@@ -902,7 +979,7 @@ Module mAllBOMExport
         'Build the Parts collection
         If Not KeyExists(mCollPartCreate, sPartCreateKey) Then
             'if include b49 is true and part is a b49 then do all this
-            If (mPartCreateSettings.bPartCreatIncBassy = False) And (occurrenceType = PartType.BAssy) Then
+            If (mPartExportSettings.bPartExportShowB49 = False) And (occurrenceType = PartType.BAssy) Then
                 'do nothing, b49 assemblies not added to part create collection if option is not checked
             ElseIf (occurrenceType = PartType.BGEPart) Then
                 'do nothing, bge parts should never be created
@@ -910,6 +987,8 @@ Module mAllBOMExport
                 'do nothing, BPH parts should never be created
             ElseIf occurrenceType = PartType.StandardPart Then
                 'do nothing, standard parts not added to part create collection
+            ElseIf occurrenceType = PartType.Toplevel And Not mPartExportSettings.bPartExportShowTopLevelAssy Then
+                'do nothing, Top Level part not shown
             Else
                 'create instance of partinfo class for new parts
                 createOccurence = New cPartInfo
@@ -946,7 +1025,7 @@ Module mAllBOMExport
                     Return FindParentOccurrence(occ.ParentOccurrence)
                 Case PartType.BAssy
                     'check setting
-                    If mBomImportSettings.bBomImportIncBassy Then
+                    If mBomImportSettings.bBomExportIncBassy Then
                         'b49s allowed to be parents
                         Return occ.ParentOccurrence.Name
                     Else
@@ -1598,7 +1677,7 @@ Module mAllBOMExport
                         'cant have BPH as parent
                     ElseIf IsBFourtyNine(parent) Then
                         'are B49s allowed to be parents??
-                        If mBomImportSettings.bBomImportIncBassy = True Then
+                        If mBomImportSettings.bBomExportIncBassy = True Then
                             'B49s allowed to be parents
                             Exit For
                         End If
