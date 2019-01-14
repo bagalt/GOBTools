@@ -2,19 +2,19 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
-    <Setting Name="BomToolsBomImportAllowBAssyParent" Type="System.Boolean" Scope="User">
+    <Setting Name="BTBomExportAllowBAssyParent" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
-    <Setting Name="BomToolsPartCreateIncludeB49Assemblies" Type="System.Boolean" Scope="User">
+    <Setting Name="BTPartExportIncludeB49Assemblies" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
-    <Setting Name="BomToolsBomCompIncludeB49Assemblies" Type="System.Boolean" Scope="User">
+    <Setting Name="BTBomCompIncludeB49Assemblies" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
-    <Setting Name="BOMToolsBomCompIncludeB39Children" Type="System.Boolean" Scope="User">
+    <Setting Name="BTBomCompIncludeB39Children" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
-    <Setting Name="BOMToolsBomCompIncludeB45Children" Type="System.Boolean" Scope="User">
+    <Setting Name="BTBomCompIncludeB45Children" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="StepperFilePath" Type="System.String" Scope="User">
@@ -35,22 +35,22 @@
     <Setting Name="StepperIgnoreHoriz" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
-    <Setting Name="BomToolsBomCompIncludeC49Assemblies" Type="System.Boolean" Scope="User">
+    <Setting Name="BTBomCompIncludeC49Assemblies" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
-    <Setting Name="BomToolsFormLocation" Type="System.Drawing.Point" Scope="User">
+    <Setting Name="BTFormLocation" Type="System.Drawing.Point" Scope="User">
       <Value Profile="(Default)">0, 0</Value>
     </Setting>
-    <Setting Name="BomToolsBomImportShowFasteners" Type="System.Boolean" Scope="User">
+    <Setting Name="BTBomExportShowFasteners" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
-    <Setting Name="BomToolsBomCompShowFasteners" Type="System.Boolean" Scope="User">
+    <Setting Name="BTBomCompShowFasteners" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
-    <Setting Name="BomToolsPartExportIncludeTopLevelAssy" Type="System.Boolean" Scope="User">
+    <Setting Name="BTPartExportIncludeTopLevelAssy" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
-    <Setting Name="BomToolsBomExportIncludeTopLevelAssy" Type="System.Boolean" Scope="User">
+    <Setting Name="BTBomExportIncludeTopLevelAssy" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
   </Settings>
