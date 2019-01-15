@@ -12,7 +12,7 @@ Module mAllBOMExport
 
     Private mCollFullBOM As Collection 'collection to hold all the parts with correct parents for BOM Import
     Private mCollBOMInstances As Collection 'collection to hold all of the parts with instances of parent, used for full bom creation
-    Private mCollPartCreate As Collection 'colection to hold all the new parts, manuf and purch and proman information, for Part Creation import
+    Private mCollPartExport As Collection 'colection to hold all the new parts, manuf and purch and proman information, for Part Creation import
     Private mCollBomCompare As Collection 'collection to hold all the parts for the BOM compare listview
 
     Private mStartAssy As String 'holds the top level assembly name
@@ -35,9 +35,10 @@ Module mAllBOMExport
         Public bBomCompShowTopLevelAssy As Boolean
     End Structure
 
-    Public Structure PartCreateSettings
+    Public Structure PartExportSettings
         Public bPartExportShowB49 As Boolean
         Public bPartExportShowTopLevelAssy As Boolean
+        Public bPartExportShowFasteners As Boolean
     End Structure
 
     Public Structure BomExportSettings
@@ -47,7 +48,7 @@ Module mAllBOMExport
     End Structure
 
     Private mBomExportSettings As BomExportSettings
-    Private mPartExportSettings As PartCreateSettings
+    Private mPartExportSettings As PartExportSettings
     Private mBomCompSettings As BomCompareSettings
 
 
@@ -76,7 +77,7 @@ Module mAllBOMExport
     Public collAllParts As Collection 'public collection to show all parts
 
 
-    Public Sub AssemblyCount(ThisApplication As Inventor.Application, BomImportConfig As BomExportSettings, PartExportConfig As PartCreateSettings, BomCompConfig As BomCompareSettings, sDirectoryPath As String)
+    Public Sub AssemblyCount(ThisApplication As Inventor.Application, BomImportConfig As BomExportSettings, PartExportConfig As PartExportSettings, BomCompConfig As BomCompareSettings, sDirectoryPath As String)
         ' Set reference to active document.
         ' This assumes the active document is an assembly
         Dim oDoc As Inventor.AssemblyDocument
@@ -90,7 +91,7 @@ Module mAllBOMExport
         oDoc = ThisApplication.ActiveDocument
         mCollFullBOM = New Collection
         mCollBOMInstances = New Collection
-        mCollPartCreate = New Collection
+        mCollPartExport = New Collection
         mCollBomCompare = New Collection
 
         ' Get assembly component definition
@@ -211,7 +212,7 @@ Module mAllBOMExport
         Debug.Print("")
         PrintColl(mCollFullBOM)
         bomCompareList = mCollBomCompare
-        partExportList = mCollPartCreate
+        partExportList = mCollPartExport
         bomImportList = mCollFullBOM
 
     End Sub
@@ -772,7 +773,10 @@ Module mAllBOMExport
         End Select
 
         'build BOM Collections
-        AddToCollection(collBreadCrumb, occurrenceInfo, currentOccurrenceType, oCompOcc)
+        'AddToCollection(collBreadCrumb, occurrenceInfo, currentOccurrenceType, oCompOcc)
+        AddToBomCompCollection(collBreadCrumb, occurrenceInfo, currentOccurrenceType, oCompOcc)
+        AddToPartExportCollection(collBreadCrumb, occurrenceInfo, currentOccurrenceType, oCompOcc)
+        AddToBomExportCollection(collBreadCrumb, occurrenceInfo, currentOccurrenceType, oCompOcc)
 
     End Sub
 
@@ -836,30 +840,23 @@ Module mAllBOMExport
         topLevelType = PartType.Toplevel
 
         'build BOM Collections
-        AddToCollection(topLevelColl, topLevelPartInfo, topLevelType, topLevelOcc)
+        'AddToCollection(topLevelColl, topLevelPartInfo, topLevelType, topLevelOcc)
+        AddToBomCompCollection(topLevelColl, topLevelPartInfo, topLevelType, topLevelOcc)
+        AddToPartExportCollection(topLevelColl, topLevelPartInfo, topLevelType, topLevelOcc)
+        AddToBomExportCollection(topLevelColl, topLevelPartInfo, topLevelType, topLevelOcc)
 
     End Sub
 
-    Private Sub AddToCollection(ByRef collBreadCrumb As Collection, ByVal occurrenceInfo As cPartInfo, ByRef occurrenceType As PartType, ByVal occurrence As Inventor.ComponentOccurrence)
-        'sub to add occurrences to collections
-        'BOM Import collection, holds all parts and correct hierarchy with part information for proman
-        'BOM Compare collection, holds all the parts for the BOM compare listview, no part information required
-        'occurrences should be added to collections based on user settings
+    Private Sub AddToBomCompCollection(ByVal collBreadCrumb As Collection, ByVal occurrenceInfo As cPartInfo, ByVal occurrenceType As PartType, ByVal occurrence As Inventor.ComponentOccurrence)
+        'sub to add occurrences to the BOM compare collection
 
         Dim addPart As Boolean
-        Dim sBomExportKey As String
-        Dim sBomInstanceKey As String
-        Dim sParentInstance As String
         Dim sBomCompareKey As String
-        Dim sPartExportKey As String
         Dim ParentInfo As ParentStatus
-        Dim createOccurence As cPartInfo
+        Dim sParentInstance As String
         Dim compOccurrence As cPartInfo
-        Dim importOccurrence As cPartInfo
         Dim parentType As PartType
         Dim parentOccType As PartType
-        Dim addToBOMColl As Boolean
-
 
         'find parent for occurrence
         Try
@@ -872,8 +869,7 @@ Module mAllBOMExport
         End Try
 
         'find the parent name and type for the bom compare collection
-        ParentInfo = BOMCompareFindParent(collBreadCrumb, occurrenceInfo.PartNum)
-        'ParentInfo = BomExportFindParent(collBreadCrumb, occurrenceInfo.PartNum)
+        ParentInfo = BomCompareFindParent(collBreadCrumb, occurrenceInfo.PartNum)
         parentType = GetOccType(ParentInfo.ParentName)
 
         'build the keys for the collections
@@ -930,46 +926,119 @@ Module mAllBOMExport
             'part already exists in list, increment qty
             mCollBomCompare.Item(sBomCompareKey).IncrementQty(1)
         End If
+    End Sub
 
+    Private Sub AddToPartExportCollection(ByRef collBreadCrumb As Collection, ByVal occurrenceInfo As cPartInfo, ByRef occurrenceType As PartType, ByVal occurrence As Inventor.ComponentOccurrence)
+        'sub to add occurrences to the Part Export collection
 
-        '***********TODO***************
-        'need to rewrite building the part export collection to folllow the same format as the other two collections
-        'add in finding the parent of the parts for showing or hiding B49s
-        '******************************
+        Dim addToPartExportColl As Boolean
+        Dim sParentInstance As String
+        Dim sPartExportKey As String
+        Dim ParentInfo As ParentStatus
+        Dim partExportOccInfo As cPartInfo
+        Dim parentType As PartType
+        Dim parentOccType As PartType
+
+        'find parent for occurrence
+        Try
+            sParentInstance = FindParentOccurrence(occurrence)
+            parentOccType = GetOccType(sParentInstance)
+        Catch ex As Exception
+            'occurrence is on the top level, no parent occurrence
+            sParentInstance = "TopLevel"
+            parentOccType = PartType.Toplevel
+        End Try
 
         'build the key for the part export collection
         sPartExportKey = occurrenceInfo.PartNum
 
         'find the parent and type for part create collection
+        ParentInfo = PartExportFindParent(collBreadCrumb, occurrenceInfo.PartNum)
+        parentType = GetOccType(ParentInfo.ParentName)
 
-        'Build the Part Export collection
-        If Not KeyExists(mCollPartCreate, sPartExportKey) Then
-            'if include b49 is true and part is a b49 then do all this
-            If (mPartExportSettings.bPartExportShowB49 = False) And (occurrenceType = PartType.BAssy) Then
-                'do nothing, b49 assemblies not added to part create collection if option is not checked
-            ElseIf (occurrenceType = PartType.BGEPart) Then
-                'do nothing, bge parts should never be created
-            ElseIf (occurrenceType = PartType.BPHPart) Then
-                'do nothing, BPH parts should never be created
-            ElseIf occurrenceType = PartType.StandardPart Then
-                'do nothing, standard parts not added to part create collection
-            ElseIf occurrenceType = PartType.Toplevel And Not mPartExportSettings.bPartExportShowTopLevelAssy Then
-                'do nothing, Top Level part not shown
-            Else
-                'create instance of partinfo class for new parts
-                createOccurence = New cPartInfo
-                MakeEqual(createOccurence, occurrenceInfo)
+        'Build the BOM Compare collection
+        If Not KeyExists(mCollPartExport, sPartExportKey) Then
+            'if the part does not exist in collection then add the part
+            addToPartExportColl = True
+            Select Case occurrenceType
+                Case PartType.BAssy
+                    'check settings for B49 parents
+                    addToPartExportColl = mPartExportSettings.bPartExportShowB49
+                Case PartType.M900Part
+                    addToPartExportColl = mPartExportSettings.bPartExportShowFasteners
+                Case PartType.Toplevel
+                    addToPartExportColl = mPartExportSettings.bPartExportShowTopLevelAssy
+                Case Else
+                    addToPartExportColl = True
+            End Select
 
+            If addToPartExportColl Then
+                'create instance of the partinfo class for all parts
+                partExportOccInfo = New cPartInfo
+                MakeEqual(partExportOccInfo, occurrenceInfo)
+                partExportOccInfo.Description = CommaReplacer(occurrenceInfo.Description)
                 'bump the quantity of the part (starts at 0)
-                createOccurence.IncrementQty(1)
-
-                'add the newly created mypartinfo to the myparts collection with the part number as the key
-                mCollPartCreate.Add(createOccurence, sPartExportKey) 'partcreatepartinfo, (spartcreatekey))
+                partExportOccInfo.IncrementQty(1)
+                'add the newly created BomCompPartInfo to the mCollBomCompare collection with the part number as the key
+                mCollPartExport.Add(partExportOccInfo, sPartExportKey)
             End If
         Else
-            'key already exists, bump the quantity of the part
-            mCollPartCreate.Item(sPartExportKey).incrementqty(1)
+            'part already exists in list, increment qty
+            mCollPartExport.Item(sPartExportKey).IncrementQty(1)
         End If
+
+        ''Build the Part Export collection
+        'If Not KeyExists(mCollPartExport, sPartExportKey) Then
+        '    'if include b49 is true and part is a b49 then do all this
+        '    If (mPartExportSettings.bPartExportShowB49 = False) And (occurrenceType = PartType.BAssy) Then
+        '        'do nothing, b49 assemblies not added to part create collection if option is not checked
+        '    ElseIf (occurrenceType = PartType.BGEPart) Then
+        '        'do nothing, bge parts should never be created
+        '    ElseIf (occurrenceType = PartType.BPHPart) Then
+        '        'do nothing, BPH parts should never be created
+        '    ElseIf occurrenceType = PartType.StandardPart Then
+        '        'do nothing, standard parts not added to part create collection
+        '    ElseIf occurrenceType = PartType.Toplevel And Not mPartExportSettings.bPartExportShowTopLevelAssy Then
+        '        'do nothing, Top Level part not shown
+        '    Else
+        '        'create instance of partinfo class for new parts
+        '        createOccurence = New cPartInfo
+        '        MakeEqual(createOccurence, occurrenceInfo)
+
+        '        'bump the quantity of the part (starts at 0)
+        '        createOccurence.IncrementQty(1)
+
+        '        'add the newly created mypartinfo to the myparts collection with the part number as the key
+        '        mCollPartExport.Add(createOccurence, sPartExportKey) 'partcreatepartinfo, (spartcreatekey))
+        '    End If
+        'Else
+        '    'key already exists, bump the quantity of the part
+        '    mCollPartExport.Item(sPartExportKey).incrementqty(1)
+        'End If
+
+    End Sub
+
+    Private Sub AddToBomExportCollection(ByRef collBreadCrumb As Collection, ByVal occurrenceInfo As cPartInfo, ByRef occurrenceType As PartType, ByVal occurrence As Inventor.ComponentOccurrence)
+        'sub to add occurrences to the BOM Export collection
+
+        Dim sBomExportKey As String
+        Dim sBomInstanceKey As String
+        Dim sParentInstance As String
+        Dim parentOccType As PartType
+        Dim ParentInfo As ParentStatus
+        Dim importOccurrence As cPartInfo
+        Dim parentType As PartType
+        Dim addToBOMExportColl As Boolean
+
+        'find parent for occurrence
+        Try
+            sParentInstance = FindParentOccurrence(occurrence)
+            parentOccType = GetOccType(sParentInstance)
+        Catch ex As Exception
+            'occurrence is on the top level, no parent occurrence
+            sParentInstance = "TopLevel"
+            parentOccType = PartType.Toplevel
+        End Try
 
         'find the parent and type for the BOM export collection
         ParentInfo = BomExportFindParent(collBreadCrumb, occurrenceInfo.PartNum)
@@ -981,25 +1050,25 @@ Module mAllBOMExport
 
         'build the BOM Export collection
         If Not KeyExists(mCollBOMInstances, sBomInstanceKey) Then
-            addToBOMColl = True
+            addToBOMExportColl = True
             'part does not exist in the collection
             If Not KeyExists(mCollFullBOM, sBomExportKey) Then
                 'part does not exist in the collection
                 Select Case occurrenceType
                     Case PartType.BAssy
                         'add assembly based on settings
-                        addToBOMColl = mBomExportSettings.bBomExportShowB49
+                        addToBOMExportColl = mBomExportSettings.bBomExportShowB49
                     Case PartType.M900Part
-                        addToBOMColl = mBomExportSettings.bBomExportShowFasteners
+                        addToBOMExportColl = mBomExportSettings.bBomExportShowFasteners
                     Case PartType.BPHPart, PartType.BGEPart
-                        addToBOMColl = False
+                        addToBOMExportColl = False
                     Case PartType.Toplevel
-                        addToBOMColl = mBomExportSettings.bBomExportShowTopLevelAssy
+                        addToBOMExportColl = mBomExportSettings.bBomExportShowTopLevelAssy
                     Case Else
-                        addToBOMColl = True
+                        addToBOMExportColl = True
                 End Select
                 'add to collection
-                If addToBOMColl Then
+                If addToBOMExportColl Then
                     importOccurrence = New cPartInfo
                     MakeEqual(importOccurrence, occurrenceInfo)
                     If ParentInfo.ErrorStatus = True Then
@@ -1023,9 +1092,185 @@ Module mAllBOMExport
             mCollFullBOM.Item(sBomExportKey).incrementqty(1)
         End If
 
-
-
     End Sub
+
+    'Private Sub AddToCollection(ByRef collBreadCrumb As Collection, ByVal occurrenceInfo As cPartInfo, ByRef occurrenceType As PartType, ByVal occurrence As Inventor.ComponentOccurrence)
+    '    'sub to add occurrences to collections
+    '    'BOM Import collection, holds all parts and correct hierarchy with part information for proman
+    '    'BOM Compare collection, holds all the parts for the BOM compare listview, no part information required
+    '    'occurrences should be added to collections based on user settings
+
+    '    Dim addPart As Boolean
+    '    Dim sBomExportKey As String
+    '    Dim sBomInstanceKey As String
+    '    Dim sParentInstance As String
+    '    Dim sBomCompareKey As String
+    '    Dim sPartExportKey As String
+    '    Dim ParentInfo As ParentStatus
+    '    Dim createOccurence As cPartInfo
+    '    Dim compOccurrence As cPartInfo
+    '    Dim importOccurrence As cPartInfo
+    '    Dim parentType As PartType
+    '    Dim parentOccType As PartType
+    '    Dim addToBOMExportColl As Boolean
+
+
+    '    'find parent for occurrence
+    '    Try
+    '        sParentInstance = FindParentOccurrence(occurrence)
+    '        parentOccType = GetOccType(sParentInstance)
+    '    Catch ex As Exception
+    '        'occurrence is on the top level, no parent occurrence
+    '        sParentInstance = "TopLevel"
+    '        parentOccType = PartType.Toplevel
+    '    End Try
+
+    '    'find the parent name and type for the bom compare collection
+    '    ParentInfo = BomCompareFindParent(collBreadCrumb, occurrenceInfo.PartNum)
+    '    'ParentInfo = BomExportFindParent(collBreadCrumb, occurrenceInfo.PartNum)
+    '    parentType = GetOccType(ParentInfo.ParentName)
+
+    '    'build the keys for the collections
+    '    sBomCompareKey = occurrenceInfo.PartNum
+
+    '    'Build the BOM Compare collection
+    '    If Not KeyExists(mCollBomCompare, sBomCompareKey) Then
+    '        'if the part does not exist in collection then add the part
+    '        addPart = True
+    '        Select Case parentType
+    '            Case PartType.BAssy
+    '                'check settings for B49 parents
+    '                If mBomCompSettings.bBomCompIncludeBAssy Then
+    '                    'B49s are shown, no children
+    '                    addPart = False
+    '                Else
+    '                    addPart = CheckPartSettings(occurrenceType) 'need to check part level settings like for M900s
+    '                End If
+    '            Case PartType.CAssy
+    '                'check settings for C assemblies
+    '                If mBomCompSettings.bBomCompIncCAssy Then
+    '                    'C49s are shown, no children
+    '                    addPart = False
+    '                Else
+    '                    addPart = CheckPartSettings(occurrenceType)
+    '                End If
+    '            Case PartType.M900Part
+    '                addPart = mBomCompSettings.bBomCompShowFasteners
+    '            Case PartType.Toplevel
+    '                addPart = mBomCompSettings.bBomCompShowTopLevelAssy
+    '            Case Else
+    '                'check other settings
+    '                If IsB39(ParentInfo.ParentName) Then
+    '                    'check settings for B39 children
+    '                    addPart = mBomCompSettings.bBomCompIncB39Children
+    '                ElseIf GetPrefix(ParentInfo.ParentName) = "B45" Then
+    '                    addPart = mBomCompSettings.bBomCompIncB45Children
+    '                Else
+    '                    addPart = CheckPartSettings(occurrenceType)
+    '                End If
+    '        End Select
+
+    '        If addPart Then
+    '            'create instance of the partinfo class for all parts
+    '            compOccurrence = New cPartInfo
+    '            MakeEqual(compOccurrence, occurrenceInfo)
+    '            compOccurrence.Description = CommaReplacer(occurrenceInfo.Description)
+    '            'bump the quantity of the part (starts at 0)
+    '            compOccurrence.IncrementQty(1)
+    '            'add the newly created BomCompPartInfo to the mCollBomCompare collection with the part number as the key
+    '            mCollBomCompare.Add(compOccurrence, sBomCompareKey)
+    '        End If
+    '    Else
+    '        'part already exists in list, increment qty
+    '        mCollBomCompare.Item(sBomCompareKey).IncrementQty(1)
+    '    End If
+
+    '    'build the key for the part export collection
+    '    sPartExportKey = occurrenceInfo.PartNum
+
+    '    'find the parent and type for part create collection
+
+    '    'Build the Part Export collection
+    '    If Not KeyExists(mCollPartExport, sPartExportKey) Then
+    '        'if include b49 is true and part is a b49 then do all this
+    '        If (mPartExportSettings.bPartExportShowB49 = False) And (occurrenceType = PartType.BAssy) Then
+    '            'do nothing, b49 assemblies not added to part create collection if option is not checked
+    '        ElseIf (occurrenceType = PartType.BGEPart) Then
+    '            'do nothing, bge parts should never be created
+    '        ElseIf (occurrenceType = PartType.BPHPart) Then
+    '            'do nothing, BPH parts should never be created
+    '        ElseIf occurrenceType = PartType.StandardPart Then
+    '            'do nothing, standard parts not added to part create collection
+    '        ElseIf occurrenceType = PartType.Toplevel And Not mPartExportSettings.bPartExportShowTopLevelAssy Then
+    '            'do nothing, Top Level part not shown
+    '        Else
+    '            'create instance of partinfo class for new parts
+    '            createOccurence = New cPartInfo
+    '            MakeEqual(createOccurence, occurrenceInfo)
+
+    '            'bump the quantity of the part (starts at 0)
+    '            createOccurence.IncrementQty(1)
+
+    '            'add the newly created mypartinfo to the myparts collection with the part number as the key
+    '            mCollPartExport.Add(createOccurence, sPartExportKey) 'partcreatepartinfo, (spartcreatekey))
+    '        End If
+    '    Else
+    '        'key already exists, bump the quantity of the part
+    '        mCollPartExport.Item(sPartExportKey).incrementqty(1)
+    '    End If
+
+    '    'find the parent and type for the BOM export collection
+    '    ParentInfo = BomExportFindParent(collBreadCrumb, occurrenceInfo.PartNum)
+    '    parentType = GetOccType(ParentInfo.ParentName)
+
+    '    'build the keys for the Bom export collection
+    '    sBomExportKey = occurrenceInfo.PartNum & "-" & ParentInfo.ParentName
+    '    sBomInstanceKey = occurrenceInfo.PartNum & "-" & sParentInstance
+
+    '    'build the BOM Export collection
+    '    If Not KeyExists(mCollBOMInstances, sBomInstanceKey) Then
+    '        addToBOMExportColl = True
+    '        'part does not exist in the collection
+    '        If Not KeyExists(mCollFullBOM, sBomExportKey) Then
+    '            'part does not exist in the collection
+    '            Select Case occurrenceType
+    '                Case PartType.BAssy
+    '                    'add assembly based on settings
+    '                    addToBOMExportColl = mBomExportSettings.bBomExportShowB49
+    '                Case PartType.M900Part
+    '                    addToBOMExportColl = mBomExportSettings.bBomExportShowFasteners
+    '                Case PartType.BPHPart, PartType.BGEPart
+    '                    addToBOMExportColl = False
+    '                Case PartType.Toplevel
+    '                    addToBOMExportColl = mBomExportSettings.bBomExportShowTopLevelAssy
+    '                Case Else
+    '                    addToBOMExportColl = True
+    '            End Select
+    '            'add to collection
+    '            If addToBOMExportColl Then
+    '                importOccurrence = New cPartInfo
+    '                MakeEqual(importOccurrence, occurrenceInfo)
+    '                If ParentInfo.ErrorStatus = True Then
+    '                    importOccurrence.ParentAssy = ParentInfo.ParentName
+    '                    importOccurrence.PartError = True
+    '                    importOccurrence.ErrorMsg = "Invalid Parent Assy"
+    '                Else
+    '                    importOccurrence.ParentAssy = ParentInfo.ParentName
+    '                End If
+    '                importOccurrence.Breadcrumb = collBreadCrumb
+    '                'bump the quantity of the part (starts at 0)
+    '                importOccurrence.IncrementQty(1)
+    '                'add the newly created partinfo to the full bom collection and bom instances collection 
+    '                mCollFullBOM.Add(importOccurrence, sBomExportKey)
+    '                mCollBOMInstances.Add(importOccurrence, sBomInstanceKey)
+    '            End If
+    '        Else
+    '            'key already exists, bump the quantity of the part
+    '        End If
+    '    Else
+    '        mCollFullBOM.Item(sBomExportKey).incrementqty(1)
+    '    End If
+    'End Sub
 
     Private Function FindParentOccurrence(ByVal occ As Inventor.ComponentOccurrence) As String
         'finds the name of the parent occurrence and if the parent meets certain conditions it 
@@ -1078,6 +1323,8 @@ Module mAllBOMExport
                 CheckPartSettings = False
             Case PartType.M900Part
                 CheckPartSettings = mBomCompSettings.bBomCompShowFasteners
+            Case PartType.Toplevel
+                CheckPartSettings = mBomCompSettings.bBomCompShowTopLevelAssy
             Case Else
                 CheckPartSettings = True
         End Select
@@ -1182,7 +1429,7 @@ Module mAllBOMExport
         Dim sFilePath As String = ""
 
         'Check if mNewParts contains items
-        If IsNothing(mCollPartCreate) Then
+        If IsNothing(mCollPartExport) Then
             'Empty parts list
             MsgBox("Parts List Empty, try loading Inventor BOM")
             BOMExportExcel = False
@@ -1308,7 +1555,7 @@ Module mAllBOMExport
         Dim sFilePath As String = ""
 
         'Check if mNewParts contains items
-        If IsNothing(mCollPartCreate) Then
+        If IsNothing(mCollPartExport) Then
             'Empty parts list
             MsgBox("Parts List Empty, try loading Inventor BOM")
             PartExportExcel = False
@@ -1406,7 +1653,7 @@ Module mAllBOMExport
         End With
 
         'populate the remaining cells for WS1
-        For Each part In mCollPartCreate
+        For Each part In mCollPartExport
             With ws1
                 .Range("A" & row).Value = part.PartNum
                 .Range("B" & row).Value = part.PromanCode
@@ -1480,7 +1727,7 @@ Module mAllBOMExport
         Dim sFilePath As String = ""
 
         'Check if mNewParts contains items
-        If IsNothing(mCollPartCreate) Then
+        If IsNothing(mCollPartExport) Then
             'Empty parts list
             MsgBox("Parts List Empty, try loading Inventor BOM")
             BomCompExportExcel = False
@@ -1549,7 +1796,7 @@ Module mAllBOMExport
         End With
 
         'populate the remaining cells for WS1
-        For Each part In mCollPartCreate
+        For Each part In mCollPartExport
             With ws1
                 .Range("A" & row).Value = part.PartNum
                 .Range("B" & row).Value = part.Description
@@ -1636,7 +1883,7 @@ Module mAllBOMExport
 
     End Function
 
-    Private Function BOMCompareFindParent(collBreadcrumb As Collection, sChild As String) As ParentStatus
+    Private Function BomCompareFindParent(collBreadcrumb As Collection, sChild As String) As ParentStatus
         'function to find the parent assembly by going backwards through the breadcrumb collection 
         'settings are specific to the BOM Compare Settings
 
@@ -1664,16 +1911,59 @@ Module mAllBOMExport
                 End If
 
             Catch ex As Exception
-                BOMCompareFindParent.ParentName = "INVALID Parent"
-                BOMCompareFindParent.ErrorStatus = True
+                BomCompareFindParent.ParentName = "INVALID Parent"
+                BomCompareFindParent.ErrorStatus = True
                 'exit the function and assign invalid parent error
                 Exit Function
             End Try
         Next
 
         'for loop was finished or exited, assign parent
-        BOMCompareFindParent.ParentName = parent
-        BOMCompareFindParent.ErrorStatus = False
+        BomCompareFindParent.ParentName = parent
+        BomCompareFindParent.ErrorStatus = False
+
+    End Function
+
+    Private Function PartExportFindParent(collBreadCrumb As Collection, sChild As String) As ParentStatus
+        'function to find the parent assembly going backwards through the breadcrumb collection 
+
+        Dim i As Integer
+        Dim parent As String = "Empty Parent"
+
+        For i = 0 To collBreadCrumb.Count
+            Try
+                parent = collBreadCrumb.Item(collBreadCrumb.Count - i)
+                If sChild = parent Then
+                    'cant have a child part have itself as a parent 
+                Else
+                    If IsPrefixMatch(parent, "BGE") Then
+                        'cant have BGE as parent
+                    ElseIf IsPrefixMatch(parent, "BPH") Then
+                        'cant have BPH as parent
+                    ElseIf IsBFourtyNine(parent) Then
+                        'are B49s allowed to be parents??
+                        If mPartExportSettings.bPartExportShowB49 Then
+                            'B49s allowed to be parents
+                            Exit For
+                        End If
+                    Else
+                        'parent is not a B49, BPH or a BGE so it is OK
+                        Exit For
+                    End If
+                End If
+
+            Catch ex As Exception
+                PartExportFindParent.ParentName = "INVALID Parent"
+                PartExportFindParent.ErrorStatus = True
+                mErrorStatus = True
+                'exit the function and assign invalid parent error
+                Exit Function
+            End Try
+        Next
+
+        'for loop was finished or exited, assign values
+        PartExportFindParent.ParentName = parent
+        PartExportFindParent.ErrorStatus = False
 
     End Function
 

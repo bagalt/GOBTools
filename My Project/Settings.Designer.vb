@@ -256,6 +256,30 @@ Partial Friend NotInheritable Class Settings
             Me("BTBomExportIncludeTopLevelAssy") = value
         End Set
     End Property
+    
+    <Global.System.Configuration.UserScopedSettingAttribute(),  _
+     Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+     Global.System.Configuration.DefaultSettingValueAttribute("False")>  _
+    Public Property BTBomCompIncludeTopLevelAssy() As Boolean
+        Get
+            Return CType(Me("BTBomCompIncludeTopLevelAssy"),Boolean)
+        End Get
+        Set
+            Me("BTBomCompIncludeTopLevelAssy") = value
+        End Set
+    End Property
+    
+    <Global.System.Configuration.UserScopedSettingAttribute(),  _
+     Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+     Global.System.Configuration.DefaultSettingValueAttribute("False")>  _
+    Public Property BTPartExportShowFasteners() As Boolean
+        Get
+            Return CType(Me("BTPartExportShowFasteners"),Boolean)
+        End Get
+        Set
+            Me("BTPartExportShowFasteners") = value
+        End Set
+    End Property
 End Class
 
 Namespace My

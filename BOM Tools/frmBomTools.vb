@@ -12,7 +12,7 @@ Public Class frmBomTools
     Private invApp As Inventor.Application
     Private sortCol As Integer
     Private BomExportSettings As mAllBOMExport.BomExportSettings 'settings for BOM Import collection
-    Private PartExportSettings As mAllBOMExport.PartCreateSettings 'settings for Part Create collection
+    Private PartExportSettings As mAllBOMExport.PartExportSettings 'settings for Part Create collection
     Private BomCompareSettings As mAllBOMExport.BomCompareSettings 'settings for BOM compare collection
     Private startAssy As String 'holds the name of the top level assembly
 
@@ -75,14 +75,16 @@ Public Class frmBomTools
         chkBOMCompIncB45Children.Checked = My.Settings.BTBomCompIncludeB45Children
         chkBomCompIncludeCAssy.Checked = My.Settings.BTBomCompIncludeC49Assemblies
         chkBomCompShowFasteners.Checked = My.Settings.BTBomCompShowFasteners
+        chkBomCompShowTLAssy.Checked = My.Settings.BTBomCompIncludeTopLevelAssy
         Me.Location = My.Settings.BTFormLocation
 
         'Part export tab settings
         chkPartExportShowB49.Checked = My.Settings.BTPartExportIncludeB49Assemblies
         chkPartExportShowTLAssy.Checked = My.Settings.BTPartExportIncludeTopLevelAssy
+        chkPartExportShowFasteners.Checked = My.Settings.BTPartExportShowFasteners
 
         'bom export tab settings
-        chkBomExportShowB49.Checked = My.Settings.BTBomExportAllowBAssyParent
+        chkBomExportAllowB49Parents.Checked = My.Settings.BTBomExportAllowBAssyParent
         chkBomExportShowFasteners.Checked = My.Settings.BTBomExportShowFasteners
         chkBOMExportShowTLAssy.Checked = My.Settings.BTBomExportIncludeTopLevelAssy
 
@@ -247,9 +249,10 @@ Public Class frmBomTools
         'part export settings
         PartExportSettings.bPartExportShowB49 = chkPartExportShowB49.Checked
         PartExportSettings.bPartExportShowTopLevelAssy = chkPartExportShowTLAssy.Checked
+        PartExportSettings.bPartExportShowFasteners = chkPartExportShowFasteners.Checked
 
         'bom export settings
-        BomExportSettings.bBomExportShowB49 = chkBomExportShowB49.Checked
+        BomExportSettings.bBomExportShowB49 = chkBomExportAllowB49Parents.Checked
         BomExportSettings.bBomExportShowFasteners = chkBomExportShowFasteners.Checked
         BomExportSettings.bBomExportShowTopLevelAssy = chkBOMExportShowTLAssy.Checked
 
@@ -757,14 +760,16 @@ Public Class frmBomTools
         My.Settings.BTBomCompIncludeB45Children = chkBOMCompIncB45Children.Checked
         My.Settings.BTBomCompIncludeC49Assemblies = chkBomCompIncludeCAssy.Checked
         My.Settings.BTBomCompShowFasteners = chkBomCompShowFasteners.Checked
+        My.Settings.BTBomCompIncludeTopLevelAssy = chkBomCompShowTLAssy.Checked
         My.Settings.BTFormLocation = Me.Location
 
         'part export settings
         My.Settings.BTPartExportIncludeB49Assemblies = chkPartExportShowB49.Checked
         My.Settings.BTPartExportIncludeTopLevelAssy = chkPartExportShowTLAssy.Checked
+        My.Settings.BTPartExportShowFasteners = chkPartExportShowFasteners.Checked
 
         'bom export settings
-        My.Settings.BTBomExportAllowBAssyParent = chkBomExportShowB49.Checked
+        My.Settings.BTBomExportAllowBAssyParent = chkBomExportAllowB49Parents.Checked
         My.Settings.BTBomExportShowFasteners = chkBomExportShowFasteners.Checked
         My.Settings.BTBomExportIncludeTopLevelAssy = chkBOMExportShowTLAssy.Checked
 

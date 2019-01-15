@@ -50,6 +50,7 @@ Partial Class frmBomTools
         Me.btnLoadInventorBOM = New System.Windows.Forms.Button()
         Me.TabControl1 = New System.Windows.Forms.TabControl()
         Me.TabPage3 = New System.Windows.Forms.TabPage()
+        Me.chkPartExportShowFasteners = New System.Windows.Forms.CheckBox()
         Me.chkPartExportShowTLAssy = New System.Windows.Forms.CheckBox()
         Me.chkPartExportShowB49 = New System.Windows.Forms.CheckBox()
         Me.btnExportPartList = New System.Windows.Forms.Button()
@@ -63,7 +64,7 @@ Partial Class frmBomTools
         Me.TabPage4 = New System.Windows.Forms.TabPage()
         Me.chkBOMExportShowTLAssy = New System.Windows.Forms.CheckBox()
         Me.chkBomExportShowFasteners = New System.Windows.Forms.CheckBox()
-        Me.chkBomExportShowB49 = New System.Windows.Forms.CheckBox()
+        Me.chkBomExportAllowB49Parents = New System.Windows.Forms.CheckBox()
         Me.btnBOMExport = New System.Windows.Forms.Button()
         Me.txtBomImportNumParts = New System.Windows.Forms.TextBox()
         Me.Label3 = New System.Windows.Forms.Label()
@@ -90,7 +91,7 @@ Partial Class frmBomTools
         Me.btnBCExportInventorBOM.Name = "btnBCExportInventorBOM"
         Me.btnBCExportInventorBOM.Size = New System.Drawing.Size(120, 45)
         Me.btnBCExportInventorBOM.TabIndex = 13
-        Me.btnBCExportInventorBOM.Text = "Export Inventor BOM" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "<--"
+        Me.btnBCExportInventorBOM.Text = "Export Inventor BOM <--"
         Me.btnBCExportInventorBOM.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         Me.btnBCExportInventorBOM.UseVisualStyleBackColor = True
         '
@@ -254,7 +255,7 @@ Partial Class frmBomTools
         Me.btnLoadPromanBom.Name = "btnLoadPromanBom"
         Me.btnLoadPromanBom.Size = New System.Drawing.Size(120, 45)
         Me.btnLoadPromanBom.TabIndex = 4
-        Me.btnLoadPromanBom.Text = "Load Proman BOM" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "                            -->"
+        Me.btnLoadPromanBom.Text = "Load Proman BOM -->"
         Me.btnLoadPromanBom.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         Me.btnLoadPromanBom.UseVisualStyleBackColor = True
         '
@@ -349,6 +350,7 @@ Partial Class frmBomTools
         '
         'TabPage3
         '
+        Me.TabPage3.Controls.Add(Me.chkPartExportShowFasteners)
         Me.TabPage3.Controls.Add(Me.chkPartExportShowTLAssy)
         Me.TabPage3.Controls.Add(Me.chkPartExportShowB49)
         Me.TabPage3.Controls.Add(Me.btnExportPartList)
@@ -363,6 +365,18 @@ Partial Class frmBomTools
         Me.TabPage3.TabIndex = 2
         Me.TabPage3.Text = "Part Export"
         Me.TabPage3.UseVisualStyleBackColor = True
+        '
+        'chkPartExportShowFasteners
+        '
+        Me.chkPartExportShowFasteners.AutoSize = True
+        Me.chkPartExportShowFasteners.Checked = True
+        Me.chkPartExportShowFasteners.CheckState = System.Windows.Forms.CheckState.Checked
+        Me.chkPartExportShowFasteners.Location = New System.Drawing.Point(379, 87)
+        Me.chkPartExportShowFasteners.Name = "chkPartExportShowFasteners"
+        Me.chkPartExportShowFasteners.Size = New System.Drawing.Size(102, 30)
+        Me.chkPartExportShowFasteners.TabIndex = 26
+        Me.chkPartExportShowFasteners.Text = "Show Fasteners" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "(M900)"
+        Me.chkPartExportShowFasteners.UseVisualStyleBackColor = True
         '
         'chkPartExportShowTLAssy
         '
@@ -381,9 +395,9 @@ Partial Class frmBomTools
         Me.chkPartExportShowB49.CheckState = System.Windows.Forms.CheckState.Checked
         Me.chkPartExportShowB49.Location = New System.Drawing.Point(379, 64)
         Me.chkPartExportShowB49.Name = "chkPartExportShowB49"
-        Me.chkPartExportShowB49.Size = New System.Drawing.Size(84, 30)
+        Me.chkPartExportShowB49.Size = New System.Drawing.Size(80, 17)
         Me.chkPartExportShowB49.TabIndex = 19
-        Me.chkPartExportShowB49.Text = "Show B49s" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "(no children)"
+        Me.chkPartExportShowB49.Text = "Show B49s"
         Me.chkPartExportShowB49.UseVisualStyleBackColor = True
         '
         'btnExportPartList
@@ -459,7 +473,7 @@ Partial Class frmBomTools
         '
         Me.TabPage4.Controls.Add(Me.chkBOMExportShowTLAssy)
         Me.TabPage4.Controls.Add(Me.chkBomExportShowFasteners)
-        Me.TabPage4.Controls.Add(Me.chkBomExportShowB49)
+        Me.TabPage4.Controls.Add(Me.chkBomExportAllowB49Parents)
         Me.TabPage4.Controls.Add(Me.btnBOMExport)
         Me.TabPage4.Controls.Add(Me.txtBomImportNumParts)
         Me.TabPage4.Controls.Add(Me.Label3)
@@ -495,17 +509,17 @@ Partial Class frmBomTools
         Me.chkBomExportShowFasteners.Text = "Show Fasteners (M900)"
         Me.chkBomExportShowFasteners.UseVisualStyleBackColor = True
         '
-        'chkBomExportShowB49
+        'chkBomExportAllowB49Parents
         '
-        Me.chkBomExportShowB49.AutoSize = True
-        Me.chkBomExportShowB49.Checked = True
-        Me.chkBomExportShowB49.CheckState = System.Windows.Forms.CheckState.Checked
-        Me.chkBomExportShowB49.Location = New System.Drawing.Point(332, 50)
-        Me.chkBomExportShowB49.Name = "chkBomExportShowB49"
-        Me.chkBomExportShowB49.Size = New System.Drawing.Size(80, 17)
-        Me.chkBomExportShowB49.TabIndex = 22
-        Me.chkBomExportShowB49.Text = "Show B49s"
-        Me.chkBomExportShowB49.UseVisualStyleBackColor = True
+        Me.chkBomExportAllowB49Parents.AutoSize = True
+        Me.chkBomExportAllowB49Parents.Checked = True
+        Me.chkBomExportAllowB49Parents.CheckState = System.Windows.Forms.CheckState.Checked
+        Me.chkBomExportAllowB49Parents.Location = New System.Drawing.Point(332, 50)
+        Me.chkBomExportAllowB49Parents.Name = "chkBomExportAllowB49Parents"
+        Me.chkBomExportAllowB49Parents.Size = New System.Drawing.Size(112, 17)
+        Me.chkBomExportAllowB49Parents.TabIndex = 22
+        Me.chkBomExportAllowB49Parents.Text = "Allow B49 Parents"
+        Me.chkBomExportAllowB49Parents.UseVisualStyleBackColor = True
         '
         'btnBOMExport
         '
@@ -645,7 +659,7 @@ Partial Class frmBomTools
     Friend WithEvents lvFullBOM As Windows.Forms.ListView
     Friend WithEvents btnExportPartList As Windows.Forms.Button
     Friend WithEvents btnBOMExport As Windows.Forms.Button
-    Friend WithEvents chkBomExportShowB49 As Windows.Forms.CheckBox
+    Friend WithEvents chkBomExportAllowB49Parents As Windows.Forms.CheckBox
     Friend WithEvents chkBomExportShowFasteners As Windows.Forms.CheckBox
     Friend WithEvents chkPartExportShowB49 As Windows.Forms.CheckBox
     Friend WithEvents PartMenuStrip As Windows.Forms.ContextMenuStrip
@@ -665,4 +679,5 @@ Partial Class frmBomTools
     Friend WithEvents chkPartExportShowTLAssy As Windows.Forms.CheckBox
     Friend WithEvents chkBOMExportShowTLAssy As Windows.Forms.CheckBox
     Friend WithEvents chkBomCompShowTLAssy As Windows.Forms.CheckBox
+    Friend WithEvents chkPartExportShowFasteners As Windows.Forms.CheckBox
 End Class
