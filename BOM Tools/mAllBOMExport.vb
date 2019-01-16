@@ -416,7 +416,7 @@ Module mAllBOMExport
 
         'the year we switch to new numbering system with vault
         'all purchased parts older than this year will be Old Purchased Parts
-        vaultTransitionYear = 17
+        vaultTransitionYear = 18
 
         If sOcccName = "-TL" Then
             Return PartType.Toplevel
@@ -479,7 +479,7 @@ Module mAllBOMExport
                         'purchased part
                         'find the year for the occurrence, get the last two digits of the BY number
                         occurrenceYear = Right(sPrefix, 2)
-                        If occurrenceYear < vaultTransitionYear Then
+                        If occurrenceYear >= vaultTransitionYear Then
                             'current year purch part
                             GetOccType = PartType.PurchPart
                         Else
