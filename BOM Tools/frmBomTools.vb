@@ -376,7 +376,7 @@ Public Class frmBomTools
 
     End Sub
 
-    Private Sub btnPartCreateExport_Click(sender As Object, e As EventArgs) Handles btnExportPartList.Click
+    Private Sub btnPartExport_Click(sender As Object, e As EventArgs) Handles btnExportPartList.Click
         'handles clicking the part create export button
         Dim proc As New frmProcessing
         Dim path As String
