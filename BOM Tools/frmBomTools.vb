@@ -343,7 +343,7 @@ Public Class frmBomTools
         SaveFileDialog1.CheckFileExists = False
         SaveFileDialog1.InitialDirectory = Environment.SpecialFolder.MyComputer
         SaveFileDialog1.OverwritePrompt = True
-        SaveFileDialog1.FileName = startAssy & "-Export"
+        SaveFileDialog1.FileName = startAssy & "-BOM Compare"
 
         If SaveFileDialog1.ShowDialog = Windows.Forms.DialogResult.OK Then
             If SaveFileDialog1.FileName IsNot "" Then
@@ -358,7 +358,7 @@ Public Class frmBomTools
                 proc.Location = LocateInCenter(Me, proc)
 
                 'create excel document
-                If mAllBOMExport.PartExportExcel(SaveFileDialog1.FileName) Then
+                If mAllBOMExport.BomCompExportExcel(SaveFileDialog1.FileName, chkBomCompViewImmediatly.Checked) Then
                     'display results
                     proc.Close()
                     MsgBox(mAllBOMExport.mResults)
@@ -397,7 +397,7 @@ Public Class frmBomTools
 
             'create excel document
 
-            If mAllBOMExport.PartExportExcel(path) Then
+            If mAllBOMExport.PartExportExcel(path, chkPartExportViewImmediately.Checked) Then
                 'display results
                 proc.Close()
                 MsgBox(mAllBOMExport.mResults)
@@ -433,7 +433,7 @@ Public Class frmBomTools
 
             'create excel document
 
-            If mAllBOMExport.BOMExportExcel(path) Then
+            If mAllBOMExport.BOMExportExcel(path, chkBomExportViewImmediately.Checked) Then
                 'display results
                 proc.Close()
                 MsgBox(mAllBOMExport.mResults)

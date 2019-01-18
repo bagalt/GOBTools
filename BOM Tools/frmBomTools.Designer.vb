@@ -75,6 +75,9 @@ Partial Class frmBomTools
         Me.BomMenuStripFIND = New System.Windows.Forms.ToolStripMenuItem()
         Me.SaveFileDialog1 = New System.Windows.Forms.SaveFileDialog()
         Me.lblVersion = New System.Windows.Forms.Label()
+        Me.chkBomCompViewImmediatly = New System.Windows.Forms.CheckBox()
+        Me.chkPartExportViewImmediately = New System.Windows.Forms.CheckBox()
+        Me.chkBomExportViewImmediately = New System.Windows.Forms.CheckBox()
         Me.TabPage1.SuspendLayout()
         Me.InventorMenuStrip.SuspendLayout()
         Me.PromanMenuStrip.SuspendLayout()
@@ -97,6 +100,7 @@ Partial Class frmBomTools
         '
         'TabPage1
         '
+        Me.TabPage1.Controls.Add(Me.chkBomCompViewImmediatly)
         Me.TabPage1.Controls.Add(Me.chkBomCompShowTLAssy)
         Me.TabPage1.Controls.Add(Me.chkBOMCompIncB45Children)
         Me.TabPage1.Controls.Add(Me.chkBOMCompIncB39Children)
@@ -232,7 +236,7 @@ Partial Class frmBomTools
         '
         'btnRunCompare
         '
-        Me.btnRunCompare.Location = New System.Drawing.Point(184, 301)
+        Me.btnRunCompare.Location = New System.Drawing.Point(183, 291)
         Me.btnRunCompare.Name = "btnRunCompare"
         Me.btnRunCompare.Size = New System.Drawing.Size(120, 50)
         Me.btnRunCompare.TabIndex = 6
@@ -350,6 +354,7 @@ Partial Class frmBomTools
         '
         'TabPage3
         '
+        Me.TabPage3.Controls.Add(Me.chkPartExportViewImmediately)
         Me.TabPage3.Controls.Add(Me.chkPartExportShowFasteners)
         Me.TabPage3.Controls.Add(Me.chkPartExportShowTLAssy)
         Me.TabPage3.Controls.Add(Me.chkPartExportShowB49)
@@ -471,6 +476,7 @@ Partial Class frmBomTools
         '
         'TabPage4
         '
+        Me.TabPage4.Controls.Add(Me.chkBomExportViewImmediately)
         Me.TabPage4.Controls.Add(Me.chkBOMExportShowTLAssy)
         Me.TabPage4.Controls.Add(Me.chkBomExportShowFasteners)
         Me.TabPage4.Controls.Add(Me.chkBomExportAllowB49Parents)
@@ -599,6 +605,36 @@ Partial Class frmBomTools
         Me.lblVersion.Text = "Version"
         Me.lblVersion.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
+        'chkBomCompViewImmediatly
+        '
+        Me.chkBomCompViewImmediatly.AutoSize = True
+        Me.chkBomCompViewImmediatly.Location = New System.Drawing.Point(184, 422)
+        Me.chkBomCompViewImmediatly.Name = "chkBomCompViewImmediatly"
+        Me.chkBomCompViewImmediatly.Size = New System.Drawing.Size(107, 17)
+        Me.chkBomCompViewImmediatly.TabIndex = 27
+        Me.chkBomCompViewImmediatly.Text = "View Immediately"
+        Me.chkBomCompViewImmediatly.UseVisualStyleBackColor = True
+        '
+        'chkPartExportViewImmediately
+        '
+        Me.chkPartExportViewImmediately.AutoSize = True
+        Me.chkPartExportViewImmediately.Location = New System.Drawing.Point(400, 378)
+        Me.chkPartExportViewImmediately.Name = "chkPartExportViewImmediately"
+        Me.chkPartExportViewImmediately.Size = New System.Drawing.Size(81, 30)
+        Me.chkPartExportViewImmediately.TabIndex = 28
+        Me.chkPartExportViewImmediately.Text = "View" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "Immediately"
+        Me.chkPartExportViewImmediately.UseVisualStyleBackColor = True
+        '
+        'chkBomExportViewImmediately
+        '
+        Me.chkBomExportViewImmediately.AutoSize = True
+        Me.chkBomExportViewImmediately.Location = New System.Drawing.Point(374, 392)
+        Me.chkBomExportViewImmediately.Name = "chkBomExportViewImmediately"
+        Me.chkBomExportViewImmediately.Size = New System.Drawing.Size(107, 17)
+        Me.chkBomExportViewImmediately.TabIndex = 28
+        Me.chkBomExportViewImmediately.Text = "View Immediately"
+        Me.chkBomExportViewImmediately.UseVisualStyleBackColor = True
+        '
         'frmBomTools
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -680,4 +716,7 @@ Partial Class frmBomTools
     Friend WithEvents chkBOMExportShowTLAssy As Windows.Forms.CheckBox
     Friend WithEvents chkBomCompShowTLAssy As Windows.Forms.CheckBox
     Friend WithEvents chkPartExportShowFasteners As Windows.Forms.CheckBox
+    Friend WithEvents chkBomCompViewImmediatly As Windows.Forms.CheckBox
+    Friend WithEvents chkPartExportViewImmediately As Windows.Forms.CheckBox
+    Friend WithEvents chkBomExportViewImmediately As Windows.Forms.CheckBox
 End Class

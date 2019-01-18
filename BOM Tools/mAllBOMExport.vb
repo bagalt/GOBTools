@@ -1421,7 +1421,7 @@ Module mAllBOMExport
 
 #Region "Export Functions - Create Excel documents"
 
-    Public Function BOMExportExcel(FilePath As String) As Boolean
+    Public Function BOMExportExcel(FilePath As String, ByVal viewImmediately As Boolean) As Boolean
         'function to create an excel document from the BOM list that was created from the assembly
         Dim XLApp As Excel.Application
         Dim wb As Excel.Workbook
@@ -1535,8 +1535,14 @@ Module mAllBOMExport
         Try
             wb.SaveAs(Filename:=FilePath, AccessMode:=Excel.XlSaveAsAccessMode.xlExclusive, ConflictResolution:=Excel.XlSaveConflictResolution.xlLocalSessionChanges)
             BOMExportExcel = True
-            wb.Close()
-            XLApp.Quit()
+            If Not viewImmediately Then
+                'Ok to close excel
+                wb.Close()
+                XLApp.Quit()
+            Else
+                XLApp.Visible = True
+            End If
+
         Catch ex As Exception
             BOMExportExcel = False
             wb.Close()
@@ -1545,7 +1551,7 @@ Module mAllBOMExport
 
     End Function
 
-    Public Function PartExportExcel(FilePath As String) As Boolean
+    Public Function PartExportExcel(FilePath As String, ByVal viewImmediately As Boolean) As Boolean
         'sub to create an excel document from the parts list that was created from the assembly
 
         Dim XLApp As Excel.Application
@@ -1655,8 +1661,14 @@ Module mAllBOMExport
         Try
             wb.SaveAs(Filename:=FilePath, AccessMode:=Excel.XlSaveAsAccessMode.xlExclusive, ConflictResolution:=Excel.XlSaveConflictResolution.xlLocalSessionChanges)
             PartExportExcel = True
-            wb.Close()
-            XLApp.Quit()
+            If Not viewImmediately Then
+                'ok to close excel
+                wb.Close()
+                XLApp.Quit()
+            Else
+                XLApp.Visible = True
+            End If
+
         Catch ex As Exception
             PartExportExcel = False
             wb.Close()
@@ -1665,7 +1677,7 @@ Module mAllBOMExport
 
     End Function
 
-    Public Function BomCompExportExcel(FilePath As String) As Boolean
+    Public Function BomCompExportExcel(FilePath As String, ByVal viewImmediately As Boolean) As Boolean
         'sub to create BOM Compare excel document from the parts list that was created from the assembly
         'uses the bom compare collection mCollBomCompare
 
@@ -1763,8 +1775,14 @@ Module mAllBOMExport
         Try
             wb.SaveAs(Filename:=FilePath, AccessMode:=Excel.XlSaveAsAccessMode.xlExclusive, ConflictResolution:=Excel.XlSaveConflictResolution.xlLocalSessionChanges)
             BomCompExportExcel = True
-            wb.Close()
-            XLApp.Quit()
+            If Not viewImmediately Then
+                'ok to close excel
+                wb.Close()
+                XLApp.Quit()
+            Else
+                XLApp.Visible = True
+            End If
+
         Catch ex As Exception
             BomCompExportExcel = False
             wb.Close()
