@@ -124,6 +124,10 @@
     <Compile Include="HoleMaker.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="My Project\Application.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Application.myapp</DependentUpon>
+    </Compile>
     <Compile Include="My Project\Resources.Designer.vb">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -307,14 +311,33 @@
   <ItemGroup>
     <None Include="BOM Tools\Icons\BOMTools64x64.bmp" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="My Project\Application.myapp">
+      <Generator>MyApplicationCodeGenerator</Generator>
+      <LastGenOutput>Application.Designer.vb</LastGenOutput>
+    </None>
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.VisualBasic.targets" />
   <PropertyGroup>
     <PreBuildEvent>
     </PreBuildEvent>
-    <PostBuildEvent>call "%25VS140COMNTOOLS%25vsvars32"
-			mt.exe -manifest "$(ProjectDir)GOBTools.X.manifest" -outputresource:"$(TargetPath)";#2
-			XCopy "$(TargetPath)" "%AppData%\Autodesk\ApplicationPlugins\$(TargetName)\" /Y /R
-		    XCopy "$(ProjectDir)Autodesk.GOBTools.Inventor.addin" "%AppData%\Autodesk\ApplicationPlugins\$(TargetName)\" /Y /R
-	</PostBuildEvent>
+    <PostBuildEvent>REM - Set up the environment.
+call "%25VS150COMNTOOLS%25\VsDevCmd"
+
+REM - Embed the manifest into the dll.
+mt.exe -manifest "$(ProjectDir)$(TargetName).X.manifest" -outputresource:"$(TargetPath)";#2
+
+REM - Copy the .addin file and the ButtonResources folder into the result folder.
+XCopy "$(ProjectDir)Autodesk.$(TargetName).Inventor.addin" "$(TargetDir)" /y
+XCopy "$(ProjectDir)ButtonResources" "$(TargetDir)ButtonResources" /y /r /i /s /f
+
+REM - Delete the pdb file because it doesn't need to be delivered.
+DEL "$(TargetDir)$(TargetName).pdb"
+
+REM - Delete the existing add-in folder.
+rmdir /q /s "C:\ProgramData\Autodesk\Inventor 2018\Addins\$(TargetName)"
+
+REM - Copy the folder to the Inventor Addins folder so Inventor will see it and run it.
+XCopy "$(TargetDir)*" "C:\ProgramData\Autodesk\Inventor 2018\Addins\$(TargetName)\" /y /r /i /s /f</PostBuildEvent>
   </PropertyGroup>
 </Project>

@@ -473,7 +473,7 @@ Partial Class frmStepper
         '
         'txtNumConstraints
         '
-        Me.txtNumConstraints.Location = New System.Drawing.Point(492, 175)
+        Me.txtNumConstraints.Location = New System.Drawing.Point(492, 177)
         Me.txtNumConstraints.Name = "txtNumConstraints"
         Me.txtNumConstraints.Size = New System.Drawing.Size(49, 20)
         Me.txtNumConstraints.TabIndex = 53
