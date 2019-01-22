@@ -1057,7 +1057,7 @@ Public Class frmBomTools
     End Sub
 
     Private Sub BomCompSettingsChanged(sender As Object, e As EventArgs) Handles chkBomCompShowTLAssy.CheckedChanged,
-            chkBomCompShowFasteners.CheckedChanged, chkBOMCompIncB45Children.CheckedChanged, chkBomCompIncludeCAssy.CheckedChanged,
+            chkBomCompShowFasteners.CheckedChanged, chkBomCompIncludeBAssy.CheckedChanged, chkBomCompIncludeCAssy.CheckedChanged,
             chkBOMCompIncB39Children.CheckedChanged, chkBOMCompIncB45Children.CheckedChanged
 
         'handles the change event for all the settings on the BOM Compare tab
