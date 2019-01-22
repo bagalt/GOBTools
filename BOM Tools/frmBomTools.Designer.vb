@@ -25,6 +25,7 @@ Partial Class frmBomTools
         Me.components = New System.ComponentModel.Container()
         Me.btnBCExportInventorBOM = New System.Windows.Forms.Button()
         Me.TabPage1 = New System.Windows.Forms.TabPage()
+        Me.chkBomCompViewImmediatly = New System.Windows.Forms.CheckBox()
         Me.chkBomCompShowTLAssy = New System.Windows.Forms.CheckBox()
         Me.chkBOMCompIncB45Children = New System.Windows.Forms.CheckBox()
         Me.chkBOMCompIncB39Children = New System.Windows.Forms.CheckBox()
@@ -50,6 +51,7 @@ Partial Class frmBomTools
         Me.btnLoadInventorBOM = New System.Windows.Forms.Button()
         Me.TabControl1 = New System.Windows.Forms.TabControl()
         Me.TabPage3 = New System.Windows.Forms.TabPage()
+        Me.chkPartExportViewImmediately = New System.Windows.Forms.CheckBox()
         Me.chkPartExportShowFasteners = New System.Windows.Forms.CheckBox()
         Me.chkPartExportShowTLAssy = New System.Windows.Forms.CheckBox()
         Me.chkPartExportShowB49 = New System.Windows.Forms.CheckBox()
@@ -62,6 +64,7 @@ Partial Class frmBomTools
         Me.PartMenuStripCopy = New System.Windows.Forms.ToolStripMenuItem()
         Me.PartMenuStripFIND = New System.Windows.Forms.ToolStripMenuItem()
         Me.TabPage4 = New System.Windows.Forms.TabPage()
+        Me.chkBomExportViewImmediately = New System.Windows.Forms.CheckBox()
         Me.chkBOMExportShowTLAssy = New System.Windows.Forms.CheckBox()
         Me.chkBomExportShowFasteners = New System.Windows.Forms.CheckBox()
         Me.chkBomExportAllowB49Parents = New System.Windows.Forms.CheckBox()
@@ -75,9 +78,6 @@ Partial Class frmBomTools
         Me.BomMenuStripFIND = New System.Windows.Forms.ToolStripMenuItem()
         Me.SaveFileDialog1 = New System.Windows.Forms.SaveFileDialog()
         Me.lblVersion = New System.Windows.Forms.Label()
-        Me.chkBomCompViewImmediatly = New System.Windows.Forms.CheckBox()
-        Me.chkPartExportViewImmediately = New System.Windows.Forms.CheckBox()
-        Me.chkBomExportViewImmediately = New System.Windows.Forms.CheckBox()
         Me.TabPage1.SuspendLayout()
         Me.InventorMenuStrip.SuspendLayout()
         Me.PromanMenuStrip.SuspendLayout()
@@ -125,6 +125,18 @@ Partial Class frmBomTools
         Me.TabPage1.TabIndex = 0
         Me.TabPage1.Text = "BOM Compare"
         Me.TabPage1.UseVisualStyleBackColor = True
+        '
+        'chkBomCompViewImmediatly
+        '
+        Me.chkBomCompViewImmediatly.AutoSize = True
+        Me.chkBomCompViewImmediatly.Checked = True
+        Me.chkBomCompViewImmediatly.CheckState = System.Windows.Forms.CheckState.Checked
+        Me.chkBomCompViewImmediatly.Location = New System.Drawing.Point(184, 422)
+        Me.chkBomCompViewImmediatly.Name = "chkBomCompViewImmediatly"
+        Me.chkBomCompViewImmediatly.Size = New System.Drawing.Size(107, 17)
+        Me.chkBomCompViewImmediatly.TabIndex = 27
+        Me.chkBomCompViewImmediatly.Text = "View Immediately"
+        Me.chkBomCompViewImmediatly.UseVisualStyleBackColor = True
         '
         'chkBomCompShowTLAssy
         '
@@ -371,6 +383,18 @@ Partial Class frmBomTools
         Me.TabPage3.Text = "Part Export"
         Me.TabPage3.UseVisualStyleBackColor = True
         '
+        'chkPartExportViewImmediately
+        '
+        Me.chkPartExportViewImmediately.AutoSize = True
+        Me.chkPartExportViewImmediately.Checked = True
+        Me.chkPartExportViewImmediately.CheckState = System.Windows.Forms.CheckState.Checked
+        Me.chkPartExportViewImmediately.Location = New System.Drawing.Point(400, 378)
+        Me.chkPartExportViewImmediately.Name = "chkPartExportViewImmediately"
+        Me.chkPartExportViewImmediately.Size = New System.Drawing.Size(81, 30)
+        Me.chkPartExportViewImmediately.TabIndex = 28
+        Me.chkPartExportViewImmediately.Text = "View" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "Immediately"
+        Me.chkPartExportViewImmediately.UseVisualStyleBackColor = True
+        '
         'chkPartExportShowFasteners
         '
         Me.chkPartExportShowFasteners.AutoSize = True
@@ -493,6 +517,18 @@ Partial Class frmBomTools
         Me.TabPage4.Text = "BOM Export"
         Me.TabPage4.UseVisualStyleBackColor = True
         '
+        'chkBomExportViewImmediately
+        '
+        Me.chkBomExportViewImmediately.AutoSize = True
+        Me.chkBomExportViewImmediately.Checked = True
+        Me.chkBomExportViewImmediately.CheckState = System.Windows.Forms.CheckState.Checked
+        Me.chkBomExportViewImmediately.Location = New System.Drawing.Point(374, 392)
+        Me.chkBomExportViewImmediately.Name = "chkBomExportViewImmediately"
+        Me.chkBomExportViewImmediately.Size = New System.Drawing.Size(107, 17)
+        Me.chkBomExportViewImmediately.TabIndex = 28
+        Me.chkBomExportViewImmediately.Text = "View Immediately"
+        Me.chkBomExportViewImmediately.UseVisualStyleBackColor = True
+        '
         'chkBOMExportShowTLAssy
         '
         Me.chkBOMExportShowTLAssy.AutoSize = True
@@ -604,36 +640,6 @@ Partial Class frmBomTools
         Me.lblVersion.TabIndex = 25
         Me.lblVersion.Text = "Version"
         Me.lblVersion.TextAlign = System.Drawing.ContentAlignment.MiddleRight
-        '
-        'chkBomCompViewImmediatly
-        '
-        Me.chkBomCompViewImmediatly.AutoSize = True
-        Me.chkBomCompViewImmediatly.Location = New System.Drawing.Point(184, 422)
-        Me.chkBomCompViewImmediatly.Name = "chkBomCompViewImmediatly"
-        Me.chkBomCompViewImmediatly.Size = New System.Drawing.Size(107, 17)
-        Me.chkBomCompViewImmediatly.TabIndex = 27
-        Me.chkBomCompViewImmediatly.Text = "View Immediately"
-        Me.chkBomCompViewImmediatly.UseVisualStyleBackColor = True
-        '
-        'chkPartExportViewImmediately
-        '
-        Me.chkPartExportViewImmediately.AutoSize = True
-        Me.chkPartExportViewImmediately.Location = New System.Drawing.Point(400, 378)
-        Me.chkPartExportViewImmediately.Name = "chkPartExportViewImmediately"
-        Me.chkPartExportViewImmediately.Size = New System.Drawing.Size(81, 30)
-        Me.chkPartExportViewImmediately.TabIndex = 28
-        Me.chkPartExportViewImmediately.Text = "View" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "Immediately"
-        Me.chkPartExportViewImmediately.UseVisualStyleBackColor = True
-        '
-        'chkBomExportViewImmediately
-        '
-        Me.chkBomExportViewImmediately.AutoSize = True
-        Me.chkBomExportViewImmediately.Location = New System.Drawing.Point(374, 392)
-        Me.chkBomExportViewImmediately.Name = "chkBomExportViewImmediately"
-        Me.chkBomExportViewImmediately.Size = New System.Drawing.Size(107, 17)
-        Me.chkBomExportViewImmediately.TabIndex = 28
-        Me.chkBomExportViewImmediately.Text = "View Immediately"
-        Me.chkBomExportViewImmediately.UseVisualStyleBackColor = True
         '
         'frmBomTools
         '

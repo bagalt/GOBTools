@@ -15,6 +15,7 @@ Public Class frmBomTools
     Private PartExportSettings As mAllBOMExport.PartExportSettings 'settings for Part Create collection
     Private BomCompareSettings As mAllBOMExport.BomCompareSettings 'settings for BOM compare collection
     Private startAssy As String 'holds the name of the top level assembly
+    Private allowChage As Boolean
 
     Private colorPartNotOnList As Color
     Private colorPartQtyHigher As Color
@@ -36,7 +37,7 @@ Public Class frmBomTools
             mAssyDoc = g_inventorApplication.ActiveDocument
             'get the top level assembly document name
             startAssy = mAssyDoc.PropertySets.Item("Design Tracking Properties").Item("Part Number").Value
-            lblVersion.Text = "v1.7"
+            lblVersion.Text = "v1.8"
 
             'define colors for row highlighting
             colorPartNotOnList = Color.DeepPink
@@ -44,6 +45,7 @@ Public Class frmBomTools
             colorPartQtyLower = Color.MediumPurple
             colorQtyZero = Color.Goldenrod
             colorEvolutionPart = Color.Cyan
+
         Catch
             MsgBox("Assembly document must be active")
             Me.Close()
@@ -68,6 +70,8 @@ Public Class frmBomTools
             MsgBox("Assembly Document must be active")
         End Try
 
+        allowChage = False
+
         'load the settings from the configuration file
         'bom compare tab settings
         chkBomCompIncludeBAssy.Checked = My.Settings.BTBomCompIncludeB49Assemblies
@@ -87,6 +91,8 @@ Public Class frmBomTools
         chkBomExportAllowB49Parents.Checked = My.Settings.BTBomExportAllowBAssyParent
         chkBomExportShowFasteners.Checked = My.Settings.BTBomExportShowFasteners
         chkBOMExportShowTLAssy.Checked = My.Settings.BTBomExportIncludeTopLevelAssy
+
+        allowChage = True
 
     End Sub
 
@@ -753,6 +759,8 @@ Public Class frmBomTools
 
     Private Sub frmBomTools_Closing(sender As Object, e As CancelEventArgs) Handles Me.Closing
 
+        allowChage = False
+
         'form closing, need to save settings
         'bom compare settings
         My.Settings.BTBomCompIncludeB49Assemblies = chkBomCompIncludeBAssy.Checked
@@ -1048,5 +1056,35 @@ Public Class frmBomTools
 
     End Sub
 
+    Private Sub BomCompSettingsChanged(sender As Object, e As EventArgs) Handles chkBomCompShowTLAssy.CheckedChanged,
+            chkBomCompShowFasteners.CheckedChanged, chkBOMCompIncB45Children.CheckedChanged, chkBomCompIncludeCAssy.CheckedChanged,
+            chkBOMCompIncB39Children.CheckedChanged, chkBOMCompIncB45Children.CheckedChanged
 
+        'handles the change event for all the settings on the BOM Compare tab
+        'this should trigger a reload of the inventor BOM
+        If allowChage Then
+            btnLoadInventorBOM.PerformClick()
+        End If
+
+    End Sub
+
+    Private Sub PartExportSettingsChanged(sender As Object, e As EventArgs) Handles chkPartExportShowTLAssy.CheckedChanged,
+            chkPartExportShowB49.CheckedChanged, chkPartExportShowFasteners.CheckedChanged
+
+        'handles the change event for all the settings on the Part Export Tab
+        'should trigger a reload of the inventor bom
+        If allowChage Then
+            btnLoadInventorBOM.PerformClick()
+        End If
+    End Sub
+
+    Private Sub BomExportSettingsChanged(sender As Object, e As EventArgs) Handles chkBOMExportShowTLAssy.CheckedChanged,
+            chkBomExportAllowB49Parents.CheckedChanged, chkBomExportShowFasteners.CheckedChanged
+
+        'handles the change event for all the settings on the BOM export Tab
+        'should trigger a reload of the inventor bom
+        If allowChage Then
+            btnLoadInventorBOM.PerformClick()
+        End If
+    End Sub
 End Class

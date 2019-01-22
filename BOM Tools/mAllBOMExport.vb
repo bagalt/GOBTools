@@ -9,7 +9,6 @@ Module mAllBOMExport
     'Bom Comparisons, Part Export, and BOM Export
     '************************************
 
-
     Private mCollFullBOM As Collection 'collection to hold all the parts with correct parents for BOM Import
     Private mCollBOMInstances As Collection 'collection to hold all of the parts with instances of parent, used for full bom creation
     Private mCollPartExport As Collection 'colection to hold all the new parts, manuf and purch and proman information, for Part Creation import
@@ -17,7 +16,6 @@ Module mAllBOMExport
 
     Private mStartAssy As String 'holds the top level assembly name
     Private mParentAssy As String 'variable to hold the name of the parent assembly for a part
-    Private mErrorStatus As Boolean 'variable to show if an error has occurred in any of the part info, used to display message about excel file
     Private mIsAssembly As Boolean 'flag for indicating if current occurrence is an assembly (true)
     Private mAddToBomCompCollection As Boolean 'flag for indicating if current part should be added to BOM compare collection or not
 
@@ -84,7 +82,6 @@ Module mAllBOMExport
 
         If ThisApplication.ActiveDocumentType <> Inventor.DocumentTypeEnum.kAssemblyDocumentObject Then
             MsgBox("Assembly document must be active")
-            mResults = "No Report Created, Assembly must be active"
             Exit Sub
         End If
 
@@ -104,7 +101,7 @@ Module mAllBOMExport
         Dim sSubAssyName As String
         Dim assyDoc As Inventor.AssemblyDocument
         Dim colBreadCrumb As New Collection
-        Dim sFilePath As String
+        'Dim sFilePath As String
         'variables to hold information for each occurrence
         Dim occDoc As Inventor.Document
         Dim occProps As Inventor.PropertySets
@@ -117,7 +114,6 @@ Module mAllBOMExport
 
         sMsg = ""
         mParentAssy = ""
-        mErrorStatus = False
         mResults = ""
 
         'get the starting assembly name, for display and excel file naming purposes
@@ -203,14 +199,9 @@ Module mAllBOMExport
             End If
         Next
 
-        'check the file path to see if it is valid
-        sFilePath = sDirectoryPath & "\" & mStartAssy & "_PartsList.xlsx"
-
-        mResults = "File created at: " & sFilePath
-
         'print the part list
-        Debug.Print("")
-        PrintColl(mCollFullBOM)
+        'Debug.Print("")
+        'PrintColl(mCollFullBOM)
         bomCompareList = mCollBomCompare
         partExportList = mCollPartExport
         bomImportList = mCollFullBOM
@@ -987,35 +978,6 @@ Module mAllBOMExport
             mCollPartExport.Item(sPartExportKey).IncrementQty(1)
         End If
 
-        ''Build the Part Export collection
-        'If Not KeyExists(mCollPartExport, sPartExportKey) Then
-        '    'if include b49 is true and part is a b49 then do all this
-        '    If (mPartExportSettings.bPartExportShowB49 = False) And (occurrenceType = PartType.BAssy) Then
-        '        'do nothing, b49 assemblies not added to part create collection if option is not checked
-        '    ElseIf (occurrenceType = PartType.BGEPart) Then
-        '        'do nothing, bge parts should never be created
-        '    ElseIf (occurrenceType = PartType.BPHPart) Then
-        '        'do nothing, BPH parts should never be created
-        '    ElseIf occurrenceType = PartType.StandardPart Then
-        '        'do nothing, standard parts not added to part create collection
-        '    ElseIf occurrenceType = PartType.Toplevel And Not mPartExportSettings.bPartExportShowTopLevelAssy Then
-        '        'do nothing, Top Level part not shown
-        '    Else
-        '        'create instance of partinfo class for new parts
-        '        createOccurence = New cPartInfo
-        '        MakeEqual(createOccurence, occurrenceInfo)
-
-        '        'bump the quantity of the part (starts at 0)
-        '        createOccurence.IncrementQty(1)
-
-        '        'add the newly created mypartinfo to the myparts collection with the part number as the key
-        '        mCollPartExport.Add(createOccurence, sPartExportKey) 'partcreatepartinfo, (spartcreatekey))
-        '    End If
-        'Else
-        '    'key already exists, bump the quantity of the part
-        '    mCollPartExport.Item(sPartExportKey).incrementqty(1)
-        'End If
-
     End Sub
 
     Private Sub AddToBomExportCollection(ByRef collBreadCrumb As Collection, ByVal occurrenceInfo As cPartInfo, ByRef occurrenceType As PartType, ByVal occurrence As Inventor.ComponentOccurrence)
@@ -1074,7 +1036,11 @@ Module mAllBOMExport
                     If ParentInfo.ErrorStatus = True Then
                         importOccurrence.ParentAssy = ParentInfo.ParentName
                         importOccurrence.PartError = True
-                        importOccurrence.ErrorMsg = "Invalid Parent Assy"
+                        If importOccurrence.ErrorMsg = "" Then
+                            importOccurrence.ErrorMsg = "Invalid Parent Assembly"
+                        Else
+                            importOccurrence.ErrorMsg = importOccurrence.ErrorMsg & ", Invalid Parent Assy"
+                        End If
                     Else
                         importOccurrence.ParentAssy = ParentInfo.ParentName
                     End If
@@ -1358,7 +1324,6 @@ Module mAllBOMExport
         occurrence.PromanCode = "XXXX"
         occurrence.PartError = True
         occurrence.ErrorMsg = occurrence.ErrorMsg & "Missing Proman Class Code"
-        mErrorStatus = True
 
     End Sub
 
@@ -1367,7 +1332,6 @@ Module mAllBOMExport
         occurrence.Description = "XXXX XXXX"
         occurrence.PartError = True
         occurrence.ErrorMsg = occurrence.ErrorMsg & "," & "Missing Description"
-        mErrorStatus = True
     End Sub
 
     Private Sub ServiceCodeErr(ByVal occurrence As cPartInfo)
@@ -1376,7 +1340,6 @@ Module mAllBOMExport
         occurrence.ServiceCode = "XX"
         occurrence.PartError = True
         occurrence.ErrorMsg = occurrence.ErrorMsg & "," & "Missing Customer Service Code"
-        mErrorStatus = True
 
     End Sub
 
@@ -1386,7 +1349,6 @@ Module mAllBOMExport
         occurrence.VendorCode = "XXXXXX"
         occurrence.PartError = True
         occurrence.ErrorMsg = occurrence.ErrorMsg & "," & "Missing Vendor Code"
-        mErrorStatus = True
 
     End Sub
 
@@ -1396,7 +1358,6 @@ Module mAllBOMExport
         occurrence.ManufName = "XXXXXX"
         occurrence.PartError = True
         occurrence.ErrorMsg = occurrence.ErrorMsg & ", " & "Missing Manufacturer Name"
-        mErrorStatus = True
 
     End Sub
 
@@ -1406,7 +1367,6 @@ Module mAllBOMExport
         occurrence.ManufNum = "XXXXXX"
         occurrence.PartError = True
         occurrence.ErrorMsg = occurrence.ErrorMsg & ", " & "Missing Manufacturer Number"
-        mErrorStatus = True
 
     End Sub
 
@@ -1414,7 +1374,6 @@ Module mAllBOMExport
         'sub to handle error information for unknown parts
         occurrence.PartError = True
         occurrence.ErrorMsg = occurrence.ErrorMsg & "," & "Unknown Type: Verify Info"
-        mErrorStatus = True
     End Sub
 
 #End Region
@@ -1439,19 +1398,11 @@ Module mAllBOMExport
         'Check the file path and directory
         If IsValidFileNameOrPath(FilePath) Then
             'valid file path
-            'valid file path
-            If mErrorStatus = True Then
-                Debug.Print("***** ERRORS Found See Excel Document *****")
-                mResults = "**** ERRORS Found See Excel Document ****" & vbNewLine & vbNewLine
-            End If
             'Add results to Results String
-            mResults = mResults & "File Path: " & FilePath & vbNewLine & vbNewLine & "Num Unique Parts: " & CStr(bomImportList.Count)
+            mResults = "File Path: " & FilePath & vbNewLine & vbNewLine & "Num Unique Parts: " & CStr(bomImportList.Count)
         Else
             'File Path not valid
-            If mErrorStatus = True Then
-                mResults = "**** ERRORS Found Some Parts Missing Info ****" & vbNewLine & vbNewLine
-            End If
-            mResults = mResults & "Excel file NOT created" & vbNewLine & vbNewLine & "Num Unique Parts: " & CStr(bomImportList.Count)
+            mResults = "Excel file NOT created" & vbNewLine & vbNewLine & "Num Unique Parts: " & CStr(bomImportList.Count)
             'dont try to create excel document
             BOMExportExcel = False
             Exit Function
@@ -1570,19 +1521,11 @@ Module mAllBOMExport
         'Check the file path and directory
         If IsValidFileNameOrPath(FilePath) Then
             'valid file path
-            'valid file path
-            If mErrorStatus = True Then
-                Debug.Print("***** ERRORS Found See Excel Document *****")
-                mResults = "**** ERRORS Found See Excel Document ****" & vbNewLine & vbNewLine
-            End If
             'Add results to Results String
-            mResults = mResults & "File Path: " & FilePath & vbNewLine & vbNewLine & "Num Unique Parts: " & CStr(partExportList.Count)
+            mResults = "File Path: " & FilePath & vbNewLine & vbNewLine & "Num Unique Parts: " & CStr(partExportList.Count)
         Else
             'File Path not valid
-            If mErrorStatus = True Then
-                mResults = "**** ERRORS Found Some Parts Missing Info ****" & vbNewLine & vbNewLine
-            End If
-            mResults = mResults & "Excel file NOT created" & vbNewLine & vbNewLine & "Num Unique Parts: " & CStr(partExportList.Count)
+            mResults = "Excel file NOT created" & vbNewLine & vbNewLine & "Num Unique Parts: " & CStr(partExportList.Count)
             'dont try to create excel document
             PartExportExcel = False
             Exit Function
@@ -1697,19 +1640,11 @@ Module mAllBOMExport
         'Check the file path and directory
         If IsValidFileNameOrPath(FilePath) Then
             'valid file path
-            'valid file path
-            If mErrorStatus = True Then
-                Debug.Print("***** ERRORS Found See Excel Document *****")
-                mResults = "**** ERRORS Found See Excel Document ****" & vbNewLine & vbNewLine
-            End If
             'Add results to Results String
-            mResults = mResults & "File Path: " & FilePath & vbNewLine & vbNewLine & "Num Unique Parts: " & CStr(bomCompareList.Count)
+            mResults = "File Path: " & FilePath & vbNewLine & vbNewLine & "Num Unique Parts: " & CStr(bomCompareList.Count)
         Else
             'File Path not valid
-            If mErrorStatus = True Then
-                mResults = "**** ERRORS Found Some Parts Missing Info ****" & vbNewLine & vbNewLine
-            End If
-            mResults = mResults & "Excel file NOT created" & vbNewLine & vbNewLine & "Num Unique Parts: " & CStr(bomCompareList.Count)
+            mResults = "Excel file NOT created" & vbNewLine & vbNewLine & "Num Unique Parts: " & CStr(bomCompareList.Count)
             'dont try to create excel document
             BomCompExportExcel = False
             Exit Function
@@ -1761,10 +1696,10 @@ Module mAllBOMExport
                 .Range("A" & row).Value = part.PartNum
                 .Range("B" & row).Value = part.Description
                 .Range("C" & row).Value = part.Qty
-                If part.PartError = True Then
-                    'color error rows
-                    .Range("A" & row & ":" & "C" & row).Interior.Color = errorColor
-                End If
+                'If part.PartError = True Then
+                '    'color error rows
+                '    .Range("A" & row & ":" & "C" & row).Interior.Color = errorColor
+                'End If
             End With
             row = row + 1
         Next
@@ -1921,7 +1856,6 @@ Module mAllBOMExport
             Catch ex As Exception
                 PartExportFindParent.ParentName = "INVALID Parent"
                 PartExportFindParent.ErrorStatus = True
-                mErrorStatus = True
                 'exit the function and assign invalid parent error
                 Exit Function
             End Try
@@ -1966,7 +1900,6 @@ Module mAllBOMExport
             Catch ex As Exception
                 BomExportFindParent.ParentName = "INVALID Parent"
                 BomExportFindParent.ErrorStatus = True
-                mErrorStatus = True
                 'exit the function and assign invalid parent error
                 Exit Function
             End Try
@@ -2092,40 +2025,5 @@ Module mAllBOMExport
         End If
 
     End Function
-
-    'Private Sub HighlightPart(PartNum As String)
-    'sub to highlight the part based on the part number
-
-    'Dim oCompOcc As ComponentOccurrence
-    'Dim PartProps As Inventor.PropertySets
-    'Dim oDoc As Inventor.Document
-
-    'clear the highlight set
-    'oSet.Clear()
-
-    'need to have recursive function here
-    'For Each oCompOcc In oCompDef.Occurrences
-    'If oCompOcc.SubOccurrences.Count = 0 Then
-    'oDoc = oCompOcc.Definition.Document
-    'PartProps = oDoc.PropertySets
-    'If PartProps.Item("Design Tracking Properties").Item("Part Number").Value = PartNum Then
-    'Add occurrence to highlight set
-    'oSet.AddItem(oCompOcc)
-    'End If
-    'Else
-    'sub assembly found
-    'ProcessSubAssys(oCompOcc)
-    'End If
-    'Next
-
-    'For Each oCompOcc In oCompDef.Occurrences
-    'If PartProps.Item("Design Tracking Properties").Item("Part Number").Value = PartNum Then
-    'oSet.AddItem(oCompOcc)
-    'End If
-    'Next
-
-
-
-    'End Sub
 
 End Module
