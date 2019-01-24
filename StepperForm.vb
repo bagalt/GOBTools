@@ -485,7 +485,6 @@ Public Class frmStepper
                 'allows stop button event to be caught
                 gInvApp.UserInterfaceManager.DoEvents()
                 Call NextAngle()
-                Call UpdateListView()
 
                 If gintCurrentIndex >= gdblPosArray.GetUpperBound(0) Then
                     If chkLoop.Checked = True Then
