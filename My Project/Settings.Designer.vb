@@ -56,60 +56,60 @@ Partial Friend NotInheritable Class Settings
     <Global.System.Configuration.UserScopedSettingAttribute(),  _
      Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
      Global.System.Configuration.DefaultSettingValueAttribute("True")>  _
-    Public Property BomToolsBomImportIncludeB49Assemblies() As Boolean
+    Public Property BTBomExportAllowBAssyParent() As Boolean
         Get
-            Return CType(Me("BomToolsBomImportIncludeB49Assemblies"),Boolean)
+            Return CType(Me("BTBomExportAllowBAssyParent"),Boolean)
         End Get
         Set
-            Me("BomToolsBomImportIncludeB49Assemblies") = value
+            Me("BTBomExportAllowBAssyParent") = value
         End Set
     End Property
     
     <Global.System.Configuration.UserScopedSettingAttribute(),  _
      Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
      Global.System.Configuration.DefaultSettingValueAttribute("True")>  _
-    Public Property BomToolsPartCreateIncludeB49Assemblies() As Boolean
+    Public Property BTPartExportIncludeB49Assemblies() As Boolean
         Get
-            Return CType(Me("BomToolsPartCreateIncludeB49Assemblies"),Boolean)
+            Return CType(Me("BTPartExportIncludeB49Assemblies"),Boolean)
         End Get
         Set
-            Me("BomToolsPartCreateIncludeB49Assemblies") = value
+            Me("BTPartExportIncludeB49Assemblies") = value
         End Set
     End Property
     
     <Global.System.Configuration.UserScopedSettingAttribute(),  _
      Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
      Global.System.Configuration.DefaultSettingValueAttribute("True")>  _
-    Public Property BomToolsBomCompIncludeB49Assemblies() As Boolean
+    Public Property BTBomCompIncludeB49Assemblies() As Boolean
         Get
-            Return CType(Me("BomToolsBomCompIncludeB49Assemblies"),Boolean)
+            Return CType(Me("BTBomCompIncludeB49Assemblies"),Boolean)
         End Get
         Set
-            Me("BomToolsBomCompIncludeB49Assemblies") = value
+            Me("BTBomCompIncludeB49Assemblies") = value
         End Set
     End Property
     
     <Global.System.Configuration.UserScopedSettingAttribute(),  _
      Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
      Global.System.Configuration.DefaultSettingValueAttribute("True")>  _
-    Public Property BOMToolsBomCompIncludeB39Children() As Boolean
+    Public Property BTBomCompIncludeB39Children() As Boolean
         Get
-            Return CType(Me("BOMToolsBomCompIncludeB39Children"),Boolean)
+            Return CType(Me("BTBomCompIncludeB39Children"),Boolean)
         End Get
         Set
-            Me("BOMToolsBomCompIncludeB39Children") = value
+            Me("BTBomCompIncludeB39Children") = value
         End Set
     End Property
     
     <Global.System.Configuration.UserScopedSettingAttribute(),  _
      Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
      Global.System.Configuration.DefaultSettingValueAttribute("False")>  _
-    Public Property BOMToolsBomCompIncludeB45Children() As Boolean
+    Public Property BTBomCompIncludeB45Children() As Boolean
         Get
-            Return CType(Me("BOMToolsBomCompIncludeB45Children"),Boolean)
+            Return CType(Me("BTBomCompIncludeB45Children"),Boolean)
         End Get
         Set
-            Me("BOMToolsBomCompIncludeB45Children") = value
+            Me("BTBomCompIncludeB45Children") = value
         End Set
     End Property
     
@@ -182,6 +182,102 @@ Partial Friend NotInheritable Class Settings
         End Get
         Set
             Me("StepperIgnoreHoriz") = value
+        End Set
+    End Property
+    
+    <Global.System.Configuration.UserScopedSettingAttribute(),  _
+     Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+     Global.System.Configuration.DefaultSettingValueAttribute("True")>  _
+    Public Property BTBomCompIncludeC49Assemblies() As Boolean
+        Get
+            Return CType(Me("BTBomCompIncludeC49Assemblies"),Boolean)
+        End Get
+        Set
+            Me("BTBomCompIncludeC49Assemblies") = value
+        End Set
+    End Property
+    
+    <Global.System.Configuration.UserScopedSettingAttribute(),  _
+     Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+     Global.System.Configuration.DefaultSettingValueAttribute("0, 0")>  _
+    Public Property BTFormLocation() As Global.System.Drawing.Point
+        Get
+            Return CType(Me("BTFormLocation"),Global.System.Drawing.Point)
+        End Get
+        Set
+            Me("BTFormLocation") = value
+        End Set
+    End Property
+    
+    <Global.System.Configuration.UserScopedSettingAttribute(),  _
+     Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+     Global.System.Configuration.DefaultSettingValueAttribute("True")>  _
+    Public Property BTBomExportShowFasteners() As Boolean
+        Get
+            Return CType(Me("BTBomExportShowFasteners"),Boolean)
+        End Get
+        Set
+            Me("BTBomExportShowFasteners") = value
+        End Set
+    End Property
+    
+    <Global.System.Configuration.UserScopedSettingAttribute(),  _
+     Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+     Global.System.Configuration.DefaultSettingValueAttribute("True")>  _
+    Public Property BTBomCompShowFasteners() As Boolean
+        Get
+            Return CType(Me("BTBomCompShowFasteners"),Boolean)
+        End Get
+        Set
+            Me("BTBomCompShowFasteners") = value
+        End Set
+    End Property
+    
+    <Global.System.Configuration.UserScopedSettingAttribute(),  _
+     Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+     Global.System.Configuration.DefaultSettingValueAttribute("False")>  _
+    Public Property BTPartExportIncludeTopLevelAssy() As Boolean
+        Get
+            Return CType(Me("BTPartExportIncludeTopLevelAssy"),Boolean)
+        End Get
+        Set
+            Me("BTPartExportIncludeTopLevelAssy") = value
+        End Set
+    End Property
+    
+    <Global.System.Configuration.UserScopedSettingAttribute(),  _
+     Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+     Global.System.Configuration.DefaultSettingValueAttribute("False")>  _
+    Public Property BTBomExportIncludeTopLevelAssy() As Boolean
+        Get
+            Return CType(Me("BTBomExportIncludeTopLevelAssy"),Boolean)
+        End Get
+        Set
+            Me("BTBomExportIncludeTopLevelAssy") = value
+        End Set
+    End Property
+    
+    <Global.System.Configuration.UserScopedSettingAttribute(),  _
+     Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+     Global.System.Configuration.DefaultSettingValueAttribute("False")>  _
+    Public Property BTBomCompIncludeTopLevelAssy() As Boolean
+        Get
+            Return CType(Me("BTBomCompIncludeTopLevelAssy"),Boolean)
+        End Get
+        Set
+            Me("BTBomCompIncludeTopLevelAssy") = value
+        End Set
+    End Property
+    
+    <Global.System.Configuration.UserScopedSettingAttribute(),  _
+     Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+     Global.System.Configuration.DefaultSettingValueAttribute("False")>  _
+    Public Property BTPartExportShowFasteners() As Boolean
+        Get
+            Return CType(Me("BTPartExportShowFasteners"),Boolean)
+        End Get
+        Set
+            Me("BTPartExportShowFasteners") = value
         End Set
     End Property
 End Class

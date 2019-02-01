@@ -27,12 +27,14 @@ Partial Class frmBOMToolsHelp
         '
         'RichTextBox1
         '
+        Me.RichTextBox1.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.RichTextBox1.BackColor = System.Drawing.SystemColors.Control
         Me.RichTextBox1.Location = New System.Drawing.Point(9, 6)
         Me.RichTextBox1.Name = "RichTextBox1"
         Me.RichTextBox1.ReadOnly = True
         Me.RichTextBox1.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical
-        Me.RichTextBox1.Size = New System.Drawing.Size(734, 298)
+        Me.RichTextBox1.Size = New System.Drawing.Size(734, 601)
         Me.RichTextBox1.TabIndex = 2
         Me.RichTextBox1.Text = ""
         '
@@ -40,12 +42,12 @@ Partial Class frmBOMToolsHelp
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(754, 311)
+        Me.ClientSize = New System.Drawing.Size(754, 614)
         Me.Controls.Add(Me.RichTextBox1)
         Me.MaximizeBox = False
-        Me.MaximumSize = New System.Drawing.Size(770, 350)
+        Me.MaximumSize = New System.Drawing.Size(770, 1000)
         Me.MinimizeBox = False
-        Me.MinimumSize = New System.Drawing.Size(770, 0)
+        Me.MinimumSize = New System.Drawing.Size(770, 39)
         Me.Name = "frmBOMToolsHelp"
         Me.Text = "frmBOMToolsHelp"
         Me.ResumeLayout(False)
