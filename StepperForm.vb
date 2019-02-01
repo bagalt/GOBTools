@@ -330,7 +330,10 @@ Public Class frmStepper
         Else
             'new index value is out of range, stop at last index value (may want to wrap around)
             gintPrevIndex = gintCurrentIndex
-            gintCurrentIndex = gdblPosArray.GetUpperBound(0)
+            'gintCurrentIndex = gdblPosArray.GetUpperBound(0)
+
+            'new index is outside bounds, wrap back around to first angle
+            gintCurrentIndex = 1
         End If
 
         'update the model
@@ -356,7 +359,7 @@ Public Class frmStepper
         Else
             'new index is less than one, stop at first index (may want to wrap around)
             gintPrevIndex = gintCurrentIndex
-            gintCurrentIndex = 1
+            gintCurrentIndex = 359
         End If
 
         'update model
