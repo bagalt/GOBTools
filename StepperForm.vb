@@ -563,6 +563,14 @@ Public Class frmStepper
 
         End Try
 
+        'Save settings
+        My.Settings.StepperFilePath = txtFilePath.Text
+        My.Settings.StepperVertName = txtVertName.Text
+        My.Settings.StepperHorizName = txtHorizName.Text
+        My.Settings.StepperAccelThresh = CDbl(txtAccelThreshold.Text)
+        My.Settings.StepperStepSize = CInt(txtStepSize.Text)
+        My.Settings.StepperIgnoreHoriz = chkIgnoreHoriz.Checked
+
     End Sub
 
     Private Sub btnReset_Click(sender As Object, e As EventArgs) Handles btnReset.Click
@@ -596,6 +604,14 @@ Public Class frmStepper
                 Me.Close()
             End If
         End If
+
+        'load settings
+        txtFilePath.Text = My.Settings.StepperFilePath
+        txtVertName.Text = My.Settings.StepperVertName
+        txtHorizName.Text = My.Settings.StepperHorizName
+        txtAccelThreshold.Text = My.Settings.StepperAccelThresh
+        txtStepSize.Text = My.Settings.StepperStepSize
+        chkIgnoreHoriz.Checked = My.Settings.StepperIgnoreHoriz
 
     End Sub
 

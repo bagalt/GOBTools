@@ -37,7 +37,7 @@ Public Class frmBomTools
             mAssyDoc = g_inventorApplication.ActiveDocument
             'get the top level assembly document name
             startAssy = mAssyDoc.PropertySets.Item("Design Tracking Properties").Item("Part Number").Value
-            lblVersion.Text = "v0.2"
+            lblVersion.Text = "v0.3"
 
             'define colors for row highlighting
             colorPartNotOnList = Color.DeepPink
@@ -69,6 +69,14 @@ Public Class frmBomTools
             MsgBox("Assembly Document must be active")
         End Try
 
+        'load the settings from the configuration file
+        chkBomImportIncludeBAssy.Checked = My.Settings.BomToolsBomImportIncludeB49Assemblies
+        chkPartCreateIncludeBAssy.Checked = My.Settings.BomToolsPartCreateIncludeB49Assemblies
+        chkBomCompIncludeBAssy.Checked = My.Settings.BomToolsBomCompIncludeB49Assemblies
+        chkBOMCompIncB39Children.Checked = My.Settings.BOMToolsBomCompIncludeB39Children
+        chkBOMCompIncB45Children.Checked = My.Settings.BOMToolsBomCompIncludeB45Children
+
+
     End Sub
 
     Private Sub InitPromanListView()
@@ -82,7 +90,7 @@ Public Class frmBomTools
             .FullRowSelect = True
             .GridLines = True
             .HeaderStyle = Windows.Forms.ColumnHeaderStyle.Clickable
-            .LabelEdit = True
+            .LabelEdit = False
             .MultiSelect = False
             .Sorting = Windows.Forms.SortOrder.Ascending
             .View = View.Details
@@ -553,4 +561,15 @@ Public Class frmBomTools
 
     End Sub
 
+    Private Sub frmBomTools_Closing(sender As Object, e As CancelEventArgs) Handles Me.Closing
+
+        'form closing, need to save settings
+        My.Settings.BomToolsBomImportIncludeB49Assemblies = chkBomImportIncludeBAssy.Checked
+        My.Settings.BomToolsPartCreateIncludeB49Assemblies = chkPartCreateIncludeBAssy.Checked
+        My.Settings.BomToolsBomCompIncludeB49Assemblies = chkBomCompIncludeBAssy.Checked
+        My.Settings.BOMToolsBomCompIncludeB39Children = chkBOMCompIncB39Children.Checked
+        My.Settings.BOMToolsBomCompIncludeB45Children = chkBOMCompIncB45Children.Checked
+
+
+    End Sub
 End Class

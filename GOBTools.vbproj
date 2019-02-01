@@ -118,13 +118,6 @@
     </Compile>
     <Compile Include="Classes\cPartInfo.vb" />
     <Compile Include="Classes\clsInteract.vb" />
-    <Compile Include="BOM Export\BOMExport.vb" />
-    <Compile Include="BOM Export\frmBOMExport.Designer.vb">
-      <DependentUpon>frmBOMExport.vb</DependentUpon>
-    </Compile>
-    <Compile Include="BOM Export\frmBOMExport.vb">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="HoleMaker.designer.vb">
       <DependentUpon>HoleMaker.vb</DependentUpon>
     </Compile>
@@ -136,12 +129,18 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="My Project\Settings.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
     <Compile Include="NameHelp.designer.vb">
       <DependentUpon>NameHelp.vb</DependentUpon>
     </Compile>
     <Compile Include="NameHelp.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Settings.vb" />
     <Compile Include="StandardAddInServer.vb" />
     <Compile Include="StepperForm.designer.vb">
       <DependentUpon>StepperForm.vb</DependentUpon>
@@ -151,6 +150,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="GOBTools.config">
       <SubType>Designer</SubType>
     </None>
@@ -162,10 +162,11 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <None Include="My Project\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.vb</LastGenOutput>
+    </None>
     <None Include="Readme.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="BOM Export\Icons\ExportBOM16x16.bmp" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
@@ -239,9 +240,7 @@
       <CustomToolNamespace>My.Resources</CustomToolNamespace>
       <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.vb</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="BOM Export\frmBOMExport.resx">
-      <DependentUpon>frmBOMExport.vb</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="NameHelp.resx">
       <DependentUpon>NameHelp.vb</DependentUpon>
@@ -301,9 +300,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Stepper64x64.bmp" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="BOM Export\Icons\ExportBOM64x64.bmp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="BOM Tools\Icons\BOMTools16x16.bmp" />
