@@ -284,18 +284,18 @@ Public Class frmStepper
                 'for passing values to inventor, inventor uses internal units of cm and radians
                 'use the expression to have the display only show 3 decimal places and add the mm to use the correct units
                 'may be a slight performance penalty but it is hard to tell
-                VertName.Expression = gdblPosArray(gintCurrentIndex, 2) + CDbl(txtVertOffset.Text) & "mm"
-                'VertName.Value = CDbl((gdblPosArray(gintCurrentIndex, 2) + CDbl(txtVertOffset.Text)) / 10)
+                'VertName.Expression = gdblPosArray(gintCurrentIndex, 2) + CDbl(txtVertOffset.Text) & "mm"
+                VertName.Value = CDbl((gdblPosArray(gintCurrentIndex, 2) + CDbl(txtVertOffset.Text)) / 10)
                 'update model and ignore errors
                 gInvApp.ScreenUpdating = True
                 gAssyDoc.Update2(True)
             Else
                 'use the expression to have the display only show 3 decimal places and add the mm to use the correct units
                 'may be a slight performance penalty but it is hard to tell
-                VertName.Expression = gdblPosArray(gintCurrentIndex, 2) + CDbl(txtVertOffset.Text) & "mm"
-                HorizName.Expression = gdblPosArray(gintCurrentIndex, 3) + CDbl(txtHorizOffset.Text) & "mm"
-                'VertName.Value = CDbl((gdblPosArray(gintCurrentIndex, 2) + CDbl(txtVertOffset.Text)) / 10)
-                'HorizName.Value = CDbl((gdblPosArray(gintCurrentIndex, 3) + CDbl(txtHorizOffset.Text)) / 10)
+                'VertName.Expression = gdblPosArray(gintCurrentIndex, 2) + CDbl(txtVertOffset.Text) & "mm"
+                'HorizName.Expression = gdblPosArray(gintCurrentIndex, 3) + CDbl(txtHorizOffset.Text) & "mm"
+                VertName.Value = CDbl((gdblPosArray(gintCurrentIndex, 2) + CDbl(txtVertOffset.Text)) / 10)
+                HorizName.Value = CDbl((gdblPosArray(gintCurrentIndex, 3) + CDbl(txtHorizOffset.Text)) / 10)
                 'update model and ignore errors
                 gInvApp.ScreenUpdating = True
                 gAssyDoc.Update2(True)
@@ -359,7 +359,7 @@ Public Class frmStepper
         Else
             'new index is less than one, stop at first index (may want to wrap around)
             gintPrevIndex = gintCurrentIndex
-            gintCurrentIndex = 359
+            gintCurrentIndex = 361
         End If
 
         'update model
