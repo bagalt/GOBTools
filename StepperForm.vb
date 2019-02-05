@@ -35,7 +35,7 @@ Public Class frmStepper
             gAssyCompDef = gAssyDoc.ComponentDefinition
             txtNumConstraints.Text = gAssyDoc.ComponentDefinition.Constraints.Count
             'add label for information
-            lblVersion.Text = "v1.2"
+            lblVersion.Text = "v1.3"
             'set default values
             gVertNameValidated = False
             gHorizNameValidated = False
@@ -67,16 +67,12 @@ Public Class frmStepper
 
         'seperates message outputs for files found or not found
         If (myFileDlog.ShowDialog() = System.Windows.Forms.DialogResult.OK) Then
-            If Dir(myFileDlog.FileName) <> "" Then
-                'MsgBox("File Exists: " & myFileDlog.FileName, MsgBoxStyle.Information)
-            Else
-                MsgBox("File Not Found", MsgBoxStyle.Critical)
-            End If
+            'Adds the file directory to the text box
+            txtFilePath.Text = myFileDlog.FileName
+            ExcelToArray(txtFilePath.Text)
         End If
 
-        'Adds the file directory to the text box
-        txtFilePath.Text = myFileDlog.FileName
-        Call ExcelToArray(txtFilePath.Text)
+
 
     End Sub
 
@@ -85,7 +81,12 @@ Public Class frmStepper
 
         'if file path is not empty, then call excel to array
         If (txtFilePath.Text <> "") Then
-            Call ExcelToArray(txtFilePath.Text)
+            If System.IO.File.Exists(txtFilePath.Text) Then
+                ExcelToArray(txtFilePath.Text)
+            Else
+                MsgBox("File does not exist, check file path", MsgBoxStyle.OkOnly, "File not Found")
+            End If
+
         End If
 
     End Sub
@@ -143,8 +144,8 @@ Public Class frmStepper
             xlApp.Quit()
 
             'call populateListView to populate the listview
-            'Call PrintArray(gdblPosArray, 361, 4)
-            Call PopulateListView(gdblPosArray)
+            'PrintArray(gdblPosArray, 361, 4)
+            PopulateListView(gdblPosArray)
 
         Catch ex As Exception
             MsgBox("Problem with the Excel File" & vbCrLf & vbCrLf & "Make sure file is copied from VNM VH Table")
@@ -239,7 +240,7 @@ Public Class frmStepper
             Next
         Next
 
-        Call ColorRows(CDbl(txtAccelThreshold.Text))
+        ColorRows(CDbl(txtAccelThreshold.Text))
     End Sub
 
     Private Sub ColorRows(AccelThreshold As Double)
@@ -283,19 +284,17 @@ Public Class frmStepper
             If (chkIgnoreHoriz.Checked = True) Then
                 'for passing values to inventor, inventor uses internal units of cm and radians
                 'use the expression to have the display only show 3 decimal places and add the mm to use the correct units
-                'may be a slight performance penalty but it is hard to tell
-                'VertName.Expression = gdblPosArray(gintCurrentIndex, 2) + CDbl(txtVertOffset.Text) & "mm"
-                VertName.Value = CDbl((gdblPosArray(gintCurrentIndex, 2) + CDbl(txtVertOffset.Text)) / 10)
+                VertName.Expression = FormatNumber(gdblPosArray(gintCurrentIndex, 2) + CDbl(txtVertOffset.Text), 3) & "mm"
+                'VertName.Value = CDbl((gdblPosArray(gintCurrentIndex, 2) + CDbl(txtVertOffset.Text)) / 10)
                 'update model and ignore errors
                 gInvApp.ScreenUpdating = True
                 gAssyDoc.Update2(True)
             Else
-                'use the expression to have the display only show 3 decimal places and add the mm to use the correct units
-                'may be a slight performance penalty but it is hard to tell
-                'VertName.Expression = gdblPosArray(gintCurrentIndex, 2) + CDbl(txtVertOffset.Text) & "mm"
-                'HorizName.Expression = gdblPosArray(gintCurrentIndex, 3) + CDbl(txtHorizOffset.Text) & "mm"
-                VertName.Value = CDbl((gdblPosArray(gintCurrentIndex, 2) + CDbl(txtVertOffset.Text)) / 10)
-                HorizName.Value = CDbl((gdblPosArray(gintCurrentIndex, 3) + CDbl(txtHorizOffset.Text)) / 10)
+                'use the expression to have the display only show 3 decimal places and add the mm to use the correct units               
+                VertName.Expression = FormatNumber(gdblPosArray(gintCurrentIndex, 2) + CDbl(txtVertOffset.Text), 3) & "mm"
+                HorizName.Expression = FormatNumber(gdblPosArray(gintCurrentIndex, 3) + CDbl(txtHorizOffset.Text), 3) & "mm"
+                'VertName.Value = CDbl((gdblPosArray(gintCurrentIndex, 2) + CDbl(txtVertOffset.Text)) / 10)
+                'HorizName.Value = CDbl((gdblPosArray(gintCurrentIndex, 3) + CDbl(txtHorizOffset.Text)) / 10)
                 'update model and ignore errors
                 gInvApp.ScreenUpdating = True
                 gAssyDoc.Update2(True)
@@ -337,8 +336,8 @@ Public Class frmStepper
         End If
 
         'update the model
-        Call UpdateModel(gVertParam, gHorizParam)
-        Call UpdateListView()
+        UpdateModel(gVertParam, gHorizParam)
+        UpdateListView()
 
     End Sub
 
@@ -363,10 +362,46 @@ Public Class frmStepper
         End If
 
         'update model
-        Call UpdateModel(gVertParam, gHorizParam)
-        Call UpdateListView()
+        UpdateModel(gVertParam, gHorizParam)
+        UpdateListView()
 
     End Sub
+
+    Private Function CheckSuppressed(ParameterName As String) As Boolean
+        'function to take the parameter name and search through all the constraints to find the constraint name 
+        'and suppression status
+
+        Dim assyConstraint As AssemblyConstraint
+        Dim myFlushConstraint As FlushConstraint
+        Dim myMateConstraint As MateConstraint
+        Dim constraintFound As Boolean
+        constraintFound = False
+
+        For Each assyConstraint In gAssyCompDef.Constraints
+            Select Case assyConstraint.Type
+                Case ObjectTypeEnum.kFlushConstraintObject
+                    myFlushConstraint = assyConstraint
+                    If myFlushConstraint.Offset.Name = ParameterName Then
+                        'found the constraint, check suppressed status  
+                        constraintFound = True
+                        Return myFlushConstraint.Suppressed
+                    End If
+                Case ObjectTypeEnum.kMateConstraintObject
+                    myMateConstraint = assyConstraint
+                    If myMateConstraint.Offset.Name = ParameterName Then
+                        'found the constraint
+                        constraintFound = True
+                        Return myMateConstraint.Suppressed
+                    End If
+
+            End Select
+        Next
+
+        If constraintFound = False Then
+            Return False
+        End If
+
+    End Function
 
     Private Function CheckHorizName(HorizName As String) As Boolean
         'sub to check horizontal name in text box to see if the parameter exists
@@ -374,9 +409,16 @@ Public Class frmStepper
 
         Try
             gHorizParam = gAssyCompDef.Parameters(txtHorizName.Text)
-            'set validated flag
-            gHorizNameValidated = True
-            Return True
+            'check parameter suppressed status
+            If CheckSuppressed(gHorizParam.Name) Then
+                MsgBox("Horizontal Parameter is Suppressed, please unsuppress", MsgBoxStyle.OkOnly, "Horiz Param Suppressed")
+                Return False
+            Else
+                'set validated flag
+                gHorizNameValidated = True
+                Return True
+            End If
+
         Catch ex As Exception
             MsgBox("Problem with the Horiz Parameter Name")
             Return False
@@ -389,9 +431,17 @@ Public Class frmStepper
         'and assign it to the vert param global
         Try
             gVertParam = gAssyCompDef.Parameters(txtVertName.Text)
-            'set validated flag
-            gVertNameValidated = True
-            Return True
+            'check to see if parameter is supressed
+            If CheckSuppressed(gVertParam.Name) Then
+                MsgBox("Vertical Parameter is Suppressed, please unsuppress", MsgBoxStyle.OkOnly, "Vert Param Suppressed")
+                Return False
+            Else
+                'set validated flag
+                gVertNameValidated = True
+                Return True
+            End If
+
+
         Catch ex As Exception
             MsgBox("Problem with the Vert Parameter Name")
             Return False
@@ -425,14 +475,14 @@ Public Class frmStepper
             'check only the vert name
             If gVertNameValidated = True Then
                 'vert name is valid
-                Call NextAngle()
+                NextAngle()
             Else
                 MsgBox("Vert Name not valid")
             End If
         Else
             If gVertNameValidated = True And gHorizNameValidated = True Then
                 'both names valid
-                Call NextAngle()
+                NextAngle()
             Else
                 MsgBox("Vert Name or Horiz Name not valid")
             End If
@@ -445,14 +495,14 @@ Public Class frmStepper
             'check only the vert name
             If gVertNameValidated = True Then
                 'vert name is valid
-                Call PrevAngle()
+                PrevAngle()
             Else
                 MsgBox("Vert Name not valid")
             End If
         Else
             If gVertNameValidated = True And gHorizNameValidated = True Then
                 'both names valid
-                Call PrevAngle()
+                PrevAngle()
             Else
                 MsgBox("Vert Name or Horiz Name not valid")
             End If
@@ -468,9 +518,13 @@ Public Class frmStepper
         'index will be +1 from current index
         'pos array index starts at 1, lstview index starts at 0
 
+
         gintPrevIndex = gintCurrentIndex
         gintCurrentIndex = selectedItems.Item(0).Index + 1
-        Call UpdateModel(gVertParam, gHorizParam)
+        UpdateModel(gVertParam, gHorizParam)
+
+
+
 
     End Sub
 
@@ -487,7 +541,7 @@ Public Class frmStepper
             Do While gboolLoop = True
                 'allows stop button event to be caught
                 gInvApp.UserInterfaceManager.DoEvents()
-                Call NextAngle()
+                NextAngle()
 
                 If gintCurrentIndex >= gdblPosArray.GetUpperBound(0) Then
                     If chkLoop.Checked = True Then
@@ -516,7 +570,7 @@ Public Class frmStepper
 
     Private Sub txtAccelThreshold_Validated(sender As Object, e As EventArgs) Handles txtAccelThreshold.Validated
         'sub handles entering text into the AccelThreshold text box
-        Call ColorRows(CDbl(txtAccelThreshold.Text))
+        ColorRows(CDbl(txtAccelThreshold.Text))
     End Sub
 
     Private Sub chkShowDebug_CheckedChanged(sender As Object, e As EventArgs) Handles chkShowDebug.CheckedChanged
@@ -610,11 +664,29 @@ Public Class frmStepper
 
         'load settings
         txtFilePath.Text = My.Settings.StepperFilePath
-        txtVertName.Text = My.Settings.StepperVertName
-        txtHorizName.Text = My.Settings.StepperHorizName
         txtAccelThreshold.Text = My.Settings.StepperAccelThresh
         txtStepSize.Text = My.Settings.StepperStepSize
         chkIgnoreHoriz.Checked = My.Settings.StepperIgnoreHoriz
+
+        'load vertical and horizontal names
+        txtVertName.Text = My.Settings.StepperVertName
+
+        'check vert name that was loaded
+        If CheckVertName(txtVertName.Text) Then
+            gOrigVert = gVertParam.Value
+        End If
+
+        'see if we're using the horizontal parameter
+        If chkIgnoreHoriz.Checked Then
+            'not using the horizontal parameter
+        Else
+            'checkbox not checked, using horizontal parameter
+            txtHorizName.Text = My.Settings.StepperHorizName
+            If CheckHorizName(txtHorizName.Text) Then
+                gOrigHoriz = gHorizParam.Value
+            End If
+        End If
+
 
     End Sub
 

@@ -9,7 +9,9 @@ Public Class frmNameHelp
     Private mySelection As clsInteract
     Private InvApp As Inventor.Application
     Private HorizParamName As String
+    Private HorizConstraintName As String
     Private VertParamName As String
+    Private VertConstraintName As String
     Private donePicking As Boolean
 
     Public Sub New(App As Inventor.Application)
@@ -32,12 +34,28 @@ Public Class frmNameHelp
 
     End Property
 
+    ReadOnly Property GetHorizConstraintName() As String
+        Get
+            donePicking = True
+            Return HorizConstraintName
+        End Get
+    End Property
+
     ReadOnly Property GetVertParamName() As String
         Get
             donePicking = True
             Return VertParamName
         End Get
     End Property
+
+    ReadOnly Property GetVertConstraintName() As String
+
+        Get
+            donePicking = True
+            Return VertConstraintName
+        End Get
+    End Property
+
 
     ReadOnly Property PickingStatus() As Boolean
         Get
@@ -60,12 +78,14 @@ Public Class frmNameHelp
     Private Sub btnApplyToVert_Click(sender As Object, e As EventArgs) Handles btnApplyToVert.Click
         'sub to apply the chosen parameter to the vertical parameter
         VertParamName = txtParamName.Text
+        VertConstraintName = txtConstraintName.Text
         donePicking = True
     End Sub
 
     Private Sub btnApplyToHoriz_Click(sender As Object, e As EventArgs) Handles btnApplyToHoriz.Click
         'sub to apply the selected parameter to the horizontal parameter
         HorizParamName = txtParamName.Text
+        HorizConstraintName = txtConstraintName.Text
         donePicking = True
     End Sub
 
