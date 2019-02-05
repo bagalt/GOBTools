@@ -544,12 +544,8 @@ Public Class frmStepper
                 NextAngle()
 
                 If gintCurrentIndex >= gdblPosArray.GetUpperBound(0) Then
-                    If chkLoop.Checked = True Then
-                        gintPrevIndex = gintCurrentIndex
-                        gintCurrentIndex = 1
-                    Else
-                        gboolLoop = False
-                    End If
+                    gintPrevIndex = gintCurrentIndex
+                    gintCurrentIndex = 1
                 End If
             Loop
 
