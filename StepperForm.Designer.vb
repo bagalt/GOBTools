@@ -29,7 +29,6 @@ Partial Class frmStepper
         Me.chkShowDebug = New System.Windows.Forms.CheckBox()
         Me.btnExit = New System.Windows.Forms.Button()
         Me.GroupBox1 = New System.Windows.Forms.GroupBox()
-        Me.chkLoop = New System.Windows.Forms.CheckBox()
         Me.btnStop = New System.Windows.Forms.Button()
         Me.btnPlay = New System.Windows.Forms.Button()
         Me.btnReload = New System.Windows.Forms.Button()
@@ -131,29 +130,15 @@ Partial Class frmStepper
         '
         'GroupBox1
         '
-        Me.GroupBox1.Controls.Add(Me.chkLoop)
         Me.GroupBox1.Controls.Add(Me.btnStop)
         Me.GroupBox1.Controls.Add(Me.btnPlay)
         Me.GroupBox1.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.GroupBox1.Location = New System.Drawing.Point(8, 306)
         Me.GroupBox1.Name = "GroupBox1"
-        Me.GroupBox1.Size = New System.Drawing.Size(200, 86)
+        Me.GroupBox1.Size = New System.Drawing.Size(200, 64)
         Me.GroupBox1.TabIndex = 35
         Me.GroupBox1.TabStop = False
         Me.GroupBox1.Text = "AutoPlay"
-        '
-        'chkLoop
-        '
-        Me.chkLoop.AutoSize = True
-        Me.chkLoop.Checked = True
-        Me.chkLoop.CheckState = System.Windows.Forms.CheckState.Checked
-        Me.chkLoop.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.chkLoop.Location = New System.Drawing.Point(7, 62)
-        Me.chkLoop.Name = "chkLoop"
-        Me.chkLoop.Size = New System.Drawing.Size(56, 17)
-        Me.chkLoop.TabIndex = 15
-        Me.chkLoop.Text = "Loop?"
-        Me.chkLoop.UseVisualStyleBackColor = True
         '
         'btnStop
         '
@@ -483,7 +468,7 @@ Partial Class frmStepper
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(490, 482)
+        Me.ClientSize = New System.Drawing.Size(580, 482)
         Me.Controls.Add(Me.lblNumConstraints)
         Me.Controls.Add(Me.txtNumConstraints)
         Me.Controls.Add(Me.btnReset)
@@ -506,7 +491,6 @@ Partial Class frmStepper
         Me.TabPage1.ResumeLayout(False)
         Me.TabPage1.PerformLayout()
         Me.GroupBox1.ResumeLayout(False)
-        Me.GroupBox1.PerformLayout()
         Me.bxSettings.ResumeLayout(False)
         Me.bxSettings.PerformLayout()
         Me.ResumeLayout(False)
@@ -521,7 +505,6 @@ Partial Class frmStepper
     Friend WithEvents chkShowDebug As Windows.Forms.CheckBox
     Friend WithEvents btnExit As Windows.Forms.Button
     Friend WithEvents GroupBox1 As Windows.Forms.GroupBox
-    Friend WithEvents chkLoop As Windows.Forms.CheckBox
     Friend WithEvents btnStop As Windows.Forms.Button
     Friend WithEvents btnPlay As Windows.Forms.Button
     Friend WithEvents btnReload As Windows.Forms.Button
