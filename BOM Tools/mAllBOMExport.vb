@@ -1055,7 +1055,7 @@ Module mAllBOMExport
                 'key already exists, bump the quantity of the part
             End If
         Else
-            mCollFullBOM.Item(sBomExportKey).incrementqty(1)
+            mCollFullBOM.Item(sBomExportKey).IncrementQty(1)
         End If
 
     End Sub
@@ -1881,9 +1881,9 @@ Module mAllBOMExport
                 If sChild = parent Then
                     'cant have a child part have itself as a parent 
                 Else
-                    If IsPrefixMatch(parent, "BGE") Then
+                    If IsPrefixMatch(parent, "BGE") Or IsPrefixMatch(parent, "CGE") Then
                         'cant have BGE as parent
-                    ElseIf IsPrefixMatch(parent, "BPH") Then
+                    ElseIf IsPrefixMatch(parent, "BPH") Or IsPrefixMatch(parent, "CPH") Then
                         'cant have BPH as parent
                     ElseIf IsBFourtyNine(parent) Then
                         'are B49s allowed to be parents??
