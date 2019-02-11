@@ -27,7 +27,13 @@ Public Class frmParameterHelp
         'fill in the drop down menu
         Dim item As System.Windows.Forms.DataGridViewColumn
         For Each item In myColumns
-            columnsComboBox.Items.Add(item.Name)
+            'skip the first column in the collection
+            If item.HeaderText = myColumns.Item(0).HeaderText Then
+                'do not add item to combo box
+            Else
+                columnsComboBox.Items.Add(item.Name)
+
+            End If
         Next
 
         mySelection = New clsInteract(InvApp)
@@ -79,8 +85,16 @@ Public Class frmParameterHelp
         'sub to apply the selected parameter to the horizontal parameter
         ParameterName = txtParamName.Text
         ConstraintName = txtConstraintName.Text
-        ColumnName = columnsComboBox.SelectedItem.ToString
-        donePicking = True
+
+        'check that a selection is made in the combo box
+        If (String.IsNullOrEmpty(columnsComboBox.SelectedItem.ToString)) Then
+            MsgBox("You must select a Column to apply the Parameter to", MsgBoxStyle.OkOnly, "Select Column")
+            donePicking = False
+        Else
+            ColumnName = columnsComboBox.SelectedItem.ToString
+            donePicking = True
+        End If
+
     End Sub
 
     Public Sub PickConsraint()

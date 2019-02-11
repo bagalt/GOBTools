@@ -36,7 +36,7 @@ Partial Class frmParameterHelp
         'btnPickAgain
         '
         Me.btnPickAgain.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.btnPickAgain.Location = New System.Drawing.Point(147, 110)
+        Me.btnPickAgain.Location = New System.Drawing.Point(96, 103)
         Me.btnPickAgain.Name = "btnPickAgain"
         Me.btnPickAgain.Size = New System.Drawing.Size(80, 35)
         Me.btnPickAgain.TabIndex = 23
@@ -46,7 +46,7 @@ Partial Class frmParameterHelp
         'btnNameHelpCancel
         '
         Me.btnNameHelpCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.btnNameHelpCancel.Location = New System.Drawing.Point(267, 110)
+        Me.btnNameHelpCancel.Location = New System.Drawing.Point(182, 103)
         Me.btnNameHelpCancel.Name = "btnNameHelpCancel"
         Me.btnNameHelpCancel.Size = New System.Drawing.Size(80, 35)
         Me.btnNameHelpCancel.TabIndex = 22
@@ -55,7 +55,7 @@ Partial Class frmParameterHelp
         '
         'btnApply
         '
-        Me.btnApply.Location = New System.Drawing.Point(8, 110)
+        Me.btnApply.Location = New System.Drawing.Point(10, 103)
         Me.btnApply.Name = "btnApply"
         Me.btnApply.Size = New System.Drawing.Size(80, 35)
         Me.btnApply.TabIndex = 21
@@ -65,7 +65,7 @@ Partial Class frmParameterHelp
         'lblParamName
         '
         Me.lblParamName.AutoSize = True
-        Me.lblParamName.Location = New System.Drawing.Point(261, 9)
+        Me.lblParamName.Location = New System.Drawing.Point(179, 54)
         Me.lblParamName.Name = "lblParamName"
         Me.lblParamName.Size = New System.Drawing.Size(86, 13)
         Me.lblParamName.TabIndex = 19
@@ -73,15 +73,15 @@ Partial Class frmParameterHelp
         '
         'txtParamName
         '
-        Me.txtParamName.Location = New System.Drawing.Point(264, 27)
+        Me.txtParamName.Location = New System.Drawing.Point(182, 72)
         Me.txtParamName.Name = "txtParamName"
-        Me.txtParamName.Size = New System.Drawing.Size(83, 20)
+        Me.txtParamName.Size = New System.Drawing.Size(80, 20)
         Me.txtParamName.TabIndex = 18
         '
         'lblConstraintName
         '
         Me.lblConstraintName.AutoSize = True
-        Me.lblConstraintName.Location = New System.Drawing.Point(3, 9)
+        Me.lblConstraintName.Location = New System.Drawing.Point(7, 54)
         Me.lblConstraintName.Name = "lblConstraintName"
         Me.lblConstraintName.Size = New System.Drawing.Size(85, 13)
         Me.lblConstraintName.TabIndex = 17
@@ -89,15 +89,15 @@ Partial Class frmParameterHelp
         '
         'txtConstraintName
         '
-        Me.txtConstraintName.Location = New System.Drawing.Point(6, 27)
+        Me.txtConstraintName.Location = New System.Drawing.Point(10, 72)
         Me.txtConstraintName.Name = "txtConstraintName"
-        Me.txtConstraintName.Size = New System.Drawing.Size(248, 20)
+        Me.txtConstraintName.Size = New System.Drawing.Size(166, 20)
         Me.txtConstraintName.TabIndex = 16
         '
         'columnsComboBox
         '
         Me.columnsComboBox.FormattingEnabled = True
-        Me.columnsComboBox.Location = New System.Drawing.Point(92, 61)
+        Me.columnsComboBox.Location = New System.Drawing.Point(10, 25)
         Me.columnsComboBox.Name = "columnsComboBox"
         Me.columnsComboBox.Size = New System.Drawing.Size(121, 21)
         Me.columnsComboBox.TabIndex = 24
@@ -105,7 +105,7 @@ Partial Class frmParameterHelp
         'Label1
         '
         Me.Label1.AutoSize = True
-        Me.Label1.Location = New System.Drawing.Point(3, 64)
+        Me.Label1.Location = New System.Drawing.Point(9, 7)
         Me.Label1.Name = "Label1"
         Me.Label1.Size = New System.Drawing.Size(83, 13)
         Me.Label1.TabIndex = 25
@@ -115,7 +115,7 @@ Partial Class frmParameterHelp
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(381, 164)
+        Me.ClientSize = New System.Drawing.Size(271, 148)
         Me.Controls.Add(Me.Label1)
         Me.Controls.Add(Me.columnsComboBox)
         Me.Controls.Add(Me.btnPickAgain)
@@ -126,7 +126,7 @@ Partial Class frmParameterHelp
         Me.Controls.Add(Me.lblConstraintName)
         Me.Controls.Add(Me.txtConstraintName)
         Me.Name = "frmParameterHelp"
-        Me.Text = "ParameterHelp"
+        Me.Text = "Parameter Help"
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
