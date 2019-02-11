@@ -5,7 +5,7 @@ Imports System.Windows.Forms
 Imports System.Drawing
 
 Public Class frmStepper
-    'test
+
     Dim gAssyCompDef As Inventor.AssemblyComponentDefinition
     Dim gdblPosArray As Object(,) 'array from VNM has 361 elements, arrays start at zero
     Dim gintCurrentIndex As Integer = 1 'holds current index for traversing through position array

@@ -17,6 +17,7 @@ Namespace GOBTools
         Private WithEvents m_BOMExportButtonDef As ButtonDefinition
         Private WithEvents m_featureCountButtonDef As ButtonDefinition
         Private WithEvents m_bomToolsButtonDef As ButtonDefinition
+        Private WithEvents m_AnimateAssemblyButtonDef As ButtonDefinition
 
 
 #Region "ApplicationAddInServer Members"
@@ -40,6 +41,10 @@ Namespace GOBTools
             Dim controlDefs As ControlDefinitions
             controlDefs = g_inventorApplication.CommandManager.ControlDefinitions
 
+            'define icons for the animate assembly button
+            Dim animateLargeIcon As stdole.IPictureDisp = PictureDispConverter.ToIPictureDisp(My.Resources.skull64x64)
+            Dim animateSmallIcon As stdole.IPictureDisp = PictureDispConverter.ToIPictureDisp(My.Resources.skull16x16)
+
             'Defining the icons for the stepper button
             Dim largeIcon As stdole.IPictureDisp = PictureDispConverter.ToIPictureDisp(My.Resources.Stepper32x32)
             Dim smallIcon As stdole.IPictureDisp = PictureDispConverter.ToIPictureDisp(My.Resources.Stepper16x16)
@@ -51,6 +56,9 @@ Namespace GOBTools
             'defining icons for the BOM Tools button
             Dim BomToolsLargeIcon As stdole.IPictureDisp = PictureDispConverter.ToIPictureDisp(My.Resources.BOMTools64x64)
             Dim BomToolsSmallIcon As stdole.IPictureDisp = PictureDispConverter.ToIPictureDisp(My.Resources.BOMTools16x16)
+
+            'button definition for the animate assembly program
+            m_AnimateAssemblyButtonDef = controlDefs.AddButtonDefinition("Animate Assembly", "GOBAnimator", CommandTypesEnum.kNonShapeEditCmdType, AddInGuid(Me.GetType), "Automatically Animate Assembly", "Animate Assembly", animateSmallIcon, animateLargeIcon)
 
             'Button definition for the stepper program
             m_StepperButtonDef = controlDefs.AddButtonDefinition("Position Stepper", "GOBStepper", CommandTypesEnum.kNonShapeEditCmdType, AddInGuid(Me.GetType), "Automatically move P&P arm", "Position Stpper", smallIcon, largeIcon)
@@ -79,6 +87,10 @@ Namespace GOBTools
             'reference: https://forums.autodesk.com/t5/inventor-customization/com-object-that-has-been-separated-from-its-underlying-rcw/td-p/7404207
             'Marshal.FinalReleaseComObject(g_inventorApplication)
             g_inventorApplication = Nothing
+
+            If Not m_AnimateAssemblyButtonDef Is Nothing Then
+                Marshal.FinalReleaseComObject(m_AnimateAssemblyButtonDef)
+            End If
 
             If Not m_StepperButtonDef Is Nothing Then
                 Marshal.FinalReleaseComObject(m_StepperButtonDef)
@@ -143,8 +155,8 @@ Namespace GOBTools
 
                             Call newpanel.CommandControls.AddButton(m_StepperButtonDef, True, True)
                             Call newpanel.CommandControls.AddButton(m_HoleMakerButtonDef, True, True)
-                            'Call newpanel.CommandControls.AddButton(m_BOMExportButtonDef, True, True)
                             Call newpanel.CommandControls.AddButton(m_bomToolsButtonDef, True, True)
+                            Call newpanel.CommandControls.AddButton(m_AnimateAssemblyButtonDef, True, True)
 
                     End Select
                 Next
@@ -181,6 +193,17 @@ Namespace GOBTools
             'show the form and tie it to the inventor window
             BOMTools.Show(New WindowWrapper(g_inventorApplication.MainFrameHWND))
         End Sub
+
+        Private Sub m_AnimateAssemblyButtonDef_OnExecute(Context As NameValueMap) Handles m_AnimateAssemblyButtonDef.OnExecute
+            'sub to handle clicking the Animate Assembly Button
+            'define new form and pass application
+            Dim AnimateAssembly As New frmAnimateAssembly(g_inventorApplication)
+
+            'show the form and tie it to the inventor window
+            AnimateAssembly.Show(New WindowWrapper(g_inventorApplication.MainFrameHWND))
+
+        End Sub
+
     End Class
 End Namespace
 

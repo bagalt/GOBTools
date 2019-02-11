@@ -169,6 +169,15 @@
   <data name="S4085_0006_01" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\S4085.0006.01.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="skull16x16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\skull16x16.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="skull32x32" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\skull32x32.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="skull64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\skull64x64.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="Stepper16x16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Stepper16x16.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>

@@ -1,5 +1,5 @@
 ﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
-Partial Class frmNameHelp
+Partial Class frmParameterHelp
     Inherits System.Windows.Forms.Form
 
     'Form overrides dispose to clean up the component list.
@@ -24,104 +24,109 @@ Partial Class frmNameHelp
     Private Sub InitializeComponent()
         Me.btnPickAgain = New System.Windows.Forms.Button()
         Me.btnNameHelpCancel = New System.Windows.Forms.Button()
-        Me.btnApplyToHoriz = New System.Windows.Forms.Button()
-        Me.btnApplyToVert = New System.Windows.Forms.Button()
+        Me.btnApply = New System.Windows.Forms.Button()
         Me.lblParamName = New System.Windows.Forms.Label()
         Me.txtParamName = New System.Windows.Forms.TextBox()
         Me.lblConstraintName = New System.Windows.Forms.Label()
         Me.txtConstraintName = New System.Windows.Forms.TextBox()
+        Me.columnsComboBox = New System.Windows.Forms.ComboBox()
+        Me.Label1 = New System.Windows.Forms.Label()
         Me.SuspendLayout()
         '
         'btnPickAgain
         '
         Me.btnPickAgain.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.btnPickAgain.Location = New System.Drawing.Point(195, 51)
+        Me.btnPickAgain.Location = New System.Drawing.Point(147, 110)
         Me.btnPickAgain.Name = "btnPickAgain"
         Me.btnPickAgain.Size = New System.Drawing.Size(80, 35)
-        Me.btnPickAgain.TabIndex = 15
+        Me.btnPickAgain.TabIndex = 23
         Me.btnPickAgain.Text = "Pick Again"
         Me.btnPickAgain.UseVisualStyleBackColor = True
         '
         'btnNameHelpCancel
         '
         Me.btnNameHelpCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.btnNameHelpCancel.Location = New System.Drawing.Point(276, 51)
+        Me.btnNameHelpCancel.Location = New System.Drawing.Point(267, 110)
         Me.btnNameHelpCancel.Name = "btnNameHelpCancel"
         Me.btnNameHelpCancel.Size = New System.Drawing.Size(80, 35)
-        Me.btnNameHelpCancel.TabIndex = 14
+        Me.btnNameHelpCancel.TabIndex = 22
         Me.btnNameHelpCancel.Text = "Cancel"
         Me.btnNameHelpCancel.UseVisualStyleBackColor = True
         '
-        'btnApplyToHoriz
+        'btnApply
         '
-        Me.btnApplyToHoriz.Location = New System.Drawing.Point(96, 51)
-        Me.btnApplyToHoriz.Name = "btnApplyToHoriz"
-        Me.btnApplyToHoriz.Size = New System.Drawing.Size(80, 35)
-        Me.btnApplyToHoriz.TabIndex = 13
-        Me.btnApplyToHoriz.Text = "Apply to Horiz"
-        Me.btnApplyToHoriz.UseVisualStyleBackColor = True
-        '
-        'btnApplyToVert
-        '
-        Me.btnApplyToVert.Location = New System.Drawing.Point(15, 51)
-        Me.btnApplyToVert.Name = "btnApplyToVert"
-        Me.btnApplyToVert.Size = New System.Drawing.Size(80, 35)
-        Me.btnApplyToVert.TabIndex = 12
-        Me.btnApplyToVert.Text = "Apply to Vert"
-        Me.btnApplyToVert.UseVisualStyleBackColor = True
+        Me.btnApply.Location = New System.Drawing.Point(8, 110)
+        Me.btnApply.Name = "btnApply"
+        Me.btnApply.Size = New System.Drawing.Size(80, 35)
+        Me.btnApply.TabIndex = 21
+        Me.btnApply.Text = "Apply"
+        Me.btnApply.UseVisualStyleBackColor = True
         '
         'lblParamName
         '
         Me.lblParamName.AutoSize = True
-        Me.lblParamName.Location = New System.Drawing.Point(270, 7)
+        Me.lblParamName.Location = New System.Drawing.Point(261, 9)
         Me.lblParamName.Name = "lblParamName"
         Me.lblParamName.Size = New System.Drawing.Size(86, 13)
-        Me.lblParamName.TabIndex = 11
+        Me.lblParamName.TabIndex = 19
         Me.lblParamName.Text = "Parameter Name"
         '
         'txtParamName
         '
-        Me.txtParamName.Location = New System.Drawing.Point(273, 25)
+        Me.txtParamName.Location = New System.Drawing.Point(264, 27)
         Me.txtParamName.Name = "txtParamName"
         Me.txtParamName.Size = New System.Drawing.Size(83, 20)
-        Me.txtParamName.TabIndex = 10
+        Me.txtParamName.TabIndex = 18
         '
         'lblConstraintName
         '
         Me.lblConstraintName.AutoSize = True
-        Me.lblConstraintName.Location = New System.Drawing.Point(12, 7)
+        Me.lblConstraintName.Location = New System.Drawing.Point(3, 9)
         Me.lblConstraintName.Name = "lblConstraintName"
         Me.lblConstraintName.Size = New System.Drawing.Size(85, 13)
-        Me.lblConstraintName.TabIndex = 9
+        Me.lblConstraintName.TabIndex = 17
         Me.lblConstraintName.Text = "Constraint Name"
         '
         'txtConstraintName
         '
-        Me.txtConstraintName.Location = New System.Drawing.Point(15, 25)
+        Me.txtConstraintName.Location = New System.Drawing.Point(6, 27)
         Me.txtConstraintName.Name = "txtConstraintName"
         Me.txtConstraintName.Size = New System.Drawing.Size(248, 20)
-        Me.txtConstraintName.TabIndex = 8
+        Me.txtConstraintName.TabIndex = 16
         '
-        'frmNameHelp
+        'columnsComboBox
+        '
+        Me.columnsComboBox.FormattingEnabled = True
+        Me.columnsComboBox.Location = New System.Drawing.Point(92, 61)
+        Me.columnsComboBox.Name = "columnsComboBox"
+        Me.columnsComboBox.Size = New System.Drawing.Size(121, 21)
+        Me.columnsComboBox.TabIndex = 24
+        '
+        'Label1
+        '
+        Me.Label1.AutoSize = True
+        Me.Label1.Location = New System.Drawing.Point(3, 64)
+        Me.Label1.Name = "Label1"
+        Me.Label1.Size = New System.Drawing.Size(83, 13)
+        Me.Label1.TabIndex = 25
+        Me.Label1.Text = "Apply to Column"
+        '
+        'frmParameterHelp
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(369, 96)
+        Me.ClientSize = New System.Drawing.Size(381, 164)
+        Me.Controls.Add(Me.Label1)
+        Me.Controls.Add(Me.columnsComboBox)
         Me.Controls.Add(Me.btnPickAgain)
         Me.Controls.Add(Me.btnNameHelpCancel)
-        Me.Controls.Add(Me.btnApplyToHoriz)
-        Me.Controls.Add(Me.btnApplyToVert)
+        Me.Controls.Add(Me.btnApply)
         Me.Controls.Add(Me.lblParamName)
         Me.Controls.Add(Me.txtParamName)
         Me.Controls.Add(Me.lblConstraintName)
         Me.Controls.Add(Me.txtConstraintName)
-        Me.HelpButton = True
-        Me.MaximizeBox = False
-        Me.MaximumSize = New System.Drawing.Size(385, 135)
-        Me.MinimizeBox = False
-        Me.MinimumSize = New System.Drawing.Size(385, 135)
-        Me.Name = "frmNameHelp"
-        Me.Text = "Parameter Name Helper"
+        Me.Name = "frmParameterHelp"
+        Me.Text = "ParameterHelp"
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -129,10 +134,11 @@ Partial Class frmNameHelp
 
     Friend WithEvents btnPickAgain As Windows.Forms.Button
     Friend WithEvents btnNameHelpCancel As Windows.Forms.Button
-    Friend WithEvents btnApplyToHoriz As Windows.Forms.Button
-    Friend WithEvents btnApplyToVert As Windows.Forms.Button
+    Friend WithEvents btnApply As Windows.Forms.Button
     Friend WithEvents lblParamName As Windows.Forms.Label
     Friend WithEvents txtParamName As Windows.Forms.TextBox
     Friend WithEvents lblConstraintName As Windows.Forms.Label
     Friend WithEvents txtConstraintName As Windows.Forms.TextBox
+    Friend WithEvents columnsComboBox As Windows.Forms.ComboBox
+    Friend WithEvents Label1 As Windows.Forms.Label
 End Class

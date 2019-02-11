@@ -94,6 +94,18 @@
     <Import Include="System.Diagnostics" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Stepper V2\ParameterHelp.Designer.vb">
+      <DependentUpon>ParameterHelp.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Stepper V2\ParameterHelp.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Stepper V2\frmAnimateAssembly.Designer.vb">
+      <DependentUpon>frmAnimateAssembly.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Stepper V2\frmAnimateAssembly.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="AssemblyInfo.vb" />
     <Compile Include="BOM Tools\ExcelTools.vb" />
     <Compile Include="BOM Tools\frmBomTools.Designer.vb">
@@ -118,10 +130,10 @@
     </Compile>
     <Compile Include="Classes\cPartInfo.vb" />
     <Compile Include="Classes\clsInteract.vb" />
-    <Compile Include="HoleMaker.designer.vb">
+    <Compile Include="Hole Maker\HoleMaker.designer.vb">
       <DependentUpon>HoleMaker.vb</DependentUpon>
     </Compile>
-    <Compile Include="HoleMaker.vb">
+    <Compile Include="Hole Maker\HoleMaker.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="My Project\Application.Designer.vb">
@@ -138,18 +150,19 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="NameHelp.designer.vb">
+    <Compile Include="Stepper V1\NameHelp.designer.vb">
       <DependentUpon>NameHelp.vb</DependentUpon>
     </Compile>
-    <Compile Include="NameHelp.vb">
+    <Compile Include="Stepper V1\NameHelp.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Settings.vb" />
     <Compile Include="StandardAddInServer.vb" />
-    <Compile Include="StepperForm.designer.vb">
+    <Compile Include="Stepper V2\StepperModule.vb" />
+    <Compile Include="Stepper V1\StepperForm.designer.vb">
       <DependentUpon>StepperForm.vb</DependentUpon>
     </Compile>
-    <Compile Include="StepperForm.vb">
+    <Compile Include="Stepper V1\StepperForm.vb">
       <SubType>Form</SubType>
     </Compile>
   </ItemGroup>
@@ -228,6 +241,12 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Stepper V2\ParameterHelp.resx">
+      <DependentUpon>ParameterHelp.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Stepper V2\frmAnimateAssembly.resx">
+      <DependentUpon>frmAnimateAssembly.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="BOM Tools\frmBomTools.resx">
       <DependentUpon>frmBomTools.vb</DependentUpon>
     </EmbeddedResource>
@@ -237,7 +256,7 @@
     <EmbeddedResource Include="BOM Tools\Processing.resx">
       <DependentUpon>Processing.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="HoleMaker.resx">
+    <EmbeddedResource Include="Hole Maker\HoleMaker.resx">
       <DependentUpon>HoleMaker.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="My Project\Resources.resx">
@@ -246,10 +265,10 @@
       <LastGenOutput>Resources.Designer.vb</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="NameHelp.resx">
+    <EmbeddedResource Include="Stepper V1\NameHelp.resx">
       <DependentUpon>NameHelp.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="StepperForm.resx">
+    <EmbeddedResource Include="Stepper V1\StepperForm.resx">
       <DependentUpon>StepperForm.vb</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
@@ -317,6 +336,18 @@
       <LastGenOutput>Application.Designer.vb</LastGenOutput>
     </None>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\skull64x64.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\skull32x32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\skull32x32.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\skull16x16.bmp" />
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.VisualBasic.targets" />
   <PropertyGroup>
     <PreBuildEvent>
@@ -338,6 +369,7 @@ REM - Delete the existing add-in folder.
 rmdir /q /s "C:\ProgramData\Autodesk\Inventor 2018\Addins\$(TargetName)"
 
 REM - Copy the folder to the Inventor Addins folder so Inventor will see it and run it.
-XCopy "$(TargetDir)*" "C:\ProgramData\Autodesk\Inventor 2018\Addins\$(TargetName)\" /y /r /i /s /f</PostBuildEvent>
+XCopy "$(TargetDir)*" "C:\ProgramData\Autodesk\Inventor 2018\Addins\$(TargetName)\" /y /r /i /s /f
+</PostBuildEvent>
   </PropertyGroup>
 </Project>
