@@ -1,5 +1,7 @@
 ﻿Imports Inventor
 Imports Excel = Microsoft.Office.Interop.Excel
+Imports System.Drawing
+
 
 Public Class frmAnimateAssembly
 
@@ -14,6 +16,8 @@ Public Class frmAnimateAssembly
     Dim gOrigVert As Double 'holds the original value of the vertical parameter for reset purposes
     Dim gOrigHoriz As Double 'holds the original value of the horizontal parameter for reset purposes
 
+    Private columnCounter As Integer
+
     Public Sub New(ThisApplication As Inventor.Application)
 
         ' This call is required by the designer.
@@ -21,6 +25,8 @@ Public Class frmAnimateAssembly
 
         ' Add any initialization after the InitializeComponent() call.
         InvApp = ThisApplication
+        'start column counter at 3, because there will always be an index column, angle and param 1 and param 2
+        columnCounter = 3
 
         'get the assembly component definition and assign to global
         Try
@@ -41,73 +47,22 @@ Public Class frmAnimateAssembly
     Private Sub frmAnimateAssembly_Shown(sender As Object, e As EventArgs) Handles Me.Shown
         'form has been shown
 
-        InitializeListView()
         InitializeDataGridView()
-    End Sub
-
-    Private Sub InitializeListView()
-        'Initialize the listview  with column headings and options
-
-        'clear all items and columns from control
-        lstData.Clear()
-
-        'setup listview options
-        With lstData
-            .GridLines = True
-            .View = System.Windows.Forms.View.Details
-            .Sorting = False
-            .HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable 'ColumnHeaderStyle.Nonclickable
-            .LabelEdit = False
-            .FullRowSelect = True
-            .HoverSelection = False
-            .MultiSelect = False
-            .HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable 'ColumnHeaderStyle.Nonclickable
-        End With
-
-        'define column headers and define properties for each column
-        Dim col1Header As New System.Windows.Forms.ColumnHeader
-        Dim col2Header As New System.Windows.Forms.ColumnHeader
-        Dim col3Header As New System.Windows.Forms.ColumnHeader
-        Dim colWidth As Integer = 60
-
-        With col1Header
-            .Text = "Angle"
-            .Width = 40
-            .TextAlign = System.Windows.Forms.HorizontalAlignment.Left
-        End With
-        With col2Header
-            .Text = "Param1"
-            .Width = colWidth
-            .TextAlign = System.Windows.Forms.HorizontalAlignment.Left
-        End With
-        With col3Header
-            .Text = "Param2"
-            .Width = colWidth
-            .TextAlign = System.Windows.Forms.HorizontalAlignment.Left
-        End With
-
-        'add column headers to listview 
-        lstData.Columns.Add(col1Header)
-        lstData.Columns.Add(col2Header)
-        lstData.Columns.Add(col3Header)
-
-        'load numbers into the Angle column
-        Dim i As Integer
-        i = 1
-        For i = 1 To 361
-            lstData.Items.Add(i)
-        Next
-
     End Sub
 
     Private Sub InitializeDataGridView()
         'sub to initialize and define options for the datagridview
+        'Dim columnHeaderStyle As New Windows.Forms.DataGridViewCellStyle
+
+        'columnHeaderStyle.BackColor = System.Drawing.Color.Beige
+        'columnHeaderStyle.Font = New Font("Veranda", 8, FontStyle.Bold)
+        'DataGridView.ColumnHeadersDefaultCellStyle = columnHeaderStyle
 
         Dim i As Integer
 
-        AngleDataGrid.Rows.Add(360)
+        DataGridView.Rows.Add(360)
         For i = 0 To 360
-            AngleDataGrid.Rows(i).Cells(0).Value = i + 1
+            DataGridView.Rows(i).Cells(0).Value = i + 1
         Next
     End Sub
 
@@ -181,8 +136,9 @@ Public Class frmAnimateAssembly
 
             'corrects angle wrap around output from VNM
             For i = 1 To lastRow
-                AngleDataGrid.Rows(i - 1).Cells(1).Value = xlWs.Range("B" & i).Value2
-                AngleDataGrid.Rows(i - 1).Cells(2).Value = xlWs.Range("C" & i).Value2
+                DataGridView.Rows(i - 1).Cells(1).Value = xlWs.Range("A" & i).Value2
+                DataGridView.Rows(i - 1).Cells(2).Value = xlWs.Range("B" & i).Value2
+                DataGridView.Rows(i - 1).Cells(3).Value = xlWs.Range("C" & i).Value2
             Next
 
             'clean up to close everything
@@ -198,7 +154,8 @@ Public Class frmAnimateAssembly
     Private Sub btnNameHelp_Click(sender As Object, e As EventArgs) Handles btnNameHelp.Click
 
         'create new instance of the class frmNameHelp and pass inventor application object
-        Dim NameHelp = New frmParameterHelp(InvApp, AngleDataGrid.Columns)
+        Dim NameHelp = New frmParameterHelp(InvApp, DataGridView.Columns)
+        Dim newColumnName As String
 
         'show NameHelp form
         NameHelp.Show()
@@ -213,10 +170,11 @@ Public Class frmAnimateAssembly
 
         'if either the vert or horiz params have a name, then update the text box on PosStepper
         If (NameHelp.GetParameterName <> "") Then
-            'apply the selected param name to the vert name text box
-            AngleDataGrid.Columns(NameHelp.GetColumnName).HeaderCell.Value = NameHelp.GetParameterName
-            'AngleDataGrid.Columns(1).HeaderCell.Value = NameHelp.GetParameterName
-
+            newColumnName = NameHelp.GetParameterName
+            'give the column the new name
+            DataGridView.Columns(NameHelp.GetColumnName).Name = newColumnName
+            'give the column header the new name
+            DataGridView.Columns(newColumnName).HeaderCell.Value = NameHelp.GetParameterName
         End If
 
         'Stop  NameHelp form And clear up memory
@@ -261,4 +219,118 @@ Public Class frmAnimateAssembly
         Next
     End Sub
 
+    Private Sub btnAddColumn_Click(sender As Object, e As EventArgs) Handles btnAddColumn.Click
+
+        Dim newCol As New System.Windows.Forms.DataGridViewTextBoxColumn
+
+        'set column properties
+        With newCol
+            .HeaderText = "Param" & columnCounter
+            .Resizable = False
+            .MinimumWidth = 60
+            .Width = 60
+            .Name = "Param" & columnCounter
+        End With
+
+        columnCounter += 1
+        'add new column
+        DataGridView.Columns.Add(newCol)
+
+    End Sub
+
+    Private Sub btnDeleteColumn_Click(sender As Object, e As EventArgs) Handles btnDeleteColumn.Click
+        Dim dialog As New ColumnManager(DataGridView.Columns)
+
+        Dim result As Windows.Forms.DialogResult = dialog.ShowDialog()
+        dialog.Location = LocateInCenter(Me, dialog)
+        If result = Windows.Forms.DialogResult.OK Then
+            'delete the column
+            DataGridView.Columns.Remove(dialog.ColumnToDelete)
+        End If
+
+    End Sub
+
+    Private Sub btnNextAngle_Click(sender As Object, e As EventArgs) Handles btnNextAngle.Click
+        GoToNextAngle()
+
+    End Sub
+
+    Private Sub GoToNextAngle()
+        'sub to index to the next angle
+
+        'check if an array is loaded, end if there is none loaded
+        'If DataGridView.Columns.Item(1) Then '(gdblPosArray.GetUpperBound(0) = 0) Then
+        '    MsgBox("No Positions Loaded")
+        '    Exit Sub
+        'End If
+
+        Dim numRows As Integer
+        numRows = DataGridView.RowCount - 1
+
+        'check that the index value is still within the array bounds
+        If ((CurrentIndex + txtStepSize.Text) <= numRows) Then
+            'update index holders
+            PrevIndex = CurrentIndex
+            CurrentIndex += txtStepSize.Text
+        Else
+            'new index value is out of range, stop at last index value (may want to wrap around)
+            PrevIndex = CurrentIndex
+            'gintCurrentIndex = gdblPosArray.GetUpperBound(0)
+            'new index is outside bounds, wrap back around to first Index
+            CurrentIndex = 0
+        End If
+
+        'update the model
+        UpdateModel()
+    End Sub
+
+    Private Sub UpdateModel()
+        'sub to update the inventor assembly parameters based on VertName and HorizName and the index
+        'in the gdblPosArray
+
+        Dim stopwatch As New System.Diagnostics.Stopwatch
+
+        ' InvApp.ScreenUpdating = False
+        Try
+
+            Dim dataColumn As Windows.Forms.DataGridViewColumn
+            Dim dataParam As Inventor.Parameter
+            'Dim i As Integer
+            Dim j As Integer
+            Dim value As Double
+
+            stopwatch.Start()
+            For j = 2 To DataGridView.Columns.Count - 1
+                'skip the first two columns
+                'get the column we're currently looking at
+                dataColumn = DataGridView.Columns.Item(j)
+                Try
+                    'see if the parameter can be assigned
+                    dataParam = AssyCompDef.Parameters(dataColumn.Name)
+                    'if ti was ok, then get the value from the DataGridView
+
+                    '************************************************
+                    'currently dont have offsets worked into program
+                    '************************************************
+
+                    value = CDbl(DataGridView.Rows.Item(CurrentIndex).Cells(j).Value)
+                    'Build the expression for the parameter (used expression in order to maintain 3 decimal places)
+                    dataParam.Expression = FormatNumber(value, 3) & "mm"
+                Catch ex As Exception
+                    MsgBox("Problem with: " & dataColumn.Name & "Parameter Name")
+                End Try
+            Next
+            'turn screen updating back on
+            'InvApp.ScreenUpdating = True
+            'update the assembly for each row
+            AssyDoc.Update2(True)
+            txtStopwatch.Text = stopwatch.ElapsedMilliseconds
+
+        Catch ex As Exception
+            InvApp.UserInterfaceManager.UserInteractionDisabled = False
+            InvApp.AssemblyOptions.DeferUpdate = False
+            Exit Sub
+
+        End Try
+    End Sub
 End Class

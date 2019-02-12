@@ -94,6 +94,12 @@
     <Import Include="System.Diagnostics" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Stepper V2\ColumnManager.Designer.vb">
+      <DependentUpon>ColumnManager.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Stepper V2\ColumnManager.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Stepper V2\ParameterHelp.Designer.vb">
       <DependentUpon>ParameterHelp.vb</DependentUpon>
     </Compile>
@@ -241,6 +247,9 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Stepper V2\ColumnManager.resx">
+      <DependentUpon>ColumnManager.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Stepper V2\ParameterHelp.resx">
       <DependentUpon>ParameterHelp.vb</DependentUpon>
     </EmbeddedResource>

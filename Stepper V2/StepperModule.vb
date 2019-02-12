@@ -10,6 +10,7 @@ Module StepperModule
         Private m_invParameter As Inventor.Parameter
         Private m_paramName As String
         Private m_value As Double
+        Private m_offset As Double
 
         'need get and set 
         Public Property invParameter As Inventor.Parameter
