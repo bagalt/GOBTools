@@ -99,8 +99,9 @@ Partial Class frmParameterHelp
         Me.columnsComboBox.FormattingEnabled = True
         Me.columnsComboBox.Location = New System.Drawing.Point(10, 25)
         Me.columnsComboBox.Name = "columnsComboBox"
-        Me.columnsComboBox.Size = New System.Drawing.Size(121, 21)
+        Me.columnsComboBox.Size = New System.Drawing.Size(166, 21)
         Me.columnsComboBox.TabIndex = 24
+        Me.columnsComboBox.Text = "Select Column..."
         '
         'Label1
         '

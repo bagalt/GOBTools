@@ -5,18 +5,18 @@ Imports System.Drawing
 
 Public Class frmAnimateAssembly
 
-    Dim InvApp As Inventor.Application 'global for inventor application object
-    Dim AssyDoc As Inventor.AssemblyDocument
-    Dim AssyCompDef As Inventor.AssemblyComponentDefinition
+    Private InvApp As Inventor.Application 'global for inventor application object
+    Private AssyDoc As Inventor.AssemblyDocument
+    Private AssyCompDef As Inventor.AssemblyComponentDefinition
 
-    Dim CurrentIndex As Integer = 1 'holds current index for traversing through position array
-    Dim PrevIndex As Integer = 1 'holds previous index for traversing through position array
+    Private CurrentIndex As Integer = 1 'holds current index for traversing through position array
+    Private PrevIndex As Integer = 1 'holds previous index for traversing through position array
 
-    Dim gboolLoop As Boolean
-    Dim gOrigVert As Double 'holds the original value of the vertical parameter for reset purposes
-    Dim gOrigHoriz As Double 'holds the original value of the horizontal parameter for reset purposes
-
+    Private gboolLoop As Boolean
+    Private gOrigVert As Double 'holds the original value of the vertical parameter for reset purposes
+    Private gOrigHoriz As Double 'holds the original value of the horizontal parameter for reset purposes
     Private columnCounter As Integer
+    Private highlightColor As Drawing.Color = Drawing.Color.PaleGoldenrod
 
     Public Sub New(ThisApplication As Inventor.Application)
 
@@ -46,23 +46,25 @@ Public Class frmAnimateAssembly
 
     Private Sub frmAnimateAssembly_Shown(sender As Object, e As EventArgs) Handles Me.Shown
         'form has been shown
-
         InitializeDataGridView()
     End Sub
 
     Private Sub InitializeDataGridView()
         'sub to initialize and define options for the datagridview
-        'Dim columnHeaderStyle As New Windows.Forms.DataGridViewCellStyle
+        Dim columnHeaderStyle As New Windows.Forms.DataGridViewCellStyle
 
-        'columnHeaderStyle.BackColor = System.Drawing.Color.Beige
-        'columnHeaderStyle.Font = New Font("Veranda", 8, FontStyle.Bold)
-        'DataGridView.ColumnHeadersDefaultCellStyle = columnHeaderStyle
+        columnHeaderStyle.BackColor = System.Drawing.Color.LightSkyBlue
+        DataGridView.ColumnHeadersDefaultCellStyle = columnHeaderStyle
 
         Dim i As Integer
 
-        DataGridView.Rows.Add(360)
-        For i = 0 To 360
-            DataGridView.Rows(i).Cells(0).Value = i + 1
+        DataGridView.Rows.Add(361)
+        DataGridView.Rows(0).Cells(0).Value = "Offset"
+        DataGridView.Rows(0).Frozen = True
+        DataGridView.Rows(0).DefaultCellStyle.BackColor = Drawing.Color.LightSkyBlue
+
+        For i = 1 To 361
+            DataGridView.Rows(i).Cells(0).Value = i
         Next
     End Sub
 
@@ -136,9 +138,10 @@ Public Class frmAnimateAssembly
 
             'corrects angle wrap around output from VNM
             For i = 1 To lastRow
-                DataGridView.Rows(i - 1).Cells(1).Value = xlWs.Range("A" & i).Value2
-                DataGridView.Rows(i - 1).Cells(2).Value = xlWs.Range("B" & i).Value2
-                DataGridView.Rows(i - 1).Cells(3).Value = xlWs.Range("C" & i).Value2
+                'start filling datagrid view at row 1 (starts at 0) due to the offset row
+                DataGridView.Rows(i).Cells(1).Value = xlWs.Range("A" & i).Value2
+                DataGridView.Rows(i).Cells(2).Value = xlWs.Range("B" & i).Value2
+                DataGridView.Rows(i).Cells(3).Value = xlWs.Range("C" & i).Value2
             Next
 
             'clean up to close everything
@@ -156,6 +159,7 @@ Public Class frmAnimateAssembly
         'create new instance of the class frmNameHelp and pass inventor application object
         Dim NameHelp = New frmParameterHelp(InvApp, DataGridView.Columns)
         Dim newColumnName As String
+        Dim newColHeader As String
 
         'show NameHelp form
         NameHelp.Show()
@@ -168,13 +172,15 @@ Public Class frmAnimateAssembly
 
         NameHelp.PickConsraint()
 
-        'if either the vert or horiz params have a name, then update the text box on PosStepper
+        'Assign the parameter name to the column name
+        'Assign the constraint description to the header text
         If (NameHelp.GetParameterName <> "") Then
             newColumnName = NameHelp.GetParameterName
+            newColHeader = NameHelp.GetConstraintName
             'give the column the new name
             DataGridView.Columns(NameHelp.GetColumnName).Name = newColumnName
             'give the column header the new name
-            DataGridView.Columns(newColumnName).HeaderCell.Value = NameHelp.GetParameterName
+            DataGridView.Columns(newColumnName).HeaderCell.Value = newColHeader
         End If
 
         'Stop  NameHelp form And clear up memory
@@ -226,10 +232,11 @@ Public Class frmAnimateAssembly
         'set column properties
         With newCol
             .HeaderText = "Param" & columnCounter
-            .Resizable = False
-            .MinimumWidth = 60
-            .Width = 60
+            .Resizable = True
+            .MinimumWidth = 65
+            .Width = 100
             .Name = "Param" & columnCounter
+            .SortMode = Windows.Forms.DataGridViewColumnSortMode.NotSortable
         End With
 
         columnCounter += 1
@@ -252,17 +259,14 @@ Public Class frmAnimateAssembly
 
     Private Sub btnNextAngle_Click(sender As Object, e As EventArgs) Handles btnNextAngle.Click
         GoToNextAngle()
+    End Sub
 
+    Private Sub btnPrevAngle_Click(sender As Object, e As EventArgs) Handles btnPrevAngle.Click
+        GoToPreviousAngle()
     End Sub
 
     Private Sub GoToNextAngle()
         'sub to index to the next angle
-
-        'check if an array is loaded, end if there is none loaded
-        'If DataGridView.Columns.Item(1) Then '(gdblPosArray.GetUpperBound(0) = 0) Then
-        '    MsgBox("No Positions Loaded")
-        '    Exit Sub
-        'End If
 
         Dim numRows As Integer
         numRows = DataGridView.RowCount - 1
@@ -275,9 +279,26 @@ Public Class frmAnimateAssembly
         Else
             'new index value is out of range, stop at last index value (may want to wrap around)
             PrevIndex = CurrentIndex
-            'gintCurrentIndex = gdblPosArray.GetUpperBound(0)
-            'new index is outside bounds, wrap back around to first Index
-            CurrentIndex = 0
+            'new index is outside bounds, wrap back around to first Index row
+            CurrentIndex = 1
+        End If
+
+        'update the model
+        UpdateModel()
+    End Sub
+
+    Private Sub GoToPreviousAngle()
+
+        'check that the index value is still within the array bounds
+        If ((CurrentIndex - txtStepSize.Text) > 0) Then
+            'update index holders
+            PrevIndex = CurrentIndex
+            CurrentIndex -= txtStepSize.Text
+        Else
+            'new index value is out of range, stop at last index value (may want to wrap around)
+            PrevIndex = CurrentIndex
+            'new index is outside bounds, wrap back around to first Index row
+            CurrentIndex = 361
         End If
 
         'update the model
@@ -296,14 +317,14 @@ Public Class frmAnimateAssembly
             Dim dataColumn As Windows.Forms.DataGridViewColumn
             Dim dataParam As Inventor.Parameter
             'Dim i As Integer
-            Dim j As Integer
+            Dim i As Integer
             Dim value As Double
 
             stopwatch.Start()
-            For j = 2 To DataGridView.Columns.Count - 1
+            For i = 2 To DataGridView.Columns.Count - 1
                 'skip the first two columns
                 'get the column we're currently looking at
-                dataColumn = DataGridView.Columns.Item(j)
+                dataColumn = DataGridView.Columns.Item(i)
                 Try
                     'see if the parameter can be assigned
                     dataParam = AssyCompDef.Parameters(dataColumn.Name)
@@ -313,11 +334,20 @@ Public Class frmAnimateAssembly
                     'currently dont have offsets worked into program
                     '************************************************
 
-                    value = CDbl(DataGridView.Rows.Item(CurrentIndex).Cells(j).Value)
+                    'highlight and unhighlight rows
+                    DataGridView.Rows(PrevIndex).DefaultCellStyle.BackColor = Drawing.Color.White
+                    DataGridView.Rows(CurrentIndex).DefaultCellStyle.BackColor = highlightColor
+                    'keep highlighted row visible
+                    DataGridView.FirstDisplayedScrollingRowIndex = CurrentIndex
+
                     'Build the expression for the parameter (used expression in order to maintain 3 decimal places)
-                    dataParam.Expression = FormatNumber(value, 3) & "mm"
+                    If Not DataGridView.Rows.Item(CurrentIndex).Cells(i).Value Is Nothing Then
+                        value = CDbl(DataGridView.Rows.Item(CurrentIndex).Cells(i).Value) + CDbl(DataGridView.Rows.Item(0).Cells(i).Value)
+                        dataParam.Expression = FormatNumber(value, 3) & "mm"
+                    End If
+
                 Catch ex As Exception
-                    MsgBox("Problem with: " & dataColumn.Name & "Parameter Name")
+                    MsgBox("Invalid Parameter: " & dataColumn.Name & vbNewLine & "Used for Column: " & dataColumn.HeaderText.ToString)
                 End Try
             Next
             'turn screen updating back on
@@ -332,5 +362,13 @@ Public Class frmAnimateAssembly
             Exit Sub
 
         End Try
+    End Sub
+
+    Private Sub lblStopwatch_Click(sender As Object, e As EventArgs) Handles lblStopwatch.Click
+
+    End Sub
+
+    Private Sub txtStopwatch_TextChanged(sender As Object, e As EventArgs) Handles txtStopwatch.TextChanged
+
     End Sub
 End Class
