@@ -31,8 +31,7 @@ Public Class frmParameterHelp
             If item.HeaderText = myColumns.Item(0).HeaderText Then
                 'do not add item to combo box
             Else
-                columnsComboBox.Items.Add(item.Name)
-
+                columnsComboBox.Items.Add(item.HeaderText)
             End If
         Next
 

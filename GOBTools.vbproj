@@ -178,6 +178,7 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="GOBTools.X.manifest" />
+    <None Include="Resources\StepperHelp.rtf" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Autodesk.GOBTools.Inventor.addin">

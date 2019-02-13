@@ -32,6 +32,10 @@ Partial Class frmAnimateAssembly
         Me.btnDeleteColumn = New System.Windows.Forms.Button()
         Me.btnAddColumn = New System.Windows.Forms.Button()
         Me.DataGridView = New System.Windows.Forms.DataGridView()
+        Me.Index = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.Angle = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.VertParam = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.HorizParam = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.lblVersion = New System.Windows.Forms.Label()
         Me.lblNumConstraints = New System.Windows.Forms.Label()
         Me.txtNumConstraints = New System.Windows.Forms.TextBox()
@@ -45,8 +49,7 @@ Partial Class frmAnimateAssembly
         Me.lblFilePath = New System.Windows.Forms.Label()
         Me.btnNextAngle = New System.Windows.Forms.Button()
         Me.btnPrevAngle = New System.Windows.Forms.Button()
-        Me.TabPage2 = New System.Windows.Forms.TabPage()
-        Me.chkShowDebug = New System.Windows.Forms.CheckBox()
+        Me.Information = New System.Windows.Forms.TabPage()
         Me.bxSettings = New System.Windows.Forms.GroupBox()
         Me.chkIgnoreHoriz = New System.Windows.Forms.CheckBox()
         Me.lblHorizName = New System.Windows.Forms.Label()
@@ -57,22 +60,20 @@ Partial Class frmAnimateAssembly
         Me.txtHorizOffset = New System.Windows.Forms.TextBox()
         Me.lblVertOffset = New System.Windows.Forms.Label()
         Me.txtVertOffset = New System.Windows.Forms.TextBox()
-        Me.Index = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.Angle = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.VertParam = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.HorizParam = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.RichTextBox1 = New System.Windows.Forms.RichTextBox()
+        Me.lblReference = New System.Windows.Forms.Label()
         Me.TabControl1.SuspendLayout()
         Me.TabPage1.SuspendLayout()
         CType(Me.DataGridView, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.GroupBox1.SuspendLayout()
-        Me.TabPage2.SuspendLayout()
+        Me.Information.SuspendLayout()
         Me.bxSettings.SuspendLayout()
         Me.SuspendLayout()
         '
         'TabControl1
         '
         Me.TabControl1.Controls.Add(Me.TabPage1)
-        Me.TabControl1.Controls.Add(Me.TabPage2)
+        Me.TabControl1.Controls.Add(Me.Information)
         Me.TabControl1.Location = New System.Drawing.Point(5, 5)
         Me.TabControl1.Name = "TabControl1"
         Me.TabControl1.SelectedIndex = 0
@@ -111,7 +112,7 @@ Partial Class frmAnimateAssembly
         'lblStopwatch
         '
         Me.lblStopwatch.AutoSize = True
-        Me.lblStopwatch.Location = New System.Drawing.Point(271, 454)
+        Me.lblStopwatch.Location = New System.Drawing.Point(270, 452)
         Me.lblStopwatch.Name = "lblStopwatch"
         Me.lblStopwatch.Size = New System.Drawing.Size(80, 13)
         Me.lblStopwatch.TabIndex = 61
@@ -121,7 +122,7 @@ Partial Class frmAnimateAssembly
         '
         Me.lblStepSize.AutoSize = True
         Me.lblStepSize.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblStepSize.Location = New System.Drawing.Point(214, 454)
+        Me.lblStepSize.Location = New System.Drawing.Point(214, 452)
         Me.lblStepSize.Name = "lblStepSize"
         Me.lblStepSize.Size = New System.Drawing.Size(52, 13)
         Me.lblStepSize.TabIndex = 28
@@ -148,7 +149,7 @@ Partial Class frmAnimateAssembly
         '
         'txtStopwatch
         '
-        Me.txtStopwatch.Location = New System.Drawing.Point(272, 470)
+        Me.txtStopwatch.Location = New System.Drawing.Point(271, 470)
         Me.txtStopwatch.Name = "txtStopwatch"
         Me.txtStopwatch.Size = New System.Drawing.Size(79, 20)
         Me.txtStopwatch.TabIndex = 60
@@ -181,6 +182,42 @@ Partial Class frmAnimateAssembly
         Me.DataGridView.Size = New System.Drawing.Size(399, 380)
         Me.DataGridView.TabIndex = 57
         '
+        'Index
+        '
+        Me.Index.Frozen = True
+        Me.Index.HeaderText = "Index"
+        Me.Index.MinimumWidth = 40
+        Me.Index.Name = "Index"
+        Me.Index.Resizable = System.Windows.Forms.DataGridViewTriState.[False]
+        Me.Index.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable
+        Me.Index.Width = 40
+        '
+        'Angle
+        '
+        Me.Angle.Frozen = True
+        Me.Angle.HeaderText = "Angle"
+        Me.Angle.MinimumWidth = 40
+        Me.Angle.Name = "Angle"
+        Me.Angle.Resizable = System.Windows.Forms.DataGridViewTriState.[False]
+        Me.Angle.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable
+        Me.Angle.Width = 40
+        '
+        'VertParam
+        '
+        Me.VertParam.HeaderText = "VertParam"
+        Me.VertParam.MinimumWidth = 65
+        Me.VertParam.Name = "VertParam"
+        Me.VertParam.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable
+        Me.VertParam.Width = 110
+        '
+        'HorizParam
+        '
+        Me.HorizParam.HeaderText = "HorizParam"
+        Me.HorizParam.MinimumWidth = 65
+        Me.HorizParam.Name = "HorizParam"
+        Me.HorizParam.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable
+        Me.HorizParam.Width = 110
+        '
         'lblVersion
         '
         Me.lblVersion.AutoSize = True
@@ -193,7 +230,7 @@ Partial Class frmAnimateAssembly
         'lblNumConstraints
         '
         Me.lblNumConstraints.AutoSize = True
-        Me.lblNumConstraints.Location = New System.Drawing.Point(354, 441)
+        Me.lblNumConstraints.Location = New System.Drawing.Point(354, 439)
         Me.lblNumConstraints.Name = "lblNumConstraints"
         Me.lblNumConstraints.Size = New System.Drawing.Size(59, 26)
         Me.lblNumConstraints.TabIndex = 56
@@ -302,27 +339,18 @@ Partial Class frmAnimateAssembly
         Me.btnPrevAngle.Text = "Prev Angle"
         Me.btnPrevAngle.UseVisualStyleBackColor = True
         '
-        'TabPage2
+        'Information
         '
-        Me.TabPage2.Controls.Add(Me.chkShowDebug)
-        Me.TabPage2.Controls.Add(Me.bxSettings)
-        Me.TabPage2.Location = New System.Drawing.Point(4, 22)
-        Me.TabPage2.Name = "TabPage2"
-        Me.TabPage2.Padding = New System.Windows.Forms.Padding(3)
-        Me.TabPage2.Size = New System.Drawing.Size(479, 594)
-        Me.TabPage2.TabIndex = 1
-        Me.TabPage2.Text = "TabPage2"
-        Me.TabPage2.UseVisualStyleBackColor = True
-        '
-        'chkShowDebug
-        '
-        Me.chkShowDebug.AutoSize = True
-        Me.chkShowDebug.Location = New System.Drawing.Point(243, 325)
-        Me.chkShowDebug.Name = "chkShowDebug"
-        Me.chkShowDebug.Size = New System.Drawing.Size(107, 17)
-        Me.chkShowDebug.TabIndex = 37
-        Me.chkShowDebug.Text = "Show More Info?"
-        Me.chkShowDebug.UseVisualStyleBackColor = True
+        Me.Information.Controls.Add(Me.lblReference)
+        Me.Information.Controls.Add(Me.RichTextBox1)
+        Me.Information.Controls.Add(Me.bxSettings)
+        Me.Information.Location = New System.Drawing.Point(4, 22)
+        Me.Information.Name = "Information"
+        Me.Information.Padding = New System.Windows.Forms.Padding(3)
+        Me.Information.Size = New System.Drawing.Size(479, 594)
+        Me.Information.TabIndex = 1
+        Me.Information.Text = "Reference"
+        Me.Information.UseVisualStyleBackColor = True
         '
         'bxSettings
         '
@@ -336,7 +364,7 @@ Partial Class frmAnimateAssembly
         Me.bxSettings.Controls.Add(Me.lblVertOffset)
         Me.bxSettings.Controls.Add(Me.txtVertOffset)
         Me.bxSettings.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.bxSettings.Location = New System.Drawing.Point(38, 60)
+        Me.bxSettings.Location = New System.Drawing.Point(273, 402)
         Me.bxSettings.Name = "bxSettings"
         Me.bxSettings.Size = New System.Drawing.Size(200, 186)
         Me.bxSettings.TabIndex = 4
@@ -430,41 +458,23 @@ Partial Class frmAnimateAssembly
         Me.txtVertOffset.TabIndex = 3
         Me.txtVertOffset.Text = "261.424"
         '
-        'Index
+        'RichTextBox1
         '
-        Me.Index.Frozen = True
-        Me.Index.HeaderText = "Index"
-        Me.Index.MinimumWidth = 40
-        Me.Index.Name = "Index"
-        Me.Index.Resizable = System.Windows.Forms.DataGridViewTriState.[False]
-        Me.Index.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable
-        Me.Index.Width = 40
+        Me.RichTextBox1.Location = New System.Drawing.Point(6, 24)
+        Me.RichTextBox1.Name = "RichTextBox1"
+        Me.RichTextBox1.Size = New System.Drawing.Size(442, 342)
+        Me.RichTextBox1.TabIndex = 5
+        Me.RichTextBox1.Text = ""
         '
-        'Angle
+        'lblReference
         '
-        Me.Angle.Frozen = True
-        Me.Angle.HeaderText = "Angle"
-        Me.Angle.MinimumWidth = 40
-        Me.Angle.Name = "Angle"
-        Me.Angle.Resizable = System.Windows.Forms.DataGridViewTriState.[False]
-        Me.Angle.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable
-        Me.Angle.Width = 40
-        '
-        'VertParam
-        '
-        Me.VertParam.HeaderText = "VertParam"
-        Me.VertParam.MinimumWidth = 65
-        Me.VertParam.Name = "VertParam"
-        Me.VertParam.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable
-        Me.VertParam.Width = 110
-        '
-        'HorizParam
-        '
-        Me.HorizParam.HeaderText = "HorizParam"
-        Me.HorizParam.MinimumWidth = 65
-        Me.HorizParam.Name = "HorizParam"
-        Me.HorizParam.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable
-        Me.HorizParam.Width = 110
+        Me.lblReference.AutoSize = True
+        Me.lblReference.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblReference.Location = New System.Drawing.Point(6, 8)
+        Me.lblReference.Name = "lblReference"
+        Me.lblReference.Size = New System.Drawing.Size(112, 13)
+        Me.lblReference.TabIndex = 6
+        Me.lblReference.Text = "Reference Information"
         '
         'frmAnimateAssembly
         '
@@ -479,8 +489,8 @@ Partial Class frmAnimateAssembly
         Me.TabPage1.PerformLayout()
         CType(Me.DataGridView, System.ComponentModel.ISupportInitialize).EndInit()
         Me.GroupBox1.ResumeLayout(False)
-        Me.TabPage2.ResumeLayout(False)
-        Me.TabPage2.PerformLayout()
+        Me.Information.ResumeLayout(False)
+        Me.Information.PerformLayout()
         Me.bxSettings.ResumeLayout(False)
         Me.bxSettings.PerformLayout()
         Me.ResumeLayout(False)
@@ -510,8 +520,7 @@ Partial Class frmAnimateAssembly
     Friend WithEvents btnAddColumn As Windows.Forms.Button
     Friend WithEvents txtStopwatch As Windows.Forms.TextBox
     Friend WithEvents lblStopwatch As Windows.Forms.Label
-    Friend WithEvents TabPage2 As Windows.Forms.TabPage
-    Friend WithEvents chkShowDebug As Windows.Forms.CheckBox
+    Friend WithEvents Information As Windows.Forms.TabPage
     Friend WithEvents bxSettings As Windows.Forms.GroupBox
     Friend WithEvents chkIgnoreHoriz As Windows.Forms.CheckBox
     Friend WithEvents lblHorizName As Windows.Forms.Label
@@ -526,4 +535,6 @@ Partial Class frmAnimateAssembly
     Friend WithEvents Angle As Windows.Forms.DataGridViewTextBoxColumn
     Friend WithEvents VertParam As Windows.Forms.DataGridViewTextBoxColumn
     Friend WithEvents HorizParam As Windows.Forms.DataGridViewTextBoxColumn
+    Friend WithEvents RichTextBox1 As Windows.Forms.RichTextBox
+    Friend WithEvents lblReference As Windows.Forms.Label
 End Class

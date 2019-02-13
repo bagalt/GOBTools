@@ -31,7 +31,7 @@ Partial Class ColumnManager
         '
         Me.ListView1.Location = New System.Drawing.Point(12, 12)
         Me.ListView1.Name = "ListView1"
-        Me.ListView1.Size = New System.Drawing.Size(156, 234)
+        Me.ListView1.Size = New System.Drawing.Size(250, 234)
         Me.ListView1.TabIndex = 0
         Me.ListView1.UseCompatibleStateImageBehavior = False
         Me.ListView1.View = System.Windows.Forms.View.Details
@@ -49,7 +49,7 @@ Partial Class ColumnManager
         'btnCancel
         '
         Me.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.btnCancel.Location = New System.Drawing.Point(93, 252)
+        Me.btnCancel.Location = New System.Drawing.Point(187, 252)
         Me.btnCancel.Name = "btnCancel"
         Me.btnCancel.Size = New System.Drawing.Size(75, 45)
         Me.btnCancel.TabIndex = 4
@@ -61,7 +61,7 @@ Partial Class ColumnManager
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.CancelButton = Me.btnCancel
-        Me.ClientSize = New System.Drawing.Size(177, 308)
+        Me.ClientSize = New System.Drawing.Size(276, 308)
         Me.ControlBox = False
         Me.Controls.Add(Me.btnCancel)
         Me.Controls.Add(Me.btnOK)

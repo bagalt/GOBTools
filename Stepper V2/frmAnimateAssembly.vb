@@ -47,6 +47,7 @@ Public Class frmAnimateAssembly
     Private Sub frmAnimateAssembly_Shown(sender As Object, e As EventArgs) Handles Me.Shown
         'form has been shown
         InitializeDataGridView()
+        RichTextBox1.Rtf = My.Resources.StepperHelp
     End Sub
 
     Private Sub InitializeDataGridView()
@@ -131,6 +132,7 @@ Public Class frmAnimateAssembly
         lastRow = xlWs.UsedRange.Rows.Count
 
         xlRange = xlWs.Range("A1:" & "D" & lastRow)
+        Dim angle As Integer
 
         Try
             'excel array starts at index 1
@@ -139,7 +141,12 @@ Public Class frmAnimateAssembly
             'corrects angle wrap around output from VNM
             For i = 1 To lastRow
                 'start filling datagrid view at row 1 (starts at 0) due to the offset row
-                DataGridView.Rows(i).Cells(1).Value = xlWs.Range("A" & i).Value2
+                'get angle data and correct if greater than 360
+                angle = xlWs.Range("A" & i).Value2
+                If angle > 360 Then
+                    angle -= 360
+                End If
+                DataGridView.Rows(i).Cells(1).Value = angle
                 DataGridView.Rows(i).Cells(2).Value = xlWs.Range("B" & i).Value2
                 DataGridView.Rows(i).Cells(3).Value = xlWs.Range("C" & i).Value2
             Next
@@ -246,7 +253,7 @@ Public Class frmAnimateAssembly
     End Sub
 
     Private Sub btnDeleteColumn_Click(sender As Object, e As EventArgs) Handles btnDeleteColumn.Click
-        Dim dialog As New ColumnManager(DataGridView.Columns)
+        Dim dialog As New ColumnManager(DataGridView.Columns, Me)
 
         Dim result As Windows.Forms.DialogResult = dialog.ShowDialog()
         dialog.Location = LocateInCenter(Me, dialog)
@@ -364,11 +371,5 @@ Public Class frmAnimateAssembly
         End Try
     End Sub
 
-    Private Sub lblStopwatch_Click(sender As Object, e As EventArgs) Handles lblStopwatch.Click
 
-    End Sub
-
-    Private Sub txtStopwatch_TextChanged(sender As Object, e As EventArgs) Handles txtStopwatch.TextChanged
-
-    End Sub
 End Class
