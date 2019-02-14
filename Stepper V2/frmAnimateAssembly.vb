@@ -1,7 +1,9 @@
 ﻿Imports Inventor
 Imports Excel = Microsoft.Office.Interop.Excel
 Imports System.Drawing
-
+Imports System.Windows.Forms
+Imports System.Collections.Generic
+Imports System.ComponentModel
 
 Public Class frmAnimateAssembly
 
@@ -12,11 +14,12 @@ Public Class frmAnimateAssembly
     Private CurrentIndex As Integer = 1 'holds current index for traversing through position array
     Private PrevIndex As Integer = 1 'holds previous index for traversing through position array
 
-    Private gboolLoop As Boolean
+    Private gboolLoop As Boolean = True
     Private gOrigVert As Double 'holds the original value of the vertical parameter for reset purposes
     Private gOrigHoriz As Double 'holds the original value of the horizontal parameter for reset purposes
     Private columnCounter As Integer
     Private highlightColor As Drawing.Color = Drawing.Color.PaleGoldenrod
+    Private parameterList As List(Of Inventor.Parameter)
 
     Public Sub New(ThisApplication As Inventor.Application)
 
@@ -27,6 +30,10 @@ Public Class frmAnimateAssembly
         InvApp = ThisApplication
         'start column counter at 3, because there will always be an index column, angle and param 1 and param 2
         columnCounter = 3
+        parameterList = New List(Of Parameter)
+
+        'disable stop button for now
+        'btnStop.Enabled = False
 
         'get the assembly component definition and assign to global
         Try
@@ -52,9 +59,9 @@ Public Class frmAnimateAssembly
 
     Private Sub InitializeDataGridView()
         'sub to initialize and define options for the datagridview
-        Dim columnHeaderStyle As New Windows.Forms.DataGridViewCellStyle
+        Dim columnHeaderStyle As New DataGridViewCellStyle
 
-        columnHeaderStyle.BackColor = System.Drawing.Color.LightSkyBlue
+        columnHeaderStyle.BackColor = Drawing.Color.LightSkyBlue
         DataGridView.ColumnHeadersDefaultCellStyle = columnHeaderStyle
 
         Dim i As Integer
@@ -164,34 +171,36 @@ Public Class frmAnimateAssembly
     Private Sub btnNameHelp_Click(sender As Object, e As EventArgs) Handles btnNameHelp.Click
 
         'create new instance of the class frmNameHelp and pass inventor application object
-        Dim NameHelp = New frmParameterHelp(InvApp, DataGridView.Columns)
+        Dim parameterHelp = New frmParameterHelp(InvApp, DataGridView.Columns)
         Dim newColumnName As String
         Dim newColHeader As String
 
         'show NameHelp form
-        NameHelp.Show()
+        parameterHelp.Show()
         'set the namehelp form owner
-        NameHelp.Owner = Me
+        parameterHelp.Owner = Me
         'set the location
-        NameHelp.Location = LocateInCenter(Me, NameHelp)
+        parameterHelp.Location = LocateInCenter(Me, parameterHelp)
         'hide the form
         Me.Hide()
 
-        NameHelp.PickConsraint()
+        parameterHelp.PickConsraint()
 
         'Assign the parameter name to the column name
         'Assign the constraint description to the header text
-        If (NameHelp.GetParameterName <> "") Then
-            newColumnName = NameHelp.GetParameterName
-            newColHeader = NameHelp.GetConstraintName
+        If (parameterHelp.GetParameterName <> "") Then
+            newColumnName = parameterHelp.GetParameterName
+            newColHeader = parameterHelp.GetConstraintName
+            parameterList.Add(parameterHelp.GetSelectedParameter)
             'give the column the new name
-            DataGridView.Columns(NameHelp.GetColumnName).Name = newColumnName
+            DataGridView.Columns(parameterHelp.GetColumnName).Name = newColumnName
             'give the column header the new name
             DataGridView.Columns(newColumnName).HeaderCell.Value = newColHeader
+
         End If
 
         'Stop  NameHelp form And clear up memory
-        NameHelp.Close()
+        parameterHelp.Close()
         'make sure selection is terminated
         InvApp.CommandManager.StopActiveCommand()
         'Show form again
@@ -265,14 +274,14 @@ Public Class frmAnimateAssembly
     End Sub
 
     Private Sub btnNextAngle_Click(sender As Object, e As EventArgs) Handles btnNextAngle.Click
-        GoToNextAngle()
+        GoToNextAngle(True)
     End Sub
 
     Private Sub btnPrevAngle_Click(sender As Object, e As EventArgs) Handles btnPrevAngle.Click
         GoToPreviousAngle()
     End Sub
 
-    Private Sub GoToNextAngle()
+    Private Sub GoToNextAngle(updateGridView As Boolean)
         'sub to index to the next angle
 
         Dim numRows As Integer
@@ -291,7 +300,7 @@ Public Class frmAnimateAssembly
         End If
 
         'update the model
-        UpdateModel()
+        UpdateModel(updateGridView)
     End Sub
 
     Private Sub GoToPreviousAngle()
@@ -309,16 +318,15 @@ Public Class frmAnimateAssembly
         End If
 
         'update the model
-        UpdateModel()
+        UpdateModel(True)
     End Sub
 
-    Private Sub UpdateModel()
+    Private Sub UpdateModel(highlightGridView As Boolean)
         'sub to update the inventor assembly parameters based on VertName and HorizName and the index
         'in the gdblPosArray
 
         Dim stopwatch As New System.Diagnostics.Stopwatch
 
-        ' InvApp.ScreenUpdating = False
         Try
 
             Dim dataColumn As Windows.Forms.DataGridViewColumn
@@ -326,26 +334,38 @@ Public Class frmAnimateAssembly
             'Dim i As Integer
             Dim i As Integer
             Dim value As Double
+            Dim findParam As Parameter
 
             stopwatch.Start()
             For i = 2 To DataGridView.Columns.Count - 1
                 'skip the first two columns
                 'get the column we're currently looking at
                 dataColumn = DataGridView.Columns.Item(i)
+                dataParam = Nothing
                 Try
                     'see if the parameter can be assigned
-                    dataParam = AssyCompDef.Parameters(dataColumn.Name)
-                    'if ti was ok, then get the value from the DataGridView
 
-                    '************************************************
-                    'currently dont have offsets worked into program
-                    '************************************************
+                    'This is done to reduce API calls to inventor
+                    'at the mapping of the parameters the parameters are added to the parameterList
+                    'now we need to find the parameter in the list based on the datacolumn name which is the 
+                    'name of the parameter when it was mapped.
+                    'Replaces: dataParam = AssyCompDef.Parameters(dataColumn.Name)
+                    For Each findParam In parameterList
+                        If findParam.Name = dataColumn.Name Then
+                            dataParam = findParam
+                            Exit For
+                        End If
+                    Next
 
-                    'highlight and unhighlight rows
-                    DataGridView.Rows(PrevIndex).DefaultCellStyle.BackColor = Drawing.Color.White
-                    DataGridView.Rows(CurrentIndex).DefaultCellStyle.BackColor = highlightColor
-                    'keep highlighted row visible
-                    DataGridView.FirstDisplayedScrollingRowIndex = CurrentIndex
+                    'if it was ok, then get the value from the DataGridView
+                    If highlightGridView Then
+                        'highlight and unhighlight rows
+                        DataGridView.Rows(PrevIndex).DefaultCellStyle.BackColor = Drawing.Color.White
+                        DataGridView.Rows(CurrentIndex).DefaultCellStyle.BackColor = highlightColor
+                        'keep highlighted row visible
+                        DataGridView.FirstDisplayedScrollingRowIndex = CurrentIndex
+                    End If
+
 
                     'Build the expression for the parameter (used expression in order to maintain 3 decimal places)
                     If Not DataGridView.Rows.Item(CurrentIndex).Cells(i).Value Is Nothing Then
@@ -358,7 +378,6 @@ Public Class frmAnimateAssembly
                 End Try
             Next
             'turn screen updating back on
-            'InvApp.ScreenUpdating = True
             'update the assembly for each row
             AssyDoc.Update2(True)
             txtStopwatch.Text = stopwatch.ElapsedMilliseconds
@@ -369,6 +388,106 @@ Public Class frmAnimateAssembly
             Exit Sub
 
         End Try
+    End Sub
+
+    Private Sub DataGridView_CellMouseDoubleClick(sender As Object, e As DataGridViewCellMouseEventArgs) Handles DataGridView.CellMouseDoubleClick
+
+        'will not handle double clicks on the column headers or the first row where the offsets are listed
+        If e.RowIndex >= 1 AndAlso e.ColumnIndex >= 0 Then
+            'Update the index trackers
+            PrevIndex = CurrentIndex
+            CurrentIndex = e.RowIndex
+            'Update the model to new index
+            UpdateModel(True)
+        End If
+
+    End Sub
+
+    Private Sub btnExit_Click(sender As Object, e As EventArgs) Handles btnExit.Click
+
+        'enable user interaction just in case it was disabled
+        InvApp.UserInterfaceManager.UserInteractionDisabled = False
+
+        'close form
+        Me.Close()
+
+    End Sub
+
+    Private Sub btnPlay_Click(sender As Object, e As EventArgs) Handles btnPlay.Click
+
+        'disable play button
+        btnPlay.Enabled = False
+        'enable stop button
+        btnStop.Enabled = True
+
+        '' these properties should be set to True (at design-time or runtime) before calling the RunWorkerAsync
+        '' to ensure that it supports Cancellation and reporting Progress
+
+        'set background worker options
+        BackgroundWorker1.WorkerSupportsCancellation = True
+        BackgroundWorker1.WorkerReportsProgress = True
+
+        'start the background worker
+        BackgroundWorker1.RunWorkerAsync()
+    End Sub
+
+    Private Sub btnStop_Click(sender As Object, e As EventArgs) Handles btnStop.Click
+        '' to cancel the task, just call the BackgroundWorker1.CancelAsync method.
+
+        'disable the stop button
+        btnStop.Enabled = False
+        'stop background worker
+        BackgroundWorker1.CancelAsync()
+
+    End Sub
+
+    Private Sub BackgroundWorker1_DoWork(sender As Object, e As System.ComponentModel.DoWorkEventArgs) Handles BackgroundWorker1.DoWork
+
+        Do While gboolLoop = True
+            'allows stop button event to be caught
+            GoToNextAngle(False)
+
+            If BackgroundWorker1.CancellationPending Then
+                BackgroundWorker1.ReportProgress(0, "Stopping...")
+                gboolLoop = False
+            End If
+        Loop
+
+        If BackgroundWorker1.CancellationPending Then
+            e.Cancel = True
+            BackgroundWorker1.ReportProgress(100, "Stopped")
+
+        End If
+
+    End Sub
+
+    Private Sub BackgroundWorker1_ProgressChanged(sender As Object, e As ProgressChangedEventArgs) Handles BackgroundWorker1.ProgressChanged
+        '' This event is fired when you call the ReportProgress method from inside your DoWork.
+        '' Any visual indicators about the progress should go here.
+
+    End Sub
+
+    Private Sub BackgroundWorker1_RunWorkerCompleted(sender As Object, e As RunWorkerCompletedEventArgs) Handles BackgroundWorker1.RunWorkerCompleted
+        '' This event is fired when your BackgroundWorker exits.
+        '' It may have exitted Normally after completing its task, 
+        '' or because of Cancellation, or due to any Error.
+
+        If e.Error IsNot Nothing Then
+            '' if BackgroundWorker terminated due to error
+            MessageBox.Show(e.Error.Message)
+
+        ElseIf e.Cancelled Then
+            '' otherwise if it was cancelled
+            MessageBox.Show("Task cancelled!")
+
+        Else
+            '' otherwise it completed normally
+            MessageBox.Show("Task completed!")
+        End If
+
+        btnPlay.Enabled = True
+        btnStop.Enabled = False
+
     End Sub
 
 

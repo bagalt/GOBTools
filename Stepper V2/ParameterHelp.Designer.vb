@@ -96,7 +96,9 @@ Partial Class frmParameterHelp
         '
         'columnsComboBox
         '
+        Me.columnsComboBox.ForeColor = System.Drawing.Color.Black
         Me.columnsComboBox.FormattingEnabled = True
+        Me.columnsComboBox.ItemHeight = 13
         Me.columnsComboBox.Location = New System.Drawing.Point(10, 25)
         Me.columnsComboBox.Name = "columnsComboBox"
         Me.columnsComboBox.Size = New System.Drawing.Size(252, 21)

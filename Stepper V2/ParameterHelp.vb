@@ -1,4 +1,5 @@
 ﻿Imports System.ComponentModel
+Imports System.Collections.Generic
 
 Public Class frmParameterHelp
 
@@ -12,6 +13,7 @@ Public Class frmParameterHelp
     Private ParameterName As String
     Private ConstraintName As String
     Private ColumnName As String
+    Private mySelectedParam As Inventor.Parameter
 
     Private donePicking As Boolean
 
@@ -23,6 +25,8 @@ Public Class frmParameterHelp
         ' Add any initialization after the InitializeComponent() call.
         InvApp = App
         columnsComboBox.Items.Clear()
+        mySelectedParam = Nothing
+
 
         'fill in the drop down menu
         Dim item As System.Windows.Forms.DataGridViewColumn
@@ -39,6 +43,13 @@ Public Class frmParameterHelp
         donePicking = False
 
     End Sub
+
+    ReadOnly Property GetSelectedParameter As Inventor.Parameter
+        Get
+            donePicking = True
+            Return mySelectedParam
+        End Get
+    End Property
 
     ReadOnly Property GetColumnName As String
         Get
@@ -91,6 +102,8 @@ Public Class frmParameterHelp
             donePicking = False
         Else
             ColumnName = columnsComboBox.SelectedItem.ToString
+            'assign the selected parameter to the corresponding item in the parameter list
+
             donePicking = True
         End If
 
@@ -102,7 +115,6 @@ Public Class frmParameterHelp
         'define the type of object that will be selected, if not this type of object it will thrown an error
         Dim assyConstraint As Inventor.AssemblyConstraint = Nothing
         'Inventor.AssemblyConstraint
-        Dim param As Inventor.ModelParameter
 
         'keep form on top of other windows
         Me.TopMost = True
@@ -118,11 +130,11 @@ Public Class frmParameterHelp
             If (assyConstraint.Type = Inventor.ObjectTypeEnum.kMateConstraintObject) Or (assyConstraint.Type = Inventor.ObjectTypeEnum.kFlushConstraintObject) Then
 
                 'assign the correspoding parameter to param
-                param = assyConstraint.offset
+                mySelectedParam = assyConstraint.offset
 
                 'populate text boxes with names from selected item
                 txtConstraintName.Text = assyConstraint.Name
-                txtParamName.Text = param.Name
+                txtParamName.Text = mySelectedParam.Name
 
             Else
                 MsgBox("Must be a Flush or Mate Constraint, select again", MsgBoxStyle.SystemModal)

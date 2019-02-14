@@ -50,6 +50,8 @@ Partial Class frmAnimateAssembly
         Me.btnNextAngle = New System.Windows.Forms.Button()
         Me.btnPrevAngle = New System.Windows.Forms.Button()
         Me.Information = New System.Windows.Forms.TabPage()
+        Me.lblReference = New System.Windows.Forms.Label()
+        Me.RichTextBox1 = New System.Windows.Forms.RichTextBox()
         Me.bxSettings = New System.Windows.Forms.GroupBox()
         Me.chkIgnoreHoriz = New System.Windows.Forms.CheckBox()
         Me.lblHorizName = New System.Windows.Forms.Label()
@@ -60,8 +62,7 @@ Partial Class frmAnimateAssembly
         Me.txtHorizOffset = New System.Windows.Forms.TextBox()
         Me.lblVertOffset = New System.Windows.Forms.Label()
         Me.txtVertOffset = New System.Windows.Forms.TextBox()
-        Me.RichTextBox1 = New System.Windows.Forms.RichTextBox()
-        Me.lblReference = New System.Windows.Forms.Label()
+        Me.BackgroundWorker1 = New System.ComponentModel.BackgroundWorker()
         Me.TabControl1.SuspendLayout()
         Me.TabPage1.SuspendLayout()
         CType(Me.DataGridView, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -352,6 +353,24 @@ Partial Class frmAnimateAssembly
         Me.Information.Text = "Reference"
         Me.Information.UseVisualStyleBackColor = True
         '
+        'lblReference
+        '
+        Me.lblReference.AutoSize = True
+        Me.lblReference.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblReference.Location = New System.Drawing.Point(6, 8)
+        Me.lblReference.Name = "lblReference"
+        Me.lblReference.Size = New System.Drawing.Size(112, 13)
+        Me.lblReference.TabIndex = 6
+        Me.lblReference.Text = "Reference Information"
+        '
+        'RichTextBox1
+        '
+        Me.RichTextBox1.Location = New System.Drawing.Point(6, 24)
+        Me.RichTextBox1.Name = "RichTextBox1"
+        Me.RichTextBox1.Size = New System.Drawing.Size(442, 342)
+        Me.RichTextBox1.TabIndex = 5
+        Me.RichTextBox1.Text = ""
+        '
         'bxSettings
         '
         Me.bxSettings.Controls.Add(Me.chkIgnoreHoriz)
@@ -458,23 +477,8 @@ Partial Class frmAnimateAssembly
         Me.txtVertOffset.TabIndex = 3
         Me.txtVertOffset.Text = "261.424"
         '
-        'RichTextBox1
+        'BackgroundWorker1
         '
-        Me.RichTextBox1.Location = New System.Drawing.Point(6, 24)
-        Me.RichTextBox1.Name = "RichTextBox1"
-        Me.RichTextBox1.Size = New System.Drawing.Size(442, 342)
-        Me.RichTextBox1.TabIndex = 5
-        Me.RichTextBox1.Text = ""
-        '
-        'lblReference
-        '
-        Me.lblReference.AutoSize = True
-        Me.lblReference.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblReference.Location = New System.Drawing.Point(6, 8)
-        Me.lblReference.Name = "lblReference"
-        Me.lblReference.Size = New System.Drawing.Size(112, 13)
-        Me.lblReference.TabIndex = 6
-        Me.lblReference.Text = "Reference Information"
         '
         'frmAnimateAssembly
         '
@@ -537,4 +541,5 @@ Partial Class frmAnimateAssembly
     Friend WithEvents HorizParam As Windows.Forms.DataGridViewTextBoxColumn
     Friend WithEvents RichTextBox1 As Windows.Forms.RichTextBox
     Friend WithEvents lblReference As Windows.Forms.Label
+    Friend WithEvents BackgroundWorker1 As ComponentModel.BackgroundWorker
 End Class
