@@ -96,19 +96,20 @@ Partial Class frmParameterHelp
         '
         'columnsComboBox
         '
+        Me.columnsComboBox.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.columnsComboBox.ForeColor = System.Drawing.Color.Black
         Me.columnsComboBox.FormattingEnabled = True
-        Me.columnsComboBox.ItemHeight = 13
-        Me.columnsComboBox.Location = New System.Drawing.Point(10, 25)
+        Me.columnsComboBox.ItemHeight = 16
+        Me.columnsComboBox.Location = New System.Drawing.Point(10, 23)
         Me.columnsComboBox.Name = "columnsComboBox"
-        Me.columnsComboBox.Size = New System.Drawing.Size(252, 21)
+        Me.columnsComboBox.Size = New System.Drawing.Size(252, 24)
         Me.columnsComboBox.TabIndex = 24
         Me.columnsComboBox.Text = "Select Column..."
         '
         'Label1
         '
         Me.Label1.AutoSize = True
-        Me.Label1.Location = New System.Drawing.Point(9, 7)
+        Me.Label1.Location = New System.Drawing.Point(9, 5)
         Me.Label1.Name = "Label1"
         Me.Label1.Size = New System.Drawing.Size(83, 13)
         Me.Label1.TabIndex = 25

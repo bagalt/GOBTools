@@ -20,6 +20,7 @@ Public Class frmAnimateAssembly
     Private columnCounter As Integer
     Private highlightColor As Drawing.Color = Drawing.Color.PaleGoldenrod
     Private parameterList As List(Of Inventor.Parameter)
+    Private WithEvents bgWorker As System.ComponentModel.BackgroundWorker = Nothing
 
     Public Sub New(ThisApplication As Inventor.Application)
 
@@ -33,7 +34,7 @@ Public Class frmAnimateAssembly
         parameterList = New List(Of Parameter)
 
         'disable stop button for now
-        'btnStop.Enabled = False
+        btnStop.Enabled = False
 
         'get the assembly component definition and assign to global
         Try
@@ -81,27 +82,12 @@ Public Class frmAnimateAssembly
         'selects a document and displays the path to the file in the txtFilePath textbox
         'finishes by calling the ExcelToArray sub to load the excel file
 
-        Dim myFileDlog As New System.Windows.Forms.OpenFileDialog 'OpenFileDialog()
+        Dim path As String
+        path = StepperModule.BrowseForPath("Excel Files|*.xls;*.xlsx")
 
-        'look for files starting at desktop, doesnt quite work correctly now        
-        myFileDlog.InitialDirectory = System.Environment.SpecialFolder.MyComputer
-
-        'specifies what type of data files to look for
-        myFileDlog.Filter = "All Files (*.*)|*.*"
-
-        'specifies which data type is focused on start up
-        myFileDlog.FilterIndex = 1
-
-        'Gets or sets a value indicating whether the dialog box restores the current directory before closing.
-        myFileDlog.RestoreDirectory = True
-
-        'seperates message outputs for files found or not found
-        If (myFileDlog.ShowDialog() = System.Windows.Forms.DialogResult.OK) Then
-            'Adds the file directory to the text box
-            txtFilePath.Text = myFileDlog.FileName
+        If path IsNot "" Then
+            LoadExcelValues(path)
         End If
-
-        LoadExcelValues(myFileDlog.FileName)
 
     End Sub
 
@@ -153,9 +139,14 @@ Public Class frmAnimateAssembly
                 If angle > 360 Then
                     angle -= 360
                 End If
-                DataGridView.Rows(i).Cells(1).Value = angle
-                DataGridView.Rows(i).Cells(2).Value = xlWs.Range("B" & i).Value2
-                DataGridView.Rows(i).Cells(3).Value = xlWs.Range("C" & i).Value2
+
+                'fill datagrid view based on angle value so it populates from 1-360 in decending order
+                DataGridView.Rows(angle).Cells(1).Value = angle
+                DataGridView.Rows(angle).Cells(2).Value = xlWs.Range("B" & i).Value2
+                DataGridView.Rows(angle).Cells(3).Value = xlWs.Range("C" & i).Value2
+                'DataGridView.Rows(i).Cells(1).Value = angle
+                'DataGridView.Rows(i).Cells(2).Value = xlWs.Range("B" & i).Value2
+                'DataGridView.Rows(i).Cells(3).Value = xlWs.Range("C" & i).Value2
             Next
 
             'clean up to close everything
@@ -168,7 +159,7 @@ Public Class frmAnimateAssembly
         End Try
     End Sub
 
-    Private Sub btnNameHelp_Click(sender As Object, e As EventArgs) Handles btnNameHelp.Click
+    Private Sub btnNameHelp_Click(sender As Object, e As EventArgs) Handles btnAssignParam.Click
 
         'create new instance of the class frmNameHelp and pass inventor application object
         Dim parameterHelp = New frmParameterHelp(InvApp, DataGridView.Columns)
@@ -403,6 +394,8 @@ Public Class frmAnimateAssembly
 
     End Sub
 
+#Region "Background worker and Play Stop buttons"
+
     Private Sub btnExit_Click(sender As Object, e As EventArgs) Handles btnExit.Click
 
         'enable user interaction just in case it was disabled
@@ -423,12 +416,18 @@ Public Class frmAnimateAssembly
         '' these properties should be set to True (at design-time or runtime) before calling the RunWorkerAsync
         '' to ensure that it supports Cancellation and reporting Progress
 
-        'set background worker options
-        BackgroundWorker1.WorkerSupportsCancellation = True
-        BackgroundWorker1.WorkerReportsProgress = True
+        If IsNothing(bgWorker) Then
+            bgWorker = New System.ComponentModel.BackgroundWorker
+            'set background worker options
+            bgWorker.WorkerSupportsCancellation = True
+            bgWorker.WorkerReportsProgress = True
+            'start the background worker
+            bgWorker.RunWorkerAsync()
+        Else
+            bgWorker.CancelAsync()
+            bgWorker = Nothing
+        End If
 
-        'start the background worker
-        BackgroundWorker1.RunWorkerAsync()
     End Sub
 
     Private Sub btnStop_Click(sender As Object, e As EventArgs) Handles btnStop.Click
@@ -436,59 +435,75 @@ Public Class frmAnimateAssembly
 
         'disable the stop button
         btnStop.Enabled = False
+        'Enable the play button
+        btnPlay.Enabled = True
         'stop background worker
-        BackgroundWorker1.CancelAsync()
+        bgWorker.CancelAsync()
 
     End Sub
 
-    Private Sub BackgroundWorker1_DoWork(sender As Object, e As System.ComponentModel.DoWorkEventArgs) Handles BackgroundWorker1.DoWork
+    Private Sub bgWorker_DoWork(sender As Object, e As DoWorkEventArgs) Handles bgWorker.DoWork
+        Dim bgw As System.ComponentModel.BackgroundWorker = sender
 
-        Do While gboolLoop = True
-            'allows stop button event to be caught
+        'Do While gboolLoop = True
+        While Not bgw.CancellationPending
             GoToNextAngle(False)
+            bgw.ReportProgress(CurrentIndex, "Working...")
+        End While
 
-            If BackgroundWorker1.CancellationPending Then
-                BackgroundWorker1.ReportProgress(0, "Stopping...")
-                gboolLoop = False
-            End If
-        Loop
-
-        If BackgroundWorker1.CancellationPending Then
+        If bgw.CancellationPending Then
             e.Cancel = True
-            BackgroundWorker1.ReportProgress(100, "Stopped")
-
+            bgw.ReportProgress(100, "Stopped")
         End If
-
     End Sub
 
-    Private Sub BackgroundWorker1_ProgressChanged(sender As Object, e As ProgressChangedEventArgs) Handles BackgroundWorker1.ProgressChanged
+    Private Sub bgWorker_ProgressChanged(sender As Object, e As ProgressChangedEventArgs) Handles bgWorker.ProgressChanged
         '' This event is fired when you call the ReportProgress method from inside your DoWork.
         '' Any visual indicators about the progress should go here.
 
+        'highlight and unhighlight rows
+        DataGridView.Rows(PrevIndex).DefaultCellStyle.BackColor = Drawing.Color.White
+        DataGridView.Rows(CurrentIndex).DefaultCellStyle.BackColor = highlightColor
+        'keep highlighted row visible
+        DataGridView.FirstDisplayedScrollingRowIndex = CurrentIndex
     End Sub
 
-    Private Sub BackgroundWorker1_RunWorkerCompleted(sender As Object, e As RunWorkerCompletedEventArgs) Handles BackgroundWorker1.RunWorkerCompleted
+    Private Sub bgWorker_RunWorkerCompleted(sender As Object, e As RunWorkerCompletedEventArgs) Handles bgWorker.RunWorkerCompleted
         '' This event is fired when your BackgroundWorker exits.
         '' It may have exitted Normally after completing its task, 
         '' or because of Cancellation, or due to any Error.
 
         If e.Error IsNot Nothing Then
             '' if BackgroundWorker terminated due to error
-            MessageBox.Show(e.Error.Message)
+            'MessageBox.Show(e.Error.Message)
 
         ElseIf e.Cancelled Then
             '' otherwise if it was cancelled
-            MessageBox.Show("Task cancelled!")
+            'MessageBox.Show("Task cancelled!")
 
         Else
             '' otherwise it completed normally
-            MessageBox.Show("Task completed!")
+            'MessageBox.Show("Task completed!")
         End If
 
-        btnPlay.Enabled = True
-        btnStop.Enabled = False
-
+        'set worker back to nothing so it can be started again
+        bgWorker = Nothing
     End Sub
 
 
+#End Region
+
+    Private Sub btnLoadColumn_Click(sender As Object, e As EventArgs) Handles btnLoadColumn.Click
+        'handles loading a column into the datagrid from an excel file
+
+        Dim loadColumnFromExcel As DialogResult
+
+        If loadColumnFromExcel = DialogResult.OK Then
+            MsgBox("Loaded OK")
+        End If
+
+
+
+
+    End Sub
 End Class

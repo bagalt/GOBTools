@@ -1,9 +1,9 @@
-﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
+﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
 Partial Class frmAnimateAssembly
     Inherits System.Windows.Forms.Form
 
     'Form overrides dispose to clean up the component list.
-    <System.Diagnostics.DebuggerNonUserCode()> _
+    <System.Diagnostics.DebuggerNonUserCode()>
     Protected Overrides Sub Dispose(ByVal disposing As Boolean)
         Try
             If disposing AndAlso components IsNot Nothing Then
@@ -20,14 +20,14 @@ Partial Class frmAnimateAssembly
     'NOTE: The following procedure is required by the Windows Form Designer
     'It can be modified using the Windows Form Designer.  
     'Do not modify it using the code editor.
-    <System.Diagnostics.DebuggerStepThrough()> _
+    <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         Me.TabControl1 = New System.Windows.Forms.TabControl()
         Me.TabPage1 = New System.Windows.Forms.TabPage()
         Me.lblStopwatch = New System.Windows.Forms.Label()
         Me.lblStepSize = New System.Windows.Forms.Label()
         Me.txtStepSize = New System.Windows.Forms.TextBox()
-        Me.btnNameHelp = New System.Windows.Forms.Button()
+        Me.btnAssignParam = New System.Windows.Forms.Button()
         Me.txtStopwatch = New System.Windows.Forms.TextBox()
         Me.btnDeleteColumn = New System.Windows.Forms.Button()
         Me.btnAddColumn = New System.Windows.Forms.Button()
@@ -62,7 +62,7 @@ Partial Class frmAnimateAssembly
         Me.txtHorizOffset = New System.Windows.Forms.TextBox()
         Me.lblVertOffset = New System.Windows.Forms.Label()
         Me.txtVertOffset = New System.Windows.Forms.TextBox()
-        Me.BackgroundWorker1 = New System.ComponentModel.BackgroundWorker()
+        Me.btnLoadColumn = New System.Windows.Forms.Button()
         Me.TabControl1.SuspendLayout()
         Me.TabPage1.SuspendLayout()
         CType(Me.DataGridView, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -83,10 +83,11 @@ Partial Class frmAnimateAssembly
         '
         'TabPage1
         '
+        Me.TabPage1.Controls.Add(Me.btnLoadColumn)
         Me.TabPage1.Controls.Add(Me.lblStopwatch)
         Me.TabPage1.Controls.Add(Me.lblStepSize)
         Me.TabPage1.Controls.Add(Me.txtStepSize)
-        Me.TabPage1.Controls.Add(Me.btnNameHelp)
+        Me.TabPage1.Controls.Add(Me.btnAssignParam)
         Me.TabPage1.Controls.Add(Me.txtStopwatch)
         Me.TabPage1.Controls.Add(Me.btnDeleteColumn)
         Me.TabPage1.Controls.Add(Me.btnAddColumn)
@@ -138,15 +139,15 @@ Partial Class frmAnimateAssembly
         Me.txtStepSize.TabIndex = 8
         Me.txtStepSize.Text = "2"
         '
-        'btnNameHelp
+        'btnAssignParam
         '
-        Me.btnNameHelp.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnNameHelp.Location = New System.Drawing.Point(416, 52)
-        Me.btnNameHelp.Name = "btnNameHelp"
-        Me.btnNameHelp.Size = New System.Drawing.Size(55, 42)
-        Me.btnNameHelp.TabIndex = 9
-        Me.btnNameHelp.Text = "Name Help"
-        Me.btnNameHelp.UseVisualStyleBackColor = True
+        Me.btnAssignParam.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnAssignParam.Location = New System.Drawing.Point(416, 52)
+        Me.btnAssignParam.Name = "btnAssignParam"
+        Me.btnAssignParam.Size = New System.Drawing.Size(55, 42)
+        Me.btnAssignParam.TabIndex = 9
+        Me.btnAssignParam.Text = "Assign" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "Param"
+        Me.btnAssignParam.UseVisualStyleBackColor = True
         '
         'txtStopwatch
         '
@@ -157,7 +158,7 @@ Partial Class frmAnimateAssembly
         '
         'btnDeleteColumn
         '
-        Me.btnDeleteColumn.Location = New System.Drawing.Point(416, 146)
+        Me.btnDeleteColumn.Location = New System.Drawing.Point(416, 228)
         Me.btnDeleteColumn.Name = "btnDeleteColumn"
         Me.btnDeleteColumn.Size = New System.Drawing.Size(55, 40)
         Me.btnDeleteColumn.TabIndex = 59
@@ -166,7 +167,7 @@ Partial Class frmAnimateAssembly
         '
         'btnAddColumn
         '
-        Me.btnAddColumn.Location = New System.Drawing.Point(416, 100)
+        Me.btnAddColumn.Location = New System.Drawing.Point(416, 170)
         Me.btnAddColumn.Name = "btnAddColumn"
         Me.btnAddColumn.Size = New System.Drawing.Size(55, 40)
         Me.btnAddColumn.TabIndex = 58
@@ -477,8 +478,15 @@ Partial Class frmAnimateAssembly
         Me.txtVertOffset.TabIndex = 3
         Me.txtVertOffset.Text = "261.424"
         '
-        'BackgroundWorker1
+        'btnLoadColumn
         '
+        Me.btnLoadColumn.Location = New System.Drawing.Point(416, 112)
+        Me.btnLoadColumn.Name = "btnLoadColumn"
+        Me.btnLoadColumn.Size = New System.Drawing.Size(55, 40)
+        Me.btnLoadColumn.TabIndex = 62
+        Me.btnLoadColumn.Text = "Load Column"
+        Me.btnLoadColumn.TextImageRelation = System.Windows.Forms.TextImageRelation.TextBeforeImage
+        Me.btnLoadColumn.UseVisualStyleBackColor = True
         '
         'frmAnimateAssembly
         '
@@ -513,7 +521,7 @@ Partial Class frmAnimateAssembly
     Friend WithEvents lblFilePath As Windows.Forms.Label
     Friend WithEvents btnNextAngle As Windows.Forms.Button
     Friend WithEvents btnPrevAngle As Windows.Forms.Button
-    Friend WithEvents btnNameHelp As Windows.Forms.Button
+    Friend WithEvents btnAssignParam As Windows.Forms.Button
     Friend WithEvents lblStepSize As Windows.Forms.Label
     Friend WithEvents txtStepSize As Windows.Forms.TextBox
     Friend WithEvents lblNumConstraints As Windows.Forms.Label
@@ -541,5 +549,5 @@ Partial Class frmAnimateAssembly
     Friend WithEvents HorizParam As Windows.Forms.DataGridViewTextBoxColumn
     Friend WithEvents RichTextBox1 As Windows.Forms.RichTextBox
     Friend WithEvents lblReference As Windows.Forms.Label
-    Friend WithEvents BackgroundWorker1 As ComponentModel.BackgroundWorker
+    Friend WithEvents btnLoadColumn As Windows.Forms.Button
 End Class

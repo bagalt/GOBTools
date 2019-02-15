@@ -23,6 +23,33 @@ Module StepperModule
 
     End Function
 
+    Public Function BrowseForPath(ByVal filter As String) As String
+        Dim myFileDlog As New System.Windows.Forms.OpenFileDialog 'OpenFileDialog()
+
+        'look for files starting at desktop, doesnt quite work correctly now        
+        myFileDlog.InitialDirectory = System.Environment.SpecialFolder.MyComputer
+
+        'specifies what type of data files to look for
+        myFileDlog.Filter = filter '"All Files (*.*)|*.*"
+
+        'specifies which data type is focused on start up
+        myFileDlog.FilterIndex = 1
+
+        'Gets or sets a value indicating whether the dialog box restores the current directory before closing.
+        myFileDlog.RestoreDirectory = True
+
+        'seperates message outputs for files found or not found
+        If (myFileDlog.ShowDialog() = System.Windows.Forms.DialogResult.OK) Then
+            'Adds the file directory to the text box
+            Return myFileDlog.FileName
+        Else
+            Return ""
+        End If
+
+    End Function
+
+
+
 
 
 
