@@ -66,6 +66,7 @@ Partial Class ColumnManager
         Me.Controls.Add(Me.btnCancel)
         Me.Controls.Add(Me.btnOK)
         Me.Controls.Add(Me.ListView1)
+        Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog
         Me.Name = "ColumnManager"
         Me.Text = "Select Column to Delete"
         Me.ResumeLayout(False)

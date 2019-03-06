@@ -24,6 +24,7 @@ Partial Class frmAnimateAssembly
     Private Sub InitializeComponent()
         Me.TabControl1 = New System.Windows.Forms.TabControl()
         Me.TabPage1 = New System.Windows.Forms.TabPage()
+        Me.btnLoadColumn = New System.Windows.Forms.Button()
         Me.lblStopwatch = New System.Windows.Forms.Label()
         Me.lblStepSize = New System.Windows.Forms.Label()
         Me.txtStepSize = New System.Windows.Forms.TextBox()
@@ -53,7 +54,6 @@ Partial Class frmAnimateAssembly
         Me.lblReference = New System.Windows.Forms.Label()
         Me.RichTextBox1 = New System.Windows.Forms.RichTextBox()
         Me.bxSettings = New System.Windows.Forms.GroupBox()
-        Me.chkIgnoreHoriz = New System.Windows.Forms.CheckBox()
         Me.lblHorizName = New System.Windows.Forms.Label()
         Me.txtHorizName = New System.Windows.Forms.TextBox()
         Me.lblVertName = New System.Windows.Forms.Label()
@@ -62,7 +62,6 @@ Partial Class frmAnimateAssembly
         Me.txtHorizOffset = New System.Windows.Forms.TextBox()
         Me.lblVertOffset = New System.Windows.Forms.Label()
         Me.txtVertOffset = New System.Windows.Forms.TextBox()
-        Me.btnLoadColumn = New System.Windows.Forms.Button()
         Me.TabControl1.SuspendLayout()
         Me.TabPage1.SuspendLayout()
         CType(Me.DataGridView, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -78,7 +77,7 @@ Partial Class frmAnimateAssembly
         Me.TabControl1.Location = New System.Drawing.Point(5, 5)
         Me.TabControl1.Name = "TabControl1"
         Me.TabControl1.SelectedIndex = 0
-        Me.TabControl1.Size = New System.Drawing.Size(487, 620)
+        Me.TabControl1.Size = New System.Drawing.Size(487, 590)
         Me.TabControl1.TabIndex = 45
         '
         'TabPage1
@@ -106,10 +105,20 @@ Partial Class frmAnimateAssembly
         Me.TabPage1.Location = New System.Drawing.Point(4, 22)
         Me.TabPage1.Name = "TabPage1"
         Me.TabPage1.Padding = New System.Windows.Forms.Padding(3)
-        Me.TabPage1.Size = New System.Drawing.Size(479, 594)
+        Me.TabPage1.Size = New System.Drawing.Size(479, 564)
         Me.TabPage1.TabIndex = 0
         Me.TabPage1.Text = "Step Tool"
         Me.TabPage1.UseVisualStyleBackColor = True
+        '
+        'btnLoadColumn
+        '
+        Me.btnLoadColumn.Location = New System.Drawing.Point(416, 112)
+        Me.btnLoadColumn.Name = "btnLoadColumn"
+        Me.btnLoadColumn.Size = New System.Drawing.Size(55, 40)
+        Me.btnLoadColumn.TabIndex = 62
+        Me.btnLoadColumn.Text = "Load Column"
+        Me.btnLoadColumn.TextImageRelation = System.Windows.Forms.TextImageRelation.TextBeforeImage
+        Me.btnLoadColumn.UseVisualStyleBackColor = True
         '
         'lblStopwatch
         '
@@ -223,7 +232,7 @@ Partial Class frmAnimateAssembly
         'lblVersion
         '
         Me.lblVersion.AutoSize = True
-        Me.lblVersion.Location = New System.Drawing.Point(441, 574)
+        Me.lblVersion.Location = New System.Drawing.Point(354, 543)
         Me.lblVersion.Name = "lblVersion"
         Me.lblVersion.Size = New System.Drawing.Size(30, 13)
         Me.lblVersion.TabIndex = 52
@@ -248,7 +257,7 @@ Partial Class frmAnimateAssembly
         '
         'btnExit
         '
-        Me.btnExit.Location = New System.Drawing.Point(331, 522)
+        Me.btnExit.Location = New System.Drawing.Point(396, 522)
         Me.btnExit.Name = "btnExit"
         Me.btnExit.Size = New System.Drawing.Size(75, 34)
         Me.btnExit.TabIndex = 35
@@ -349,7 +358,7 @@ Partial Class frmAnimateAssembly
         Me.Information.Location = New System.Drawing.Point(4, 22)
         Me.Information.Name = "Information"
         Me.Information.Padding = New System.Windows.Forms.Padding(3)
-        Me.Information.Size = New System.Drawing.Size(479, 594)
+        Me.Information.Size = New System.Drawing.Size(479, 564)
         Me.Information.TabIndex = 1
         Me.Information.Text = "Reference"
         Me.Information.UseVisualStyleBackColor = True
@@ -374,7 +383,6 @@ Partial Class frmAnimateAssembly
         '
         'bxSettings
         '
-        Me.bxSettings.Controls.Add(Me.chkIgnoreHoriz)
         Me.bxSettings.Controls.Add(Me.lblHorizName)
         Me.bxSettings.Controls.Add(Me.txtHorizName)
         Me.bxSettings.Controls.Add(Me.lblVertName)
@@ -384,23 +392,12 @@ Partial Class frmAnimateAssembly
         Me.bxSettings.Controls.Add(Me.lblVertOffset)
         Me.bxSettings.Controls.Add(Me.txtVertOffset)
         Me.bxSettings.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.bxSettings.Location = New System.Drawing.Point(273, 402)
+        Me.bxSettings.Location = New System.Drawing.Point(248, 382)
         Me.bxSettings.Name = "bxSettings"
-        Me.bxSettings.Size = New System.Drawing.Size(200, 186)
+        Me.bxSettings.Size = New System.Drawing.Size(200, 137)
         Me.bxSettings.TabIndex = 4
         Me.bxSettings.TabStop = False
         Me.bxSettings.Text = "Settings"
-        '
-        'chkIgnoreHoriz
-        '
-        Me.chkIgnoreHoriz.AutoSize = True
-        Me.chkIgnoreHoriz.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.chkIgnoreHoriz.Location = New System.Drawing.Point(105, 108)
-        Me.chkIgnoreHoriz.Name = "chkIgnoreHoriz"
-        Me.chkIgnoreHoriz.Size = New System.Drawing.Size(89, 17)
-        Me.chkIgnoreHoriz.TabIndex = 10
-        Me.chkIgnoreHoriz.Text = "Ignore Horiz?"
-        Me.chkIgnoreHoriz.UseVisualStyleBackColor = True
         '
         'lblHorizName
         '
@@ -478,21 +475,11 @@ Partial Class frmAnimateAssembly
         Me.txtVertOffset.TabIndex = 3
         Me.txtVertOffset.Text = "261.424"
         '
-        'btnLoadColumn
-        '
-        Me.btnLoadColumn.Location = New System.Drawing.Point(416, 112)
-        Me.btnLoadColumn.Name = "btnLoadColumn"
-        Me.btnLoadColumn.Size = New System.Drawing.Size(55, 40)
-        Me.btnLoadColumn.TabIndex = 62
-        Me.btnLoadColumn.Text = "Load Column"
-        Me.btnLoadColumn.TextImageRelation = System.Windows.Forms.TextImageRelation.TextBeforeImage
-        Me.btnLoadColumn.UseVisualStyleBackColor = True
-        '
         'frmAnimateAssembly
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(494, 628)
+        Me.ClientSize = New System.Drawing.Size(494, 599)
         Me.Controls.Add(Me.TabControl1)
         Me.Name = "frmAnimateAssembly"
         Me.Text = "AnimateAssembly"
@@ -534,7 +521,6 @@ Partial Class frmAnimateAssembly
     Friend WithEvents lblStopwatch As Windows.Forms.Label
     Friend WithEvents Information As Windows.Forms.TabPage
     Friend WithEvents bxSettings As Windows.Forms.GroupBox
-    Friend WithEvents chkIgnoreHoriz As Windows.Forms.CheckBox
     Friend WithEvents lblHorizName As Windows.Forms.Label
     Friend WithEvents txtHorizName As Windows.Forms.TextBox
     Friend WithEvents lblVertName As Windows.Forms.Label

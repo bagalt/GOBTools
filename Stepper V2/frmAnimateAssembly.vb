@@ -21,6 +21,7 @@ Public Class frmAnimateAssembly
     Private highlightColor As Drawing.Color = Drawing.Color.PaleGoldenrod
     Private parameterList As List(Of Inventor.Parameter)
     Private WithEvents bgWorker As System.ComponentModel.BackgroundWorker = Nothing
+    Private stopwatch As System.Diagnostics.Stopwatch
 
     Public Sub New(ThisApplication As Inventor.Application)
 
@@ -32,6 +33,7 @@ Public Class frmAnimateAssembly
         'start column counter at 3, because there will always be an index column, angle and param 1 and param 2
         columnCounter = 3
         parameterList = New List(Of Parameter)
+        stopwatch = New System.Diagnostics.Stopwatch
 
         'disable stop button for now
         btnStop.Enabled = False
@@ -140,13 +142,11 @@ Public Class frmAnimateAssembly
                     angle -= 360
                 End If
 
-                'fill datagrid view based on angle value so it populates from 1-360 in decending order
+                'fill datagrid view based on angle value so it populates from 1-360 in ascending order
                 DataGridView.Rows(angle).Cells(1).Value = angle
                 DataGridView.Rows(angle).Cells(2).Value = xlWs.Range("B" & i).Value2
                 DataGridView.Rows(angle).Cells(3).Value = xlWs.Range("C" & i).Value2
-                'DataGridView.Rows(i).Cells(1).Value = angle
-                'DataGridView.Rows(i).Cells(2).Value = xlWs.Range("B" & i).Value2
-                'DataGridView.Rows(i).Cells(3).Value = xlWs.Range("C" & i).Value2
+
             Next
 
             'clean up to close everything
@@ -265,14 +265,24 @@ Public Class frmAnimateAssembly
     End Sub
 
     Private Sub btnNextAngle_Click(sender As Object, e As EventArgs) Handles btnNextAngle.Click
-        GoToNextAngle(True)
+        stopwatch.Start()
+        GoToNextAngle()
+        stopwatch.Stop()
+        txtStopwatch.Text = stopwatch.ElapsedMilliseconds
+        stopwatch.Reset()
+        UpdateDataGridViewRowColors()
     End Sub
 
     Private Sub btnPrevAngle_Click(sender As Object, e As EventArgs) Handles btnPrevAngle.Click
+        stopwatch.Start()
         GoToPreviousAngle()
+        stopwatch.Stop()
+        txtStopwatch.Text = stopwatch.ElapsedMilliseconds
+        stopwatch.Reset()
+        UpdateDataGridViewRowColors()
     End Sub
 
-    Private Sub GoToNextAngle(updateGridView As Boolean)
+    Private Sub GoToNextAngle()
         'sub to index to the next angle
 
         Dim numRows As Integer
@@ -291,7 +301,7 @@ Public Class frmAnimateAssembly
         End If
 
         'update the model
-        UpdateModel(updateGridView)
+        UpdateModel()
     End Sub
 
     Private Sub GoToPreviousAngle()
@@ -309,17 +319,27 @@ Public Class frmAnimateAssembly
         End If
 
         'update the model
-        UpdateModel(True)
+        UpdateModel()
+
     End Sub
 
-    Private Sub UpdateModel(highlightGridView As Boolean)
+    Private Sub UpdateDataGridViewRowColors()
+        'sub to handle updating the datagridview row colors based on the index values
+
+        'highlight and unhighlight rows
+        DataGridView.Rows(PrevIndex).DefaultCellStyle.BackColor = Drawing.Color.White
+        DataGridView.Rows(CurrentIndex).DefaultCellStyle.BackColor = highlightColor
+
+        'keep highlighted row visible
+        DataGridView.FirstDisplayedScrollingRowIndex = CurrentIndex
+
+    End Sub
+
+    Private Sub UpdateModel()
         'sub to update the inventor assembly parameters based on VertName and HorizName and the index
         'in the gdblPosArray
 
-        Dim stopwatch As New System.Diagnostics.Stopwatch
-
         Try
-
             Dim dataColumn As Windows.Forms.DataGridViewColumn
             Dim dataParam As Inventor.Parameter
             'Dim i As Integer
@@ -327,12 +347,13 @@ Public Class frmAnimateAssembly
             Dim value As Double
             Dim findParam As Parameter
 
-            stopwatch.Start()
             For i = 2 To DataGridView.Columns.Count - 1
                 'skip the first two columns
                 'get the column we're currently looking at
                 dataColumn = DataGridView.Columns.Item(i)
                 dataParam = Nothing
+                'defer updating the assembly after each single parameter change
+                InvApp.AssemblyOptions.DeferUpdate = True
                 Try
                     'see if the parameter can be assigned
 
@@ -348,16 +369,6 @@ Public Class frmAnimateAssembly
                         End If
                     Next
 
-                    'if it was ok, then get the value from the DataGridView
-                    If highlightGridView Then
-                        'highlight and unhighlight rows
-                        DataGridView.Rows(PrevIndex).DefaultCellStyle.BackColor = Drawing.Color.White
-                        DataGridView.Rows(CurrentIndex).DefaultCellStyle.BackColor = highlightColor
-                        'keep highlighted row visible
-                        DataGridView.FirstDisplayedScrollingRowIndex = CurrentIndex
-                    End If
-
-
                     'Build the expression for the parameter (used expression in order to maintain 3 decimal places)
                     If Not DataGridView.Rows.Item(CurrentIndex).Cells(i).Value Is Nothing Then
                         value = CDbl(DataGridView.Rows.Item(CurrentIndex).Cells(i).Value) + CDbl(DataGridView.Rows.Item(0).Cells(i).Value)
@@ -371,9 +382,9 @@ Public Class frmAnimateAssembly
             'turn screen updating back on
             'update the assembly for each row
             AssyDoc.Update2(True)
-            txtStopwatch.Text = stopwatch.ElapsedMilliseconds
 
         Catch ex As Exception
+            InvApp.AssemblyOptions.DeferUpdate = False
             InvApp.UserInterfaceManager.UserInteractionDisabled = False
             InvApp.AssemblyOptions.DeferUpdate = False
             Exit Sub
@@ -389,7 +400,7 @@ Public Class frmAnimateAssembly
             PrevIndex = CurrentIndex
             CurrentIndex = e.RowIndex
             'Update the model to new index
-            UpdateModel(True)
+            UpdateModel()
         End If
 
     End Sub
@@ -440,18 +451,25 @@ Public Class frmAnimateAssembly
         'stop background worker
         bgWorker.CancelAsync()
 
+        InvApp.AssemblyOptions.DeferUpdate = False
+
     End Sub
 
     Private Sub bgWorker_DoWork(sender As Object, e As DoWorkEventArgs) Handles bgWorker.DoWork
         Dim bgw As System.ComponentModel.BackgroundWorker = sender
+        Dim bwStopwatch As New System.Diagnostics.Stopwatch
 
-        'Do While gboolLoop = True
         While Not bgw.CancellationPending
-            GoToNextAngle(False)
-            bgw.ReportProgress(CurrentIndex, "Working...")
+            bwStopwatch.Start()
+            GoToNextAngle()
+            bwStopwatch.Stop()
+            'bgw.ReportProgress(CurrentIndex, "Working...")
+            bgw.ReportProgress(bwStopwatch.ElapsedMilliseconds, "Working...")
+            bwStopwatch.Reset()
         End While
 
         If bgw.CancellationPending Then
+            bwStopwatch.Stop()
             e.Cancel = True
             bgw.ReportProgress(100, "Stopped")
         End If
@@ -462,10 +480,11 @@ Public Class frmAnimateAssembly
         '' Any visual indicators about the progress should go here.
 
         'highlight and unhighlight rows
-        DataGridView.Rows(PrevIndex).DefaultCellStyle.BackColor = Drawing.Color.White
-        DataGridView.Rows(CurrentIndex).DefaultCellStyle.BackColor = highlightColor
-        'keep highlighted row visible
-        DataGridView.FirstDisplayedScrollingRowIndex = CurrentIndex
+        'DataGridView.Rows(PrevIndex).DefaultCellStyle.BackColor = Drawing.Color.White
+        'DataGridView.Rows(CurrentIndex).DefaultCellStyle.BackColor = highlightColor
+        ''keep highlighted row visible
+        'DataGridView.FirstDisplayedScrollingRowIndex = CurrentIndex
+        txtStopwatch.Text = e.ProgressPercentage
     End Sub
 
     Private Sub bgWorker_RunWorkerCompleted(sender As Object, e As RunWorkerCompletedEventArgs) Handles bgWorker.RunWorkerCompleted
@@ -496,14 +515,13 @@ Public Class frmAnimateAssembly
     Private Sub btnLoadColumn_Click(sender As Object, e As EventArgs) Handles btnLoadColumn.Click
         'handles loading a column into the datagrid from an excel file
 
-        Dim loadColumnFromExcel As DialogResult
+        Dim loadDialog As New frmLoadColumn(Me)
+        Dim result As Windows.Forms.DialogResult = loadDialog.ShowDialog()
+        loadDialog.Location = LocateInCenter(Me, loadDialog)
 
-        If loadColumnFromExcel = DialogResult.OK Then
+        If result = DialogResult.OK Then
             MsgBox("Loaded OK")
         End If
-
-
-
 
     End Sub
 End Class

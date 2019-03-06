@@ -41,6 +41,7 @@ Partial Class frmLoadColumn
         '
         'ComboBox1
         '
+        Me.ComboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.ComboBox1.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.ComboBox1.FormattingEnabled = True
         Me.ComboBox1.Location = New System.Drawing.Point(12, 33)
@@ -60,11 +61,11 @@ Partial Class frmLoadColumn
         'lblColumnsToLoad
         '
         Me.lblColumnsToLoad.AutoSize = True
-        Me.lblColumnsToLoad.Location = New System.Drawing.Point(12, 82)
+        Me.lblColumnsToLoad.Location = New System.Drawing.Point(12, 78)
         Me.lblColumnsToLoad.Name = "lblColumnsToLoad"
-        Me.lblColumnsToLoad.Size = New System.Drawing.Size(86, 13)
+        Me.lblColumnsToLoad.Size = New System.Drawing.Size(92, 13)
         Me.lblColumnsToLoad.TabIndex = 3
-        Me.lblColumnsToLoad.Text = "Columns to Load"
+        Me.lblColumnsToLoad.Text = "Column(s) to Load"
         '
         'btnOK
         '
@@ -90,13 +91,16 @@ Partial Class frmLoadColumn
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(189, 437)
+        Me.CancelButton = Me.btnCancel
+        Me.ClientSize = New System.Drawing.Size(188, 437)
+        Me.ControlBox = False
         Me.Controls.Add(Me.btnCancel)
         Me.Controls.Add(Me.btnOK)
         Me.Controls.Add(Me.lblColumnsToLoad)
         Me.Controls.Add(Me.ListView1)
         Me.Controls.Add(Me.ComboBox1)
         Me.Controls.Add(Me.lblAngleColumn)
+        Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog
         Me.Name = "frmLoadColumn"
         Me.Text = "Load Column(s)"
         Me.ResumeLayout(False)
