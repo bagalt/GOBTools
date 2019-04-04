@@ -431,7 +431,7 @@ Public Class frmAnimateAssembly
             bgWorker = New System.ComponentModel.BackgroundWorker
             'set background worker options
             bgWorker.WorkerSupportsCancellation = True
-            bgWorker.WorkerReportsProgress = True
+            bgWorker.WorkerReportsProgress = False
             'start the background worker
             bgWorker.RunWorkerAsync()
         Else

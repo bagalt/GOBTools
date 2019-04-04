@@ -278,7 +278,7 @@ Public Class frmStepper
 
         Dim stopwatch As New System.Diagnostics.Stopwatch
         stopwatch.Start()
-        gInvApp.ScreenUpdating = False
+        'gInvApp.ScreenUpdating = False
         Try
             'check if ignore horiz is checked
             If (chkIgnoreHoriz.Checked = True) Then
@@ -287,7 +287,7 @@ Public Class frmStepper
                 VertName.Expression = FormatNumber(gdblPosArray(gintCurrentIndex, 2) + CDbl(txtVertOffset.Text), 3) & "mm"
                 'VertName.Value = CDbl((gdblPosArray(gintCurrentIndex, 2) + CDbl(txtVertOffset.Text)) / 10)
                 'update model and ignore errors
-                gInvApp.ScreenUpdating = True
+                'gInvApp.ScreenUpdating = True
                 gAssyDoc.Update2(True)
             Else
                 'use the expression to have the display only show 3 decimal places and add the mm to use the correct units               
@@ -296,7 +296,7 @@ Public Class frmStepper
                 'VertName.Value = CDbl((gdblPosArray(gintCurrentIndex, 2) + CDbl(txtVertOffset.Text)) / 10)
                 'HorizName.Value = CDbl((gdblPosArray(gintCurrentIndex, 3) + CDbl(txtHorizOffset.Text)) / 10)
                 'update model and ignore errors
-                gInvApp.ScreenUpdating = True
+                'gInvApp.ScreenUpdating = True
                 gAssyDoc.Update2(True)
             End If
 
