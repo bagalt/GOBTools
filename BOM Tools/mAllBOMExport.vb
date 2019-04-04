@@ -221,6 +221,7 @@ Module mAllBOMExport
         Dim subCompOccDoc As Inventor.Document
         Dim subCompOccProps As Inventor.PropertySets
         Dim subCompOccPartNum As String
+        Dim isWeldment As Boolean = False
 
         'make a new breadcrumb collection for each time this sub is run
         Dim subBreadCrumb As Collection
@@ -239,6 +240,14 @@ Module mAllBOMExport
                 subCompOccDoc = oSubCompOcc.Definition.Document
                 subCompOccProps = subCompOccDoc.PropertySets
 
+                'add code to check if suboccurrence is a weldment type to avoid double counting items.  For some reason in weldments, the occurrences/suboccurrences
+                'have an extra item that represents the weldment.  "_Weldment" or could be the same part number as the weldment assembly. Reference part B45.40000115
+                'In these cases the weldment is counted twice.  It can be detected by checking the occurrence's document sub type.
+
+                If subCompOccDoc.DocumentSubType.DocumentSubTypeID = "{28EC8354-9024-440F-A8A2-0E0E55D635B0}" Then
+                    isWeldment = True
+                End If
+
                 If oSubCompOcc.Definition.Type = Inventor.ObjectTypeEnum.kVirtualComponentDefinitionObject Then
                     'virtual parts have the part number in a different location for some reason
                     subCompOccPartNum = oSubCompOcc.Definition.propertysets.item("Design Tracking Properties").item("Part Number").value
@@ -250,7 +259,7 @@ Module mAllBOMExport
                 subCompOccPartNum = oSubCompOcc.Name
             End Try
 
-            If Not ((oSubCompOcc.BOMStructure = Inventor.BOMStructureEnum.kReferenceBOMStructure) Or (oSubCompOcc.Suppressed = True)) Then  'if not reference or suppressed or phantom then continue
+            If Not ((oSubCompOcc.BOMStructure = Inventor.BOMStructureEnum.kReferenceBOMStructure) Or (oSubCompOcc.Suppressed = True) Or isWeldment) Then  'if not reference, suppressed, phantom, or weldment then continue
                 ' Check if it's child occurrence (leaf node)
                 If oSubCompOcc.SubOccurrences.Count = 0 Then
                     'Debug.Print oSubCompOcc.Name
