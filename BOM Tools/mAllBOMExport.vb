@@ -236,6 +236,9 @@ Module mAllBOMExport
             'append prevBreadCrumb to the newly created breadcrumb
             AppendColl(subBreadCrumb, prevBreadCrumb)
 
+            'reset isWeldment flag
+            isWeldment = False
+
             Try
                 subCompOccDoc = oSubCompOcc.Definition.Document
                 subCompOccProps = subCompOccDoc.PropertySets
