@@ -971,6 +971,8 @@ Module mAllBOMExport
                     addToPartExportColl = mPartExportSettings.bPartExportShowFasteners
                 Case PartType.Toplevel
                     addToPartExportColl = mPartExportSettings.bPartExportShowTopLevelAssy
+                Case PartType.BGEPart, PartType.BPHPart
+                    addToPartExportColl = False
                 Case Else
                     addToPartExportColl = True
             End Select
