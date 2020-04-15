@@ -74,7 +74,6 @@ Module mAllBOMExport
     Public bomImportList As Collection
     Public collAllParts As Collection 'public collection to show all parts
 
-
     Public Sub AssemblyCount(ThisApplication As Inventor.Application, BomImportConfig As BomExportSettings, PartExportConfig As PartExportSettings, BomCompConfig As BomCompareSettings, sDirectoryPath As String)
         ' Set reference to active document.
         ' This assumes the active document is an assembly
@@ -1457,14 +1456,15 @@ Module mAllBOMExport
             .Range("I1").Value = "Parent Assy"
             .Range("J1").Value = "Plan Type"
             .Range("K1").Value = "Item Nbr"
-            .Range("L1").Value = "Inspect (Y/N)"
-            .Range("M1").Value = "Errors"
+            .Range("L1").Value = "Insp Reqd"
+            .Range("M1").Value = "Cert Reqd"
+            .Range("N1").Value = "Errors"
             'color heading row gray
-            .Range("A1:M1").Interior.Color = mikronBlue 'RGB(178, 178, 178)
+            .Range("A1:N1").Interior.Color = mikronBlue 'RGB(178, 178, 178)
             'color heading text
-            .Range("A1:M1").Font.Color = headingTextColor
+            .Range("A1:N1").Font.Color = headingTextColor
             'bold heading row column headings
-            .Range("A1:M1").Font.Bold = True
+            .Range("A1:N1").Font.Bold = True
         End With
 
         'start filling in table on row 2
@@ -1482,20 +1482,21 @@ Module mAllBOMExport
                 .Range("G" & row).Value = part.ManufNum
                 .Range("H" & row).Value = part.Qty
                 .Range("I" & row).Value = part.ParentAssy
-                .Range("J" & row).Value = 1 'default plan type will always be 1
-                .Range("K" & row).Value = "" 'default to a blank cell
-                .Range("L" & row).Value = "" 'default to blank cell for inspection
-                .Range("M" & row).Value = part.ErrorMsg
+                .Range("J" & row).Value = 1                 'default plan type will always be 1
+                .Range("K" & row).Value = ""                'default to a blank cell for Item Nbr
+                .Range("L" & row).Value = ""                'default to blank cell for inspection
+                .Range("M" & row).Value = ""                'default to blank cell for cert reqd
+                .Range("N" & row).Value = part.ErrorMsg
                 If part.PartError = True Then
                     'color error rows
-                    .Range("A" & row & ":" & "M" & row).Interior.Color = errorColor
+                    .Range("A" & row & ":" & "N" & row).Interior.Color = errorColor
                 End If
             End With
             row = row + 1
         Next
 
         'autosize columns
-        ws1.Columns("A:M").Autofit
+        ws1.Columns("A:N").Autofit
 
         Try
             wb.SaveAs(Filename:=FilePath, AccessMode:=Excel.XlSaveAsAccessMode.xlExclusive, ConflictResolution:=Excel.XlSaveConflictResolution.xlLocalSessionChanges)
