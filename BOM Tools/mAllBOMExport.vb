@@ -572,6 +572,18 @@ Module mAllBOMExport
                     ServiceCodeErr(occurrenceInfo)
                 End Try
 
+                Try
+                    occurrenceInfo.InspectFlag = partProps.Item("User Defined Properties").Item("Inspect").Value
+                Catch ex As Exception
+                    InspectionErr(occurrenceInfo)
+                End Try
+
+                Try
+                    occurrenceInfo.CertReqdFlag = partProps.Item("User Defined Properties").Item("Certificate").Value
+                Catch ex As Exception
+                    CertReqdErr(occurrenceInfo)
+                End Try
+
             Case PartType.CAssy
                 'Get the part number from the status tab of the iProperties
                 occurrenceInfo.PartNum = partProps.Item("Design Tracking Properties").Item("Part Number").Value
@@ -593,6 +605,18 @@ Module mAllBOMExport
                     occurrenceInfo.ServiceCode = partProps.Item("User Defined Properties").Item("Cust Serv Code").Value
                 Catch
                     ServiceCodeErr(occurrenceInfo)
+                End Try
+
+                Try
+                    occurrenceInfo.InspectFlag = partProps.Item("User Defined Properties").Item("Inspect").Value
+                Catch ex As Exception
+                    InspectionErr(occurrenceInfo)
+                End Try
+
+                Try
+                    occurrenceInfo.CertReqdFlag = partProps.Item("User Defined Properties").Item("Certificate").Value
+                Catch ex As Exception
+                    CertReqdErr(occurrenceInfo)
                 End Try
 
             Case PartType.PurchPart
@@ -639,6 +663,18 @@ Module mAllBOMExport
                     ManufNumErr(occurrenceInfo)
                 End Try
 
+                Try
+                    occurrenceInfo.InspectFlag = partProps.Item("User Defined Properties").Item("Inspect").Value
+                Catch ex As Exception
+                    InspectionErr(occurrenceInfo)
+                End Try
+
+                Try
+                    occurrenceInfo.CertReqdFlag = partProps.Item("User Defined Properties").Item("Certificate").Value
+                Catch ex As Exception
+                    CertReqdErr(occurrenceInfo)
+                End Try
+
             Case PartType.OldPurchPart
                 'Get the part number from the status tab of the iProperties
                 occurrenceInfo.PartNum = partProps.Item("Design Tracking Properties").Item("Part Number").Value
@@ -681,6 +717,18 @@ Module mAllBOMExport
                     occurrenceInfo.ManufNum = occurrenceInfo.ManufNum.ToUpper
                 Catch
                     ManufNumErr(occurrenceInfo)
+                End Try
+
+                Try
+                    occurrenceInfo.InspectFlag = partProps.Item("User Defined Properties").Item("Inspect").Value
+                Catch ex As Exception
+                    InspectionErr(occurrenceInfo)
+                End Try
+
+                Try
+                    occurrenceInfo.CertReqdFlag = partProps.Item("User Defined Properties").Item("Certificate").Value
+                Catch ex As Exception
+                    CertReqdErr(occurrenceInfo)
                 End Try
 
             Case PartType.StandardPart
@@ -1381,6 +1429,15 @@ Module mAllBOMExport
 
     End Sub
 
+    Private Sub InspectionErr(ByVal occurrence As cPartInfo)
+        'sub to handle changing values if there is no inspection field in the occurrence
+        occurrence.InspectFlag = ""
+    End Sub
+
+    Private Sub CertReqdErr(ByVal occurrence As cPartInfo)
+        'sub to handle if there is no Certificate field in the occurrence
+        occurrence.CertReqdFlag = ""
+    End Sub
     Private Sub UnknownPartErr(ByVal occurrence As cPartInfo)
         'sub to handle error information for unknown parts
         occurrence.PartError = True
