@@ -178,7 +178,7 @@
     End Property
 
     'Inspect  property
-    Public Property InspectFlag() As String
+    Public Property InspectField() As String
         Get
             Return pInspect
         End Get
@@ -190,7 +190,7 @@
     End Property
 
     'Cert Reqd  property
-    Public Property CertReqdFlag() As String
+    Public Property CertReqdField() As String
         Get
             Return pCertReqd
         End Get

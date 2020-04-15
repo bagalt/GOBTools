@@ -1539,10 +1539,10 @@ Module mAllBOMExport
                 .Range("G" & row).Value = part.ManufNum
                 .Range("H" & row).Value = part.Qty
                 .Range("I" & row).Value = part.ParentAssy
-                .Range("J" & row).Value = 1                 'default plan type will always be 1
-                .Range("K" & row).Value = ""                'default to a blank cell for Item Nbr
-                .Range("L" & row).Value = ""                'default to blank cell for inspection
-                .Range("M" & row).Value = ""                'default to blank cell for cert reqd
+                .Range("J" & row).Value = 1                             'default plan type will always be 1
+                .Range("K" & row).Value = ""                            'default to a blank cell for Item Nbr
+                .Range("L" & row).Value = ""                            'default to blank cell for inspection
+                .Range("M" & row).Value = TranslateCertReqd(part)       'default to blank cell for cert reqd
                 .Range("N" & row).Value = part.ErrorMsg
                 If part.PartError = True Then
                     'color error rows
@@ -1571,6 +1571,25 @@ Module mAllBOMExport
             wb.Close()
             XLApp.Quit()
         End Try
+
+    End Function
+
+    Private Function TranslateCertReqd(ByVal myPart As cPartInfo) As Boolean
+        'sub to take the string value of the iProperty "Certificate" and turn it into an Y if it matches defined values
+
+        Dim certRequiredString As String = "Y"
+        Dim certNotRequiredString As String = ""
+
+        Select Case myPart.CertReqdField
+            Case "Material"
+                TranslateCertReqd = certRequiredString
+            Case "Material + Finish"
+                TranslateCertReqd = certRequiredString
+            Case "Calibration"
+                TranslateCertReqd = certRequiredString
+            Case Else
+                TranslateCertReqd = certNotRequiredString
+        End Select
 
     End Function
 
