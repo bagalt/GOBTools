@@ -1580,7 +1580,7 @@ Module mAllBOMExport
         'sub to take the string value of the iProperty "Certificate" and turn it into an Y if it matches defined values
 
         Dim certRequiredString As String = "Y"
-        Dim certNotRequiredString As String = "other"
+        Dim certNotRequiredString As String = ""
 
         Select Case myPart.Certificate
             Case "Material"
