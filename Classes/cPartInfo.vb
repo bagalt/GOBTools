@@ -23,7 +23,7 @@
     Private pBreadCrumb As Collection   'breadcrumb to the part aka the path down to the part in the assy tree
     Private pQty As Integer             'part quantity per assembly
     Private pInspect As String          'inspect part flag
-    Private pCertReqd As String         'cert required flag
+    Private pCertificate As String         'cert required flag
 
     Private Sub Class_Initialize()
         pBreadCrumb = New Collection
@@ -38,8 +38,8 @@
         pErrorMsg = ""
         pParentAssy = ""
         pQty = 0
-        pInspect = False
-        pCertReqd = False
+        pInspect = ""
+        pCertificate = ""
 
     End Sub
 
@@ -189,15 +189,15 @@
         End Set
     End Property
 
-    'Cert Reqd  property
-    Public Property CertReqdField() As String
+    'Certificate  property
+    Public Property Certificate() As String
         Get
-            Return pCertReqd
+            Return pCertificate
         End Get
         Set(value As String)
             'could put data validation code into the let procedures
             'let properties assign values to the class
-            pCertReqd = value
+            pCertificate = value
         End Set
     End Property
 

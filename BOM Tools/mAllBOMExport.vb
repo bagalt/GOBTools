@@ -521,7 +521,7 @@ Module mAllBOMExport
 
     Private Sub GetProps(ByVal oCompOcc As Inventor.ComponentOccurrence, ByVal currentOccurrenceType As PartType, ByVal collBreadCrumb As Collection)
         'sub to get the desired properties from the occurrence
-        'Proman Class Code, Part Number, Description English, Cust Serv Code
+        'Proman Class Code, Part Number, Description English, Cust Serv Code, etc
 
         'initialize variables
         Dim partProps As Inventor.PropertySets
@@ -573,13 +573,13 @@ Module mAllBOMExport
                 End Try
 
                 Try
-                    occurrenceInfo.InspectFlag = partProps.Item("User Defined Properties").Item("Inspect").Value
+                    occurrenceInfo.InspectField = partProps.Item("User Defined Properties").Item("Inspect").Value
                 Catch ex As Exception
                     InspectionErr(occurrenceInfo)
                 End Try
 
                 Try
-                    occurrenceInfo.CertReqdFlag = partProps.Item("User Defined Properties").Item("Certificate").Value
+                    occurrenceInfo.Certificate = partProps.Item("User Defined Properties").Item("Certificate").Value
                 Catch ex As Exception
                     CertReqdErr(occurrenceInfo)
                 End Try
@@ -608,13 +608,13 @@ Module mAllBOMExport
                 End Try
 
                 Try
-                    occurrenceInfo.InspectFlag = partProps.Item("User Defined Properties").Item("Inspect").Value
+                    occurrenceInfo.InspectField = partProps.Item("User Defined Properties").Item("Inspect").Value
                 Catch ex As Exception
                     InspectionErr(occurrenceInfo)
                 End Try
 
                 Try
-                    occurrenceInfo.CertReqdFlag = partProps.Item("User Defined Properties").Item("Certificate").Value
+                    occurrenceInfo.Certificate = partProps.Item("User Defined Properties").Item("Certificate").Value
                 Catch ex As Exception
                     CertReqdErr(occurrenceInfo)
                 End Try
@@ -664,13 +664,13 @@ Module mAllBOMExport
                 End Try
 
                 Try
-                    occurrenceInfo.InspectFlag = partProps.Item("User Defined Properties").Item("Inspect").Value
+                    occurrenceInfo.InspectField = partProps.Item("User Defined Properties").Item("Inspect").Value
                 Catch ex As Exception
                     InspectionErr(occurrenceInfo)
                 End Try
 
                 Try
-                    occurrenceInfo.CertReqdFlag = partProps.Item("User Defined Properties").Item("Certificate").Value
+                    occurrenceInfo.Certificate = partProps.Item("User Defined Properties").Item("Certificate").Value
                 Catch ex As Exception
                     CertReqdErr(occurrenceInfo)
                 End Try
@@ -720,13 +720,13 @@ Module mAllBOMExport
                 End Try
 
                 Try
-                    occurrenceInfo.InspectFlag = partProps.Item("User Defined Properties").Item("Inspect").Value
+                    occurrenceInfo.InspectField = partProps.Item("User Defined Properties").Item("Inspect").Value
                 Catch ex As Exception
                     InspectionErr(occurrenceInfo)
                 End Try
 
                 Try
-                    occurrenceInfo.CertReqdFlag = partProps.Item("User Defined Properties").Item("Certificate").Value
+                    occurrenceInfo.Certificate = partProps.Item("User Defined Properties").Item("Certificate").Value
                 Catch ex As Exception
                     CertReqdErr(occurrenceInfo)
                 End Try
@@ -1371,6 +1371,8 @@ Module mAllBOMExport
         part1.Qty = part2.Qty
         part1.ServiceCode = part2.ServiceCode
         part1.VendorCode = part2.VendorCode
+        part1.InspectField = part2.InspectField
+        part1.Certificate = part2.Certificate
 
         Return part1
     End Function
@@ -1431,12 +1433,12 @@ Module mAllBOMExport
 
     Private Sub InspectionErr(ByVal occurrence As cPartInfo)
         'sub to handle changing values if there is no inspection field in the occurrence
-        occurrence.InspectFlag = ""
+        occurrence.InspectField = "55"
     End Sub
 
     Private Sub CertReqdErr(ByVal occurrence As cPartInfo)
         'sub to handle if there is no Certificate field in the occurrence
-        occurrence.CertReqdFlag = ""
+        occurrence.Certificate = ""
     End Sub
     Private Sub UnknownPartErr(ByVal occurrence As cPartInfo)
         'sub to handle error information for unknown parts
@@ -1456,7 +1458,7 @@ Module mAllBOMExport
         Dim sFilePath As String = ""
 
         'Check if mNewParts contains items
-        If IsNothing(mCollPartExport) Then
+        If IsNothing(mCollPartExport) Then 'may want to use mCollFullBOM instead of collPartExport
             'Empty parts list
             MsgBox("Parts List Empty, try loading Inventor BOM")
             BOMExportExcel = False
@@ -1574,13 +1576,13 @@ Module mAllBOMExport
 
     End Function
 
-    Private Function TranslateCertReqd(ByVal myPart As cPartInfo) As Boolean
+    Private Function TranslateCertReqd(ByVal myPart As cPartInfo) As String
         'sub to take the string value of the iProperty "Certificate" and turn it into an Y if it matches defined values
 
         Dim certRequiredString As String = "Y"
-        Dim certNotRequiredString As String = ""
+        Dim certNotRequiredString As String = "other"
 
-        Select Case myPart.CertReqdField
+        Select Case myPart.Certificate
             Case "Material"
                 TranslateCertReqd = certRequiredString
             Case "Material + Finish"
