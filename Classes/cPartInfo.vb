@@ -22,6 +22,8 @@
     Private pParentAssy As String       'parent assembly of the part
     Private pBreadCrumb As Collection   'breadcrumb to the part aka the path down to the part in the assy tree
     Private pQty As Integer             'part quantity per assembly
+    Private pInspect As Boolean         'inspect part flag
+    Private pCertReqd As Boolean        'cert required flag
 
     Private Sub Class_Initialize()
         pBreadCrumb = New Collection
@@ -36,6 +38,9 @@
         pErrorMsg = ""
         pParentAssy = ""
         pQty = 0
+        pInspect = False
+        pCertReqd = False
+
     End Sub
 
     'Part Number property
@@ -157,6 +162,42 @@
         End Get
         Set(value As String)
             pErrorMsg = value
+        End Set
+    End Property
+
+    'Error flag  property
+    Public Property ErrorFlag() As Boolean
+        Get
+            Return pError
+        End Get
+        Set(value As Boolean)
+            'could put data validation code into the let procedures
+            'let properties assign values to the class
+            pError = value
+        End Set
+    End Property
+
+    'Inspect  property
+    Public Property InspectFlag() As Boolean
+        Get
+            Return pInspect
+        End Get
+        Set(value As Boolean)
+            'could put data validation code into the let procedures
+            'let properties assign values to the class
+            pInspect = value
+        End Set
+    End Property
+
+    'Cert Reqd  property
+    Public Property CertReqdFlag() As Boolean
+        Get
+            Return pCertReqd
+        End Get
+        Set(value As Boolean)
+            'could put data validation code into the let procedures
+            'let properties assign values to the class
+            pCertReqd = value
         End Set
     End Property
 
