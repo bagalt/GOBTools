@@ -9,7 +9,7 @@ Module mAllBOMExport
     'Bom Comparisons, Part Export, and BOM Export
     '************************************
 
-    Private mCollFullBOM As Collection 'collection to hold all the parts with correct parents for BOM Import
+    Private mCollBomExport As Collection 'collection to hold all the parts with correct parents for BOM Export
     Private mCollBOMInstances As Collection 'collection to hold all of the parts with instances of parent, used for full bom creation
     Private mCollBomCompare As Collection 'collection to hold all the parts for the BOM compare listview
 
@@ -61,7 +61,7 @@ Module mAllBOMExport
 
     Public mResults As String = "" 'variable used for displaying the results
     Public bomCompareList As Collection 'collection for all unique parts in an assembly
-    Public bomImportList As Collection
+    Public bomExportList As Collection
     Public collAllParts As Collection 'public collection to show all parts
 
     Public Sub AssemblyCount(ThisApplication As Inventor.Application, BomImportConfig As BomExportSettings, BomCompConfig As BomCompareSettings, sDirectoryPath As String)
@@ -75,7 +75,7 @@ Module mAllBOMExport
         End If
 
         oDoc = ThisApplication.ActiveDocument
-        mCollFullBOM = New Collection
+        mCollBomExport = New Collection
         mCollBOMInstances = New Collection
         mCollBomCompare = New Collection
 
@@ -190,7 +190,7 @@ Module mAllBOMExport
         'Debug.Print("")
         'PrintColl(mCollFullBOM)
         bomCompareList = mCollBomCompare
-        bomImportList = mCollFullBOM
+        bomExportList = mCollBomExport
 
     End Sub
 
@@ -1058,7 +1058,7 @@ Module mAllBOMExport
         If Not KeyExists(mCollBOMInstances, sBomInstanceKey) Then
             addToBOMExportColl = True
             'part does not exist in the collection
-            If Not KeyExists(mCollFullBOM, sBomExportKey) Then
+            If Not KeyExists(mCollBomExport, sBomExportKey) Then
                 'part does not exist in the collection
                 Select Case occurrenceType
                     Case PartType.BAssy
@@ -1092,14 +1092,14 @@ Module mAllBOMExport
                     'bump the quantity of the part (starts at 0)
                     importOccurrence.IncrementQty(1)
                     'add the newly created partinfo to the full bom collection and bom instances collection 
-                    mCollFullBOM.Add(importOccurrence, sBomExportKey)
+                    mCollBomExport.Add(importOccurrence, sBomExportKey)
                     mCollBOMInstances.Add(importOccurrence, sBomInstanceKey)
                 End If
             Else
                 'key already exists, bump the quantity of the part
             End If
         Else
-            mCollFullBOM.Item(sBomExportKey).IncrementQty(1)
+            mCollBomExport.Item(sBomExportKey).IncrementQty(1)
         End If
 
     End Sub
@@ -1241,7 +1241,7 @@ Module mAllBOMExport
 
     Private Sub InspectionErr(ByVal occurrence As cPartInfo)
         'sub to handle changing values if there is no inspection field in the occurrence
-        occurrence.InspectField = "55"
+        occurrence.InspectField = ""
     End Sub
 
     Private Sub CertReqdErr(ByVal occurrence As cPartInfo)
@@ -1266,7 +1266,7 @@ Module mAllBOMExport
         Dim sFilePath As String = ""
 
         'Check if mNewParts contains items
-        If IsNothing(mCollFullBOM) Then
+        If IsNothing(mCollBomExport) Then
             'Empty parts list
             MsgBox("Parts List Empty, try loading Inventor BOM")
             BOMExportExcel = False
@@ -1277,10 +1277,10 @@ Module mAllBOMExport
         If IsValidFileNameOrPath(FilePath) Then
             'valid file path
             'Add results to Results String
-            mResults = "File Path: " & FilePath & vbNewLine & vbNewLine & "Num Unique Parts: " & CStr(bomImportList.Count)
+            mResults = "File Path: " & FilePath & vbNewLine & vbNewLine & "Num Unique Parts: " & CStr(bomExportList.Count)
         Else
             'File Path not valid
-            mResults = "Excel file NOT created" & vbNewLine & vbNewLine & "Num Unique Parts: " & CStr(bomImportList.Count)
+            mResults = "Excel file NOT created" & vbNewLine & vbNewLine & "Num Unique Parts: " & CStr(bomExportList.Count)
             'dont try to create excel document
             BOMExportExcel = False
             Exit Function
@@ -1338,7 +1338,7 @@ Module mAllBOMExport
         row = 2
 
         'populate the remaining cells for ws2
-        For Each part In mCollFullBOM
+        For Each part In mCollBomExport
             With ws1
                 .Range("A" & row).Value = part.PartNum
                 .Range("B" & row).Value = part.PromanCode

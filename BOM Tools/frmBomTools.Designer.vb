@@ -44,7 +44,7 @@ Partial Class frmBomTools
         Me.txtBomImportNumParts = New System.Windows.Forms.TextBox()
         Me.Label3 = New System.Windows.Forms.Label()
         Me.Label4 = New System.Windows.Forms.Label()
-        Me.lvFullBOM = New System.Windows.Forms.ListView()
+        Me.lvExportBom = New System.Windows.Forms.ListView()
         Me.TabPage1 = New System.Windows.Forms.TabPage()
         Me.chkBomCompViewImmediatly = New System.Windows.Forms.CheckBox()
         Me.chkBomCompShowTLAssy = New System.Windows.Forms.CheckBox()
@@ -160,7 +160,7 @@ Partial Class frmBomTools
         Me.TabPage4.Controls.Add(Me.txtBomImportNumParts)
         Me.TabPage4.Controls.Add(Me.Label3)
         Me.TabPage4.Controls.Add(Me.Label4)
-        Me.TabPage4.Controls.Add(Me.lvFullBOM)
+        Me.TabPage4.Controls.Add(Me.lvExportBom)
         Me.TabPage4.Location = New System.Drawing.Point(4, 25)
         Me.TabPage4.Margin = New System.Windows.Forms.Padding(4)
         Me.TabPage4.Name = "TabPage4"
@@ -186,7 +186,7 @@ Partial Class frmBomTools
         'chkBOMExportShowTLAssy
         '
         Me.chkBOMExportShowTLAssy.AutoSize = True
-        Me.chkBOMExportShowTLAssy.Location = New System.Drawing.Point(443, 34)
+        Me.chkBOMExportShowTLAssy.Location = New System.Drawing.Point(469, 34)
         Me.chkBOMExportShowTLAssy.Margin = New System.Windows.Forms.Padding(4)
         Me.chkBOMExportShowTLAssy.Name = "chkBOMExportShowTLAssy"
         Me.chkBOMExportShowTLAssy.Size = New System.Drawing.Size(165, 21)
@@ -199,7 +199,7 @@ Partial Class frmBomTools
         Me.chkBomExportShowFasteners.AutoSize = True
         Me.chkBomExportShowFasteners.Checked = True
         Me.chkBomExportShowFasteners.CheckState = System.Windows.Forms.CheckState.Checked
-        Me.chkBomExportShowFasteners.Location = New System.Drawing.Point(443, 90)
+        Me.chkBomExportShowFasteners.Location = New System.Drawing.Point(469, 90)
         Me.chkBomExportShowFasteners.Margin = New System.Windows.Forms.Padding(4)
         Me.chkBomExportShowFasteners.Name = "chkBomExportShowFasteners"
         Me.chkBomExportShowFasteners.Size = New System.Drawing.Size(180, 21)
@@ -212,7 +212,7 @@ Partial Class frmBomTools
         Me.chkBomExportAllowB49Parents.AutoSize = True
         Me.chkBomExportAllowB49Parents.Checked = True
         Me.chkBomExportAllowB49Parents.CheckState = System.Windows.Forms.CheckState.Checked
-        Me.chkBomExportAllowB49Parents.Location = New System.Drawing.Point(443, 62)
+        Me.chkBomExportAllowB49Parents.Location = New System.Drawing.Point(469, 62)
         Me.chkBomExportAllowB49Parents.Margin = New System.Windows.Forms.Padding(4)
         Me.chkBomExportAllowB49Parents.Name = "chkBomExportAllowB49Parents"
         Me.chkBomExportAllowB49Parents.Size = New System.Drawing.Size(144, 21)
@@ -223,10 +223,10 @@ Partial Class frmBomTools
         'btnBOMExport
         '
         Me.btnBOMExport.Anchor = System.Windows.Forms.AnchorStyles.Bottom
-        Me.btnBOMExport.Location = New System.Drawing.Point(449, 508)
+        Me.btnBOMExport.Location = New System.Drawing.Point(471, 508)
         Me.btnBOMExport.Margin = New System.Windows.Forms.Padding(4)
         Me.btnBOMExport.Name = "btnBOMExport"
-        Me.btnBOMExport.Size = New System.Drawing.Size(192, 50)
+        Me.btnBOMExport.Size = New System.Drawing.Size(170, 50)
         Me.btnBOMExport.TabIndex = 21
         Me.btnBOMExport.Text = "Export BOM"
         Me.btnBOMExport.UseVisualStyleBackColor = True
@@ -261,21 +261,21 @@ Partial Class frmBomTools
         Me.Label4.TabIndex = 18
         Me.Label4.Text = "Inventor BOM"
         '
-        'lvFullBOM
+        'lvExportBom
         '
-        Me.lvFullBOM.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom), System.Windows.Forms.AnchorStyles)
-        Me.lvFullBOM.ContextMenuStrip = Me.BomMenuStrip
-        Me.lvFullBOM.FullRowSelect = True
-        Me.lvFullBOM.GridLines = True
-        Me.lvFullBOM.HideSelection = False
-        Me.lvFullBOM.Location = New System.Drawing.Point(8, 34)
-        Me.lvFullBOM.Margin = New System.Windows.Forms.Padding(4)
-        Me.lvFullBOM.MultiSelect = False
-        Me.lvFullBOM.Name = "lvFullBOM"
-        Me.lvFullBOM.Size = New System.Drawing.Size(425, 468)
-        Me.lvFullBOM.TabIndex = 17
-        Me.lvFullBOM.UseCompatibleStateImageBehavior = False
-        Me.lvFullBOM.View = System.Windows.Forms.View.Details
+        Me.lvExportBom.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom), System.Windows.Forms.AnchorStyles)
+        Me.lvExportBom.ContextMenuStrip = Me.BomMenuStrip
+        Me.lvExportBom.FullRowSelect = True
+        Me.lvExportBom.GridLines = True
+        Me.lvExportBom.HideSelection = False
+        Me.lvExportBom.Location = New System.Drawing.Point(8, 34)
+        Me.lvExportBom.Margin = New System.Windows.Forms.Padding(4)
+        Me.lvExportBom.MultiSelect = False
+        Me.lvExportBom.Name = "lvExportBom"
+        Me.lvExportBom.Size = New System.Drawing.Size(455, 468)
+        Me.lvExportBom.TabIndex = 17
+        Me.lvExportBom.UseCompatibleStateImageBehavior = False
+        Me.lvExportBom.View = System.Windows.Forms.View.Details
         '
         'TabPage1
         '
@@ -578,7 +578,7 @@ Partial Class frmBomTools
     Friend WithEvents txtBomImportNumParts As Windows.Forms.TextBox
     Friend WithEvents Label3 As Windows.Forms.Label
     Friend WithEvents Label4 As Windows.Forms.Label
-    Friend WithEvents lvFullBOM As Windows.Forms.ListView
+    Friend WithEvents lvExportBom As Windows.Forms.ListView
     Friend WithEvents TabPage1 As Windows.Forms.TabPage
     Friend WithEvents chkBomCompViewImmediatly As Windows.Forms.CheckBox
     Friend WithEvents chkBomCompShowTLAssy As Windows.Forms.CheckBox

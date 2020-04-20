@@ -36,7 +36,7 @@ Public Class frmBomTools
             mAssyDoc = g_inventorApplication.ActiveDocument
             'get the top level assembly document name
             startAssy = mAssyDoc.PropertySets.Item("Design Tracking Properties").Item("Part Number").Value
-            lblVersion.Text = "v1.11"
+            lblVersion.Text = "v1.11a"
 
             'define colors for row highlighting
             colorPartNotOnList = Color.DeepPink
@@ -64,6 +64,7 @@ Public Class frmBomTools
             mAssyDoc = invApp.ActiveDocument
             InitInventorListView()
             InitPromanListView()
+            InitBOMExportListView()
 
         Catch ex As Exception
             MsgBox("Assembly Document must be active")
@@ -127,16 +128,8 @@ Public Class frmBomTools
 
         Dim bomCompHeader1 As New System.Windows.Forms.ColumnHeader
         Dim bomCompHeader2 As New System.Windows.Forms.ColumnHeader
-        Dim partCreateHeader1 As New System.Windows.Forms.ColumnHeader
-        Dim partCreateHeader2 As New System.Windows.Forms.ColumnHeader
-        Dim partCreateHeader3 As New System.Windows.Forms.ColumnHeader
-
-        Dim bomImportHeader1 As New System.Windows.Forms.ColumnHeader
-        Dim bomImportHeader2 As New System.Windows.Forms.ColumnHeader
-        Dim bomImportHeader3 As New System.Windows.Forms.ColumnHeader
 
         'configure BOM Compare Inventor BOM listview options
-#Region "BOM Compare Listview Configuration"
         With lvBomCompInventor
             .FullRowSelect = True
             .GridLines = True
@@ -159,12 +152,22 @@ Public Class frmBomTools
         'add column headers to listviews
         lvBomCompInventor.Columns.Add(bomCompHeader1)
         lvBomCompInventor.Columns.Add(bomCompHeader2)
-#End Region
 
+    End Sub
 
-        'configure BOM Import Inventor BOM Listview options
-#Region "BOM Import Listview Configuration"
-        With lvFullBOM
+    Private Sub InitBOMExportListView()
+        'sub for initializing the BOM Export List View
+
+        Dim bomExportHeader1 As New System.Windows.Forms.ColumnHeader
+        Dim bomExportHeader2 As New System.Windows.Forms.ColumnHeader
+        Dim bomExportHeader3 As New System.Windows.Forms.ColumnHeader
+        Dim bomExportHeader4 As New System.Windows.Forms.ColumnHeader
+        Dim bomExportHeader5 As New System.Windows.Forms.ColumnHeader
+        Dim bomExportHeader6 As New System.Windows.Forms.ColumnHeader
+
+        'configure BOM Export Inventor BOM Listview options
+
+        With lvExportBom
             .FullRowSelect = True
             .GridLines = True
             .HeaderStyle = Windows.Forms.ColumnHeaderStyle.Clickable
@@ -174,36 +177,50 @@ Public Class frmBomTools
             .View = View.Details
         End With
 
-        With bomImportHeader1
+        With bomExportHeader1
             .Text = "Part Number"
             .Width = 110
         End With
-        With bomImportHeader2
+        With bomExportHeader2
             .Text = "Qty"
             .Width = 40
         End With
-        With bomImportHeader3
+        With bomExportHeader3
             .Text = "Parent"
             .Width = 150
         End With
+        With bomExportHeader4
+            .Text = "SP"
+            .Width = 40
+        End With
+        With bomExportHeader5
+            .Text = "Insp"
+            .Width = 40
+        End With
+        With bomExportHeader6
+            .Text = "Cert"
+            .Width = 40
+        End With
 
         'add column headers to listviews
-        lvFullBOM.Columns.Add(bomImportHeader1)
-        lvFullBOM.Columns.Add(bomImportHeader2)
-        lvFullBOM.Columns.Add(bomImportHeader3)
-#End Region
+        lvExportBom.Columns.Add(bomExportHeader1)
+        lvExportBom.Columns.Add(bomExportHeader2)
+        lvExportBom.Columns.Add(bomExportHeader3)
+        lvExportBom.Columns.Add(bomExportHeader4)
+        lvExportBom.Columns.Add(bomExportHeader5)
+        lvExportBom.Columns.Add(bomExportHeader6)
 
     End Sub
-
     Private Sub btnLoadInventorBom_Click(sender As Object, e As EventArgs) Handles btnLoadInventorBOM.Click
         'call all BOM export and load the results into the inventor bom listview
         Dim proc As New frmProcessing
 
         'clear listviews
         lvBomCompInventor.Clear()
-        lvFullBOM.Clear()
+        lvExportBom.Clear()
         'initialize headers
         InitInventorListView()
+        InitBOMExportListView()
 
         'assign the settings for all parts and new parts
         'bom compare settings
@@ -238,7 +255,7 @@ Public Class frmBomTools
 
         'populate the listview with the data
         PopulateListView(mAllBOMExport.bomCompareList, lvBomCompInventor, txtNumInventorParts)
-        PopulateBOMExportLV(mAllBOMExport.bomImportList, lvFullBOM, txtBomImportNumParts)
+        PopulateBOMExportLV(mAllBOMExport.bomExportList, lvExportBom, txtBomImportNumParts)
         ColorList(lvBomCompInventor)
     End Sub
 
@@ -258,23 +275,6 @@ Public Class frmBomTools
 
     End Sub
 
-    Private Sub PopulatePartCreateLV(ByRef PartsList As Collection, MyList As System.Windows.Forms.ListView, TextBox As System.Windows.Forms.TextBox)
-        'sub to populate the listview based on the collection passed in
-
-        Dim part As cPartInfo
-        Dim myItem As System.Windows.Forms.ListViewItem
-
-        'add items to the listview
-        For Each part In PartsList
-            myItem = MyList.Items.Add(part.PartNum)
-            myItem.SubItems.Add(part.Description)
-            myItem.SubItems.Add(part.Qty)
-        Next
-        'display total parts count
-        TextBox.Text = PartsList.Count
-
-    End Sub
-
     Private Sub PopulateBOMExportLV(ByRef PartsList As Collection, MyList As System.Windows.Forms.ListView, TextBox As System.Windows.Forms.TextBox)
         'sub to populate the BOM Export listview based on the collection passed in
 
@@ -286,6 +286,9 @@ Public Class frmBomTools
             myItem = MyList.Items.Add(part.PartNum)
             myItem.SubItems.Add(part.Qty)
             myItem.SubItems.Add(part.ParentAssy)
+            myItem.SubItems.Add(part.ServiceCode)
+            myItem.SubItems.Add(part.InspectField)
+            myItem.SubItems.Add(part.Certificate)
         Next
         'display total parts count
         TextBox.Text = PartsList.Count
@@ -748,7 +751,7 @@ Public Class frmBomTools
         lvPromanBom.Sort()
     End Sub
 
-    Private Sub lvFullBOM_ColumnClick(sender As Object, e As ColumnClickEventArgs) Handles lvFullBOM.ColumnClick
+    Private Sub lvFullBOM_ColumnClick(sender As Object, e As ColumnClickEventArgs) Handles lvExportBom.ColumnClick
         'sub to handle sorting the proman bom in ascending/decending order.  will toggle the state
 
         'determine if the column is the same as the last column clicked
@@ -756,18 +759,18 @@ Public Class frmBomTools
             'set the sort column to the new column
             sortCol = e.Column
             'set the sort order to ascending by default
-            lvFullBOM.Sorting = SortOrder.Ascending
+            lvExportBom.Sorting = SortOrder.Ascending
         Else
             'determine what the last sort order was and change it
-            If lvFullBOM.Sorting = SortOrder.Ascending Then
-                lvFullBOM.Sorting = SortOrder.Descending
+            If lvExportBom.Sorting = SortOrder.Ascending Then
+                lvExportBom.Sorting = SortOrder.Descending
             Else
-                lvFullBOM.Sorting = SortOrder.Ascending
+                lvExportBom.Sorting = SortOrder.Ascending
             End If
         End If
 
-        lvFullBOM.ListViewItemSorter = New ListViewItemComparer(e.Column, lvFullBOM.Sorting)
-        lvFullBOM.Sort()
+        lvExportBom.ListViewItemSorter = New ListViewItemComparer(e.Column, lvExportBom.Sorting)
+        lvExportBom.Sort()
     End Sub
 #End Region
 
@@ -828,20 +831,20 @@ Public Class frmBomTools
 
     Private Sub BomMenuStripCopy_Click(sender As Object, e As EventArgs) Handles BomMenuStripCopy.Click
         'handles selecting find in the menu strip
-        If lvFullBOM.SelectedItems.Count = 0 Then
+        If lvExportBom.SelectedItems.Count = 0 Then
             Exit Sub
         End If
         'Copy item to clipboard
-        CopyToClipboard(lvFullBOM.SelectedItems(0).Text)
+        CopyToClipboard(lvExportBom.SelectedItems(0).Text)
     End Sub
 
     Private Sub BomMenuStripFIND_Click(sender As Object, e As EventArgs) Handles BomMenuStripFIND.Click
         'handles selecting find in the menu strip
-        If lvFullBOM.SelectedItems.Count = 0 Then
+        If lvExportBom.SelectedItems.Count = 0 Then
             Exit Sub
         End If
         'search fpr the selected item
-        SearchBox(lvFullBOM.SelectedItems(0).Text)
+        SearchBox(lvExportBom.SelectedItems(0).Text)
     End Sub
 #End Region
 
@@ -872,15 +875,15 @@ Public Class frmBomTools
         End If
     End Sub
 
-    Private Sub lvFullBOM_KeyDown(sender As Object, e As KeyEventArgs) Handles lvFullBOM.KeyDown
+    Private Sub lvFullBOM_KeyDown(sender As Object, e As KeyEventArgs) Handles lvExportBom.KeyDown
         'Handles keydown event on listview.  Allows user to copy selected row (part number only)
 
         If e.KeyCode = Keys.C AndAlso e.Modifiers = Keys.Control Then
             'Ctrl+c selected            
-            If lvFullBOM.SelectedItems.Count > 0 Then
+            If lvExportBom.SelectedItems.Count > 0 Then
                 'something selected on inventor BOM
                 Clipboard.Clear()
-                Clipboard.SetText(lvFullBOM.SelectedItems(0).Text)
+                Clipboard.SetText(lvExportBom.SelectedItems(0).Text)
             End If
         End If
     End Sub
