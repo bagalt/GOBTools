@@ -12,7 +12,6 @@ Public Class frmBomTools
     Private invApp As Inventor.Application
     Private sortCol As Integer
     Private BomExportSettings As mAllBOMExport.BomExportSettings 'settings for BOM Import collection
-    Private PartExportSettings As mAllBOMExport.PartExportSettings 'settings for Part Create collection
     Private BomCompareSettings As mAllBOMExport.BomCompareSettings 'settings for BOM compare collection
     Private startAssy As String 'holds the name of the top level assembly
     Private allowChage As Boolean
@@ -81,11 +80,6 @@ Public Class frmBomTools
         chkBomCompShowFasteners.Checked = My.Settings.BTBomCompShowFasteners
         chkBomCompShowTLAssy.Checked = My.Settings.BTBomCompIncludeTopLevelAssy
         Me.Location = My.Settings.BTFormLocation
-
-        'Part export tab settings
-        chkPartExportShowB49.Checked = My.Settings.BTPartExportIncludeB49Assemblies
-        chkPartExportShowTLAssy.Checked = My.Settings.BTPartExportIncludeTopLevelAssy
-        chkPartExportShowFasteners.Checked = My.Settings.BTPartExportShowFasteners
 
         'bom export tab settings
         chkBomExportAllowB49Parents.Checked = My.Settings.BTBomExportAllowBAssyParent
@@ -167,37 +161,6 @@ Public Class frmBomTools
         lvBomCompInventor.Columns.Add(bomCompHeader2)
 #End Region
 
-        'configure Part Create Inventor BOM Listview options
-#Region "Part Create Listview Configuration"
-        With lvPartCreate
-            .FullRowSelect = True
-            .GridLines = True
-            .HeaderStyle = Windows.Forms.ColumnHeaderStyle.Clickable
-            .LabelEdit = False
-            .MultiSelect = False
-            .Sorting = Windows.Forms.SortOrder.Ascending
-            .View = View.Details
-        End With
-
-        With partCreateHeader1
-            .Text = "Part Number"
-            .Width = 105
-        End With
-        With partCreateHeader2
-            .Text = "Description"
-            .Width = 210
-        End With
-        With partCreateHeader3
-            .Text = "Qty"
-            .Width = 40
-        End With
-
-        'add column headers to listviews
-        lvPartCreate.Columns.Add(partCreateHeader1)
-        lvPartCreate.Columns.Add(partCreateHeader2)
-        lvPartCreate.Columns.Add(partCreateHeader3)
-
-#End Region
 
         'configure BOM Import Inventor BOM Listview options
 #Region "BOM Import Listview Configuration"
@@ -238,7 +201,6 @@ Public Class frmBomTools
 
         'clear listviews
         lvBomCompInventor.Clear()
-        lvPartCreate.Clear()
         lvFullBOM.Clear()
         'initialize headers
         InitInventorListView()
@@ -251,11 +213,6 @@ Public Class frmBomTools
         BomCompareSettings.bBomCompIncB45Children = chkBOMCompIncB45Children.Checked
         BomCompareSettings.bBomCompShowFasteners = chkBomCompShowFasteners.Checked
         BomCompareSettings.bBomCompShowTopLevelAssy = chkBomCompShowTLAssy.Checked
-
-        'part export settings
-        PartExportSettings.bPartExportShowB49 = chkPartExportShowB49.Checked
-        PartExportSettings.bPartExportShowTopLevelAssy = chkPartExportShowTLAssy.Checked
-        PartExportSettings.bPartExportShowFasteners = chkPartExportShowFasteners.Checked
 
         'bom export settings
         BomExportSettings.bBomExportShowB49 = chkBomExportAllowB49Parents.Checked
@@ -272,7 +229,7 @@ Public Class frmBomTools
         Me.Enabled = False
 
         'get the data from the assembly
-        mAllBOMExport.AssemblyCount(invApp, BomExportSettings, PartExportSettings, BomCompareSettings, "")
+        mAllBOMExport.AssemblyCount(invApp, BomExportSettings, BomCompareSettings, "")
 
         'close the processing form
         proc.Close()
@@ -281,7 +238,6 @@ Public Class frmBomTools
 
         'populate the listview with the data
         PopulateListView(mAllBOMExport.bomCompareList, lvBomCompInventor, txtNumInventorParts)
-        PopulatePartCreateLV(mAllBOMExport.partExportList, lvPartCreate, txtPCNumInventorParts)
         PopulateBOMExportLV(mAllBOMExport.bomImportList, lvFullBOM, txtBomImportNumParts)
         ColorList(lvBomCompInventor)
     End Sub
@@ -320,7 +276,7 @@ Public Class frmBomTools
     End Sub
 
     Private Sub PopulateBOMExportLV(ByRef PartsList As Collection, MyList As System.Windows.Forms.ListView, TextBox As System.Windows.Forms.TextBox)
-        'sub to populate the listview based on the collection passed in
+        'sub to populate the BOM Export listview based on the collection passed in
 
         Dim part As cPartInfo
         Dim myItem As System.Windows.Forms.ListViewItem
@@ -336,87 +292,51 @@ Public Class frmBomTools
 
     End Sub
 
-    Private Sub btnExportBOM_Click(sender As Object, e As EventArgs) Handles btnBCExportInventorBOM.Click
-        'export bom button clicked
-        'Pick file location
-        'export BOM
-        Dim proc As New frmProcessing
+    'Private Sub btnExportBOM_Click(sender As Object, e As EventArgs) Handles btnBCExportInventorBOM.Click
+    '    'export bom button clicked
+    '    'Pick file location
+    '    'export BOM
+    '    Dim proc As New frmProcessing
 
-        'set save file dialog properties
-        SaveFileDialog1.Filter = "Excel Documents|*.xlsx;*.xls"
-        SaveFileDialog1.Title = "Select Location to save BOM export"
-        SaveFileDialog1.AddExtension = True
-        SaveFileDialog1.CheckFileExists = False
-        SaveFileDialog1.InitialDirectory = Environment.SpecialFolder.MyComputer
-        SaveFileDialog1.OverwritePrompt = True
-        SaveFileDialog1.FileName = startAssy & "-BOM Compare"
+    '    'set save file dialog properties
+    '    SaveFileDialog1.Filter = "Excel Documents|*.xlsx;*.xls"
+    '    SaveFileDialog1.Title = "Select Location to save BOM export"
+    '    SaveFileDialog1.AddExtension = True
+    '    SaveFileDialog1.CheckFileExists = False
+    '    SaveFileDialog1.InitialDirectory = Environment.SpecialFolder.MyComputer
+    '    SaveFileDialog1.OverwritePrompt = True
+    '    SaveFileDialog1.FileName = startAssy & "-BOM Compare"
 
-        If SaveFileDialog1.ShowDialog = Windows.Forms.DialogResult.OK Then
-            If SaveFileDialog1.FileName IsNot "" Then
-                'show processing message
-                proc.Show()
+    '    If SaveFileDialog1.ShowDialog = Windows.Forms.DialogResult.OK Then
+    '        If SaveFileDialog1.FileName IsNot "" Then
+    '            'show processing message
+    '            proc.Show()
 
-                'set the processing form owner to keep it on top of the BOM tools form
-                proc.Owner = Me
-                'disable the bom tools form to grey it out
-                Me.Enabled = False
-                'locate the processing form on the BOM tools form
-                proc.Location = LocateInCenter(Me, proc)
+    '            'set the processing form owner to keep it on top of the BOM tools form
+    '            proc.Owner = Me
+    '            'disable the bom tools form to grey it out
+    '            Me.Enabled = False
+    '            'locate the processing form on the BOM tools form
+    '            proc.Location = LocateInCenter(Me, proc)
 
-                'create excel document
-                If mAllBOMExport.BomCompExportExcel(SaveFileDialog1.FileName, chkBomCompViewImmediatly.Checked) Then
-                    'display results
-                    proc.Close()
-                    MsgBox(mAllBOMExport.mResults)
-                Else
-                    proc.Close()
-                    MsgBox("No Excel Document Created")
-                End If
+    '            'create excel document
+    '            If mAllBOMExport.BomCompExportExcel(SaveFileDialog1.FileName, chkBomCompViewImmediatly.Checked) Then
+    '                'display results
+    '                proc.Close()
+    '                MsgBox(mAllBOMExport.mResults)
+    '            Else
+    '                proc.Close()
+    '                MsgBox("No Excel Document Created")
+    '            End If
 
-            End If
+    '        End If
 
-        End If
+    '    End If
 
-        'enable the BOM tools form to activate it
-        Me.Enabled = True
+    '    'enable the BOM tools form to activate it
+    '    Me.Enabled = True
 
-    End Sub
-
-    Private Sub btnPartExport_Click(sender As Object, e As EventArgs) Handles btnExportPartList.Click
-        'handles clicking the part create export button
-        Dim proc As New frmProcessing
-        Dim path As String
-
-        path = GetFilePath("-Part Export")
-
-        If Not path = "" Then
-            'file path is not empty
-            'show processing message
-            proc.Show()
-
-            'set the processing form owner to keep it on top of the BOM tools form
-            proc.Owner = Me
-            'disable the bom tools form to grey it out
-            Me.Enabled = False
-            'locate the processing form on the BOM tools form
-            proc.Location = LocateInCenter(Me, proc)
-
-            'create excel document
-
-            If mAllBOMExport.PartExportExcel(path, chkPartExportViewImmediately.Checked) Then
-                'display results
-                proc.Close()
-                MsgBox(mAllBOMExport.mResults)
-            Else
-                proc.Close()
-                MsgBox("No Excel Document Created")
-            End If
-        End If
-
-        'enable the BOM tools form to activate it
-        Me.Enabled = True
-
-    End Sub
+    'End Sub
 
     Private Sub btnBomExport_Click(sender As Object, e As EventArgs) Handles btnBOMExport.Click
         'handles clicking the export buton on the BOM Import tab
@@ -771,11 +691,6 @@ Public Class frmBomTools
         My.Settings.BTBomCompIncludeTopLevelAssy = chkBomCompShowTLAssy.Checked
         My.Settings.BTFormLocation = Me.Location
 
-        'part export settings
-        My.Settings.BTPartExportIncludeB49Assemblies = chkPartExportShowB49.Checked
-        My.Settings.BTPartExportIncludeTopLevelAssy = chkPartExportShowTLAssy.Checked
-        My.Settings.BTPartExportShowFasteners = chkPartExportShowFasteners.Checked
-
         'bom export settings
         My.Settings.BTBomExportAllowBAssyParent = chkBomExportAllowB49Parents.Checked
         My.Settings.BTBomExportShowFasteners = chkBomExportShowFasteners.Checked
@@ -833,28 +748,6 @@ Public Class frmBomTools
         lvPromanBom.Sort()
     End Sub
 
-    Private Sub lvPartCreate_ColumnClick(sender As Object, e As ColumnClickEventArgs) Handles lvPartCreate.ColumnClick
-        'sub to handle sorting the proman bom in ascending/decending order.  will toggle the state
-
-        'determine if the column is the same as the last column clicked
-        If e.Column <> sortCol Then
-            'set the sort column to the new column
-            sortCol = e.Column
-            'set the sort order to ascending by default
-            lvPartCreate.Sorting = SortOrder.Ascending
-        Else
-            'determine what the last sort order was and change it
-            If lvPartCreate.Sorting = SortOrder.Ascending Then
-                lvPartCreate.Sorting = SortOrder.Descending
-            Else
-                lvPartCreate.Sorting = SortOrder.Ascending
-            End If
-        End If
-
-        lvPartCreate.ListViewItemSorter = New ListViewItemComparer(e.Column, lvPartCreate.Sorting)
-        lvPartCreate.Sort()
-    End Sub
-
     Private Sub lvFullBOM_ColumnClick(sender As Object, e As ColumnClickEventArgs) Handles lvFullBOM.ColumnClick
         'sub to handle sorting the proman bom in ascending/decending order.  will toggle the state
 
@@ -906,14 +799,6 @@ Public Class frmBomTools
         End If
     End Sub
 
-    Private Sub PartMenuStrip_Opening(sender As Object, e As CancelEventArgs) Handles PartMenuStrip.Opening
-        'check to see if the listview has items before displaying the context menu strip
-        'if there is nothing in the listview, it cancels the event and does not appear
-        If PartMenuStrip.Items.Count = 0 Then
-            e.Cancel = True
-        End If
-    End Sub
-
     Private Sub PromanLVMenuCopyItem_Click(sender As Object, e As EventArgs) Handles PromanMenuStripCOPY.Click
         If lvPromanBom.SelectedItems.Count = 0 Then
             Exit Sub
@@ -939,23 +824,6 @@ Public Class frmBomTools
         End If
         'search fpr the selected item
         SearchBox(lvBomCompInventor.SelectedItems(0).Text)
-    End Sub
-
-    Private Sub PartMenuStripCopy_Click(sender As Object, e As EventArgs) Handles PartMenuStripCopy.Click
-        If lvPartCreate.SelectedItems.Count = 0 Then
-            Exit Sub
-        End If
-        'Copy item to clipboard
-        CopyToClipboard(lvPartCreate.SelectedItems(0).Text)
-    End Sub
-
-    Private Sub PartMenuStripFIND_Click(sender As Object, e As EventArgs) Handles PartMenuStripFIND.Click
-        'handles selecting find in the menu strip
-        If lvPartCreate.SelectedItems.Count = 0 Then
-            Exit Sub
-        End If
-        'search fpr the selected item
-        SearchBox(lvPartCreate.SelectedItems(0).Text)
     End Sub
 
     Private Sub BomMenuStripCopy_Click(sender As Object, e As EventArgs) Handles BomMenuStripCopy.Click
@@ -1000,19 +868,6 @@ Public Class frmBomTools
                 'something selected on inventor BOM
                 Clipboard.Clear()
                 Clipboard.SetText(lvPromanBom.SelectedItems(0).Text)
-            End If
-        End If
-    End Sub
-
-    Private Sub lvPartCreate_KeyDown(sender As Object, e As KeyEventArgs) Handles lvPartCreate.KeyDown
-        'Handles keydown event on listview.  Allows user to copy selected row (part number only)
-
-        If e.KeyCode = Keys.C AndAlso e.Modifiers = Keys.Control Then
-            'Ctrl+c selected            
-            If lvPartCreate.SelectedItems.Count > 0 Then
-                'something selected on inventor BOM
-                Clipboard.Clear()
-                Clipboard.SetText(lvPartCreate.SelectedItems(0).Text)
             End If
         End If
     End Sub
@@ -1066,16 +921,6 @@ Public Class frmBomTools
             btnLoadInventorBOM.PerformClick()
         End If
 
-    End Sub
-
-    Private Sub PartExportSettingsChanged(sender As Object, e As EventArgs) Handles chkPartExportShowTLAssy.CheckedChanged,
-            chkPartExportShowB49.CheckedChanged, chkPartExportShowFasteners.CheckedChanged
-
-        'handles the change event for all the settings on the Part Export Tab
-        'should trigger a reload of the inventor bom
-        If allowChage Then
-            btnLoadInventorBOM.PerformClick()
-        End If
     End Sub
 
     Private Sub BomExportSettingsChanged(sender As Object, e As EventArgs) Handles chkBOMExportShowTLAssy.CheckedChanged,
