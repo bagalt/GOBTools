@@ -1,9 +1,9 @@
-﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
+﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
 Partial Class frmBomTools
     Inherits System.Windows.Forms.Form
 
     'Form overrides dispose to clean up the component list.
-    <System.Diagnostics.DebuggerNonUserCode()> _
+    <System.Diagnostics.DebuggerNonUserCode()>
     Protected Overrides Sub Dispose(ByVal disposing As Boolean)
         Try
             If disposing AndAlso components IsNot Nothing Then
@@ -20,7 +20,7 @@ Partial Class frmBomTools
     'NOTE: The following procedure is required by the Windows Form Designer
     'It can be modified using the Windows Form Designer.  
     'Do not modify it using the code editor.
-    <System.Diagnostics.DebuggerStepThrough()> _
+    <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
         Me.InventorMenuStrip = New System.Windows.Forms.ContextMenuStrip(Me.components)
@@ -65,6 +65,7 @@ Partial Class frmBomTools
         Me.lblInventorBom = New System.Windows.Forms.Label()
         Me.lvPromanBom = New System.Windows.Forms.ListView()
         Me.TabControl1 = New System.Windows.Forms.TabControl()
+        Me.btnIsolateSpare = New System.Windows.Forms.Button()
         Me.InventorMenuStrip.SuspendLayout()
         Me.PromanMenuStrip.SuspendLayout()
         Me.BomMenuStrip.SuspendLayout()
@@ -152,6 +153,7 @@ Partial Class frmBomTools
         '
         'TabPage4
         '
+        Me.TabPage4.Controls.Add(Me.btnIsolateSpare)
         Me.TabPage4.Controls.Add(Me.chkBomExportViewImmediately)
         Me.TabPage4.Controls.Add(Me.chkBOMExportShowTLAssy)
         Me.TabPage4.Controls.Add(Me.chkBomExportShowFasteners)
@@ -530,6 +532,17 @@ Partial Class frmBomTools
         Me.TabControl1.Size = New System.Drawing.Size(661, 599)
         Me.TabControl1.TabIndex = 15
         '
+        'btnIsolateSpare
+        '
+        Me.btnIsolateSpare.Anchor = System.Windows.Forms.AnchorStyles.Bottom
+        Me.btnIsolateSpare.Location = New System.Drawing.Point(471, 395)
+        Me.btnIsolateSpare.Margin = New System.Windows.Forms.Padding(4)
+        Me.btnIsolateSpare.Name = "btnIsolateSpare"
+        Me.btnIsolateSpare.Size = New System.Drawing.Size(170, 50)
+        Me.btnIsolateSpare.TabIndex = 29
+        Me.btnIsolateSpare.Text = "Isolate Spare"
+        Me.btnIsolateSpare.UseVisualStyleBackColor = True
+        '
         'frmBomTools
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 16.0!)
@@ -599,4 +612,5 @@ Partial Class frmBomTools
     Friend WithEvents lblInventorBom As Windows.Forms.Label
     Friend WithEvents lvPromanBom As Windows.Forms.ListView
     Friend WithEvents TabControl1 As Windows.Forms.TabControl
+    Friend WithEvents btnIsolateSpare As Windows.Forms.Button
 End Class

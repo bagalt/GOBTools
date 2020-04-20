@@ -518,6 +518,7 @@ Module mAllBOMExport
 
         'assign part properties object
         partProps = oCompOcc.Definition.Document.PropertySets
+        occurrenceInfo.ComponentOccurrence = oCompOcc
 
         'get the occurrence properties based on the current occurrence type, unfortunately locations for info change based on type
         Select Case currentOccurrenceType
@@ -1104,7 +1105,6 @@ Module mAllBOMExport
 
     End Sub
 
-
     Private Function FindParentOccurrence(ByVal occ As Inventor.ComponentOccurrence) As String
         'finds the name of the parent occurrence and if the parent meets certain conditions it 
         'recursively calls itself until it gets to a valid parent
@@ -1181,6 +1181,7 @@ Module mAllBOMExport
         part1.VendorCode = part2.VendorCode
         part1.InspectField = part2.InspectField
         part1.Certificate = part2.Certificate
+        part1.ComponentOccurrence = part2.ComponentOccurrence
 
         Return part1
     End Function

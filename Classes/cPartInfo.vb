@@ -23,7 +23,8 @@
     Private pBreadCrumb As Collection   'breadcrumb to the part aka the path down to the part in the assy tree
     Private pQty As Integer             'part quantity per assembly
     Private pInspect As String          'inspect part flag
-    Private pCertificate As String         'cert required flag
+    Private pCertificate As String      'cert required flag
+    Private pComponentOcc As Inventor.ComponentOccurrence
 
     Private Sub Class_Initialize()
         pBreadCrumb = New Collection
@@ -198,6 +199,18 @@
             'could put data validation code into the let procedures
             'let properties assign values to the class
             pCertificate = value
+        End Set
+    End Property
+
+    'Component Occurrence  property
+    Public Property ComponentOccurrence() As Inventor.ComponentOccurrence
+        Get
+            Return pComponentOcc
+        End Get
+        Set(value As Inventor.ComponentOccurrence)
+            'could put data validation code into the let procedures
+            'let properties assign values to the class
+            pComponentOcc = value
         End Set
     End Property
 
