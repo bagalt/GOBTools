@@ -667,30 +667,50 @@ Public Class frmBomTools
 
     End Sub
 
-    Private Sub IsolateInspectionParts(ByVal PartList As Collection)
+    Private Sub IsolateInspectionReqd(ByVal PartList As Collection)
         'sub to handle button click for isolating parts that are marked for inspection
-
-        'get parts list
-        'for each part check the inspection flag
-        'if it is marked for inspection, add to selection group
-        'isolate the selected group using RunCmd function RunCmd("AssemblyIsolateCmd")
 
         Dim myPart As cPartInfo
         Dim mySelectedObjects As Inventor.ObjectCollection
+        Dim myOccs As Inventor.ComponentOccurrencesEnumerator
+        Dim myDoc As Inventor.Document
+        Dim occ As Inventor.ComponentOccurrence
+
+        'create an object collection
         mySelectedObjects = ThisApplication.TransientObjects.CreateObjectCollection()
+
+        'clear the selected objects collection
+        mySelectedObjects.Clear()
 
         For Each myPart In PartList
             If myPart.InspectField = "Y" Then
-                'add to select set
-
+                'get the Document of the occurrence that is marked inspection  "Y"
+                myDoc = myPart.ComponentOccurrence.Definition.Document
+                'look in the current assembly for all the referenced occurrences of myDoc
+                myOccs = mAssyCompDef.Occurrences.AllReferencedOccurrences(myDoc)
+                'itterate through all the occurrences in my occurrences and add them to the selected objects collection
+                For Each occ In myOccs
+                    'add to select set
+                    mySelectedObjects.Add(occ)
+                Next
             End If
         Next
+
+        'clear the select set in the assembly
+        mAssyDoc.SelectSet.Clear()
+        'create the select set by using the collection mySeleted objects
+        mAssyDoc.SelectSet.SelectMultiple(mySelectedObjects)
+
+        'Run the isolate command 
+        RunCmd("AssemblyIsolateCmd")
+
+        'clear the select set so everything isnt highlighted
+        mAssyDoc.SelectSet.Clear()
 
     End Sub
 
     Private Sub IsolateSpareParts(ByVal PartList As Collection)
-        'sub to handle isolating the parts that have a certification requirement
-
+        'sub to handle isolating the parts that are designated as spares
 
         Dim myPart As cPartInfo
         Dim mySelectedObjects As Inventor.ObjectCollection
@@ -726,7 +746,53 @@ Public Class frmBomTools
         'Run the command 
         RunCmd("AssemblyIsolateCmd")
 
+        'clear the select set so everything isnt highlighted
+        mAssyDoc.SelectSet.Clear()
+
     End Sub
+
+    Private Sub IsolateCertReqd(ByVal PartList As Collection)
+        'sub to handle isolating the parts that have a certification requirement
+
+        Dim myPart As cPartInfo
+        Dim mySelectedObjects As Inventor.ObjectCollection
+        Dim myOccs As Inventor.ComponentOccurrencesEnumerator
+        Dim myDoc As Inventor.Document
+        Dim occ As Inventor.ComponentOccurrence
+
+        'create an object collection
+        mySelectedObjects = ThisApplication.TransientObjects.CreateObjectCollection()
+
+        'clear the selected objects collection
+        mySelectedObjects.Clear()
+
+        For Each myPart In PartList
+            If myPart.Certificate = "Material" Or myPart.Certificate = "Material + Finish" Or myPart.Certificate = "Calibration" Then
+                'get the Document of the occurrence that has a certificate required
+                myDoc = myPart.ComponentOccurrence.Definition.Document
+                'look in the current assembly for all the referenced occurrences of myDoc
+                myOccs = mAssyCompDef.Occurrences.AllReferencedOccurrences(myDoc)
+                'itterate through all the occurrences in my occurrences and add them to the selected objects collection
+                For Each occ In myOccs
+                    'add to select set
+                    mySelectedObjects.Add(occ)
+                Next
+            End If
+        Next
+
+        'clear the select set in the assembly
+        mAssyDoc.SelectSet.Clear()
+        'create the select set by using the collection mySeleted objects
+        mAssyDoc.SelectSet.SelectMultiple(mySelectedObjects)
+
+        'Run the command 
+        RunCmd("AssemblyIsolateCmd")
+
+        'clear the select set so everything isnt highlighted
+        mAssyDoc.SelectSet.Clear()
+
+    End Sub
+
 
     Private Sub RunCmd(ByVal cmd As String)
         'sub to run a command through command manager
@@ -1001,5 +1067,17 @@ Public Class frmBomTools
 
     Private Sub btnIsolateSpare_Click(sender As Object, e As EventArgs) Handles btnIsolateSpare.Click
         IsolateSpareParts(mAllBOMExport.bomExportList)
+    End Sub
+
+    Private Sub btnIsolateInspect_Click(sender As Object, e As EventArgs) Handles btnIsolateInspect.Click
+        IsolateInspectionReqd(mAllBOMExport.bomExportList)
+    End Sub
+
+    Private Sub btnIsolateCert_Click(sender As Object, e As EventArgs) Handles btnIsolateCert.Click
+        IsolateCertReqd(mAllBOMExport.bomExportList)
+    End Sub
+
+    Private Sub btnUndoIsolate_Click(sender As Object, e As EventArgs) Handles btnUndoIsolate.Click
+        RunCmd("AssemblyIsolateUndoCmd")
     End Sub
 End Class

@@ -36,6 +36,7 @@ Partial Class frmBomTools
         Me.SaveFileDialog1 = New System.Windows.Forms.SaveFileDialog()
         Me.lblVersion = New System.Windows.Forms.Label()
         Me.TabPage4 = New System.Windows.Forms.TabPage()
+        Me.btnIsolateSpare = New System.Windows.Forms.Button()
         Me.chkBomExportViewImmediately = New System.Windows.Forms.CheckBox()
         Me.chkBOMExportShowTLAssy = New System.Windows.Forms.CheckBox()
         Me.chkBomExportShowFasteners = New System.Windows.Forms.CheckBox()
@@ -65,7 +66,9 @@ Partial Class frmBomTools
         Me.lblInventorBom = New System.Windows.Forms.Label()
         Me.lvPromanBom = New System.Windows.Forms.ListView()
         Me.TabControl1 = New System.Windows.Forms.TabControl()
-        Me.btnIsolateSpare = New System.Windows.Forms.Button()
+        Me.btnIsolateInspect = New System.Windows.Forms.Button()
+        Me.btnIsolateCert = New System.Windows.Forms.Button()
+        Me.btnUndoIsolate = New System.Windows.Forms.Button()
         Me.InventorMenuStrip.SuspendLayout()
         Me.PromanMenuStrip.SuspendLayout()
         Me.BomMenuStrip.SuspendLayout()
@@ -153,6 +156,9 @@ Partial Class frmBomTools
         '
         'TabPage4
         '
+        Me.TabPage4.Controls.Add(Me.btnUndoIsolate)
+        Me.TabPage4.Controls.Add(Me.btnIsolateCert)
+        Me.TabPage4.Controls.Add(Me.btnIsolateInspect)
         Me.TabPage4.Controls.Add(Me.btnIsolateSpare)
         Me.TabPage4.Controls.Add(Me.chkBomExportViewImmediately)
         Me.TabPage4.Controls.Add(Me.chkBOMExportShowTLAssy)
@@ -172,12 +178,23 @@ Partial Class frmBomTools
         Me.TabPage4.Text = "BOM Export"
         Me.TabPage4.UseVisualStyleBackColor = True
         '
+        'btnIsolateSpare
+        '
+        Me.btnIsolateSpare.Anchor = System.Windows.Forms.AnchorStyles.Bottom
+        Me.btnIsolateSpare.Location = New System.Drawing.Point(471, 278)
+        Me.btnIsolateSpare.Margin = New System.Windows.Forms.Padding(4)
+        Me.btnIsolateSpare.Name = "btnIsolateSpare"
+        Me.btnIsolateSpare.Size = New System.Drawing.Size(170, 50)
+        Me.btnIsolateSpare.TabIndex = 29
+        Me.btnIsolateSpare.Text = "Isolate Spare"
+        Me.btnIsolateSpare.UseVisualStyleBackColor = True
+        '
         'chkBomExportViewImmediately
         '
         Me.chkBomExportViewImmediately.AutoSize = True
         Me.chkBomExportViewImmediately.Checked = True
         Me.chkBomExportViewImmediately.CheckState = System.Windows.Forms.CheckState.Checked
-        Me.chkBomExportViewImmediately.Location = New System.Drawing.Point(499, 482)
+        Me.chkBomExportViewImmediately.Location = New System.Drawing.Point(175, 539)
         Me.chkBomExportViewImmediately.Margin = New System.Windows.Forms.Padding(4)
         Me.chkBomExportViewImmediately.Name = "chkBomExportViewImmediately"
         Me.chkBomExportViewImmediately.Size = New System.Drawing.Size(137, 21)
@@ -225,10 +242,10 @@ Partial Class frmBomTools
         'btnBOMExport
         '
         Me.btnBOMExport.Anchor = System.Windows.Forms.AnchorStyles.Bottom
-        Me.btnBOMExport.Location = New System.Drawing.Point(471, 508)
+        Me.btnBOMExport.Location = New System.Drawing.Point(320, 510)
         Me.btnBOMExport.Margin = New System.Windows.Forms.Padding(4)
         Me.btnBOMExport.Name = "btnBOMExport"
-        Me.btnBOMExport.Size = New System.Drawing.Size(170, 50)
+        Me.btnBOMExport.Size = New System.Drawing.Size(143, 50)
         Me.btnBOMExport.TabIndex = 21
         Me.btnBOMExport.Text = "Export BOM"
         Me.btnBOMExport.UseVisualStyleBackColor = True
@@ -532,16 +549,38 @@ Partial Class frmBomTools
         Me.TabControl1.Size = New System.Drawing.Size(661, 599)
         Me.TabControl1.TabIndex = 15
         '
-        'btnIsolateSpare
+        'btnIsolateInspect
         '
-        Me.btnIsolateSpare.Anchor = System.Windows.Forms.AnchorStyles.Bottom
-        Me.btnIsolateSpare.Location = New System.Drawing.Point(471, 395)
-        Me.btnIsolateSpare.Margin = New System.Windows.Forms.Padding(4)
-        Me.btnIsolateSpare.Name = "btnIsolateSpare"
-        Me.btnIsolateSpare.Size = New System.Drawing.Size(170, 50)
-        Me.btnIsolateSpare.TabIndex = 29
-        Me.btnIsolateSpare.Text = "Isolate Spare"
-        Me.btnIsolateSpare.UseVisualStyleBackColor = True
+        Me.btnIsolateInspect.Anchor = System.Windows.Forms.AnchorStyles.Bottom
+        Me.btnIsolateInspect.Location = New System.Drawing.Point(471, 336)
+        Me.btnIsolateInspect.Margin = New System.Windows.Forms.Padding(4)
+        Me.btnIsolateInspect.Name = "btnIsolateInspect"
+        Me.btnIsolateInspect.Size = New System.Drawing.Size(170, 50)
+        Me.btnIsolateInspect.TabIndex = 30
+        Me.btnIsolateInspect.Text = "Isolate Insp Reqd"
+        Me.btnIsolateInspect.UseVisualStyleBackColor = True
+        '
+        'btnIsolateCert
+        '
+        Me.btnIsolateCert.Anchor = System.Windows.Forms.AnchorStyles.Bottom
+        Me.btnIsolateCert.Location = New System.Drawing.Point(471, 394)
+        Me.btnIsolateCert.Margin = New System.Windows.Forms.Padding(4)
+        Me.btnIsolateCert.Name = "btnIsolateCert"
+        Me.btnIsolateCert.Size = New System.Drawing.Size(170, 50)
+        Me.btnIsolateCert.TabIndex = 31
+        Me.btnIsolateCert.Text = "Isolate Cert Reqd"
+        Me.btnIsolateCert.UseVisualStyleBackColor = True
+        '
+        'btnUndoIsolate
+        '
+        Me.btnUndoIsolate.Anchor = System.Windows.Forms.AnchorStyles.Bottom
+        Me.btnUndoIsolate.Location = New System.Drawing.Point(471, 452)
+        Me.btnUndoIsolate.Margin = New System.Windows.Forms.Padding(4)
+        Me.btnUndoIsolate.Name = "btnUndoIsolate"
+        Me.btnUndoIsolate.Size = New System.Drawing.Size(170, 50)
+        Me.btnUndoIsolate.TabIndex = 32
+        Me.btnUndoIsolate.Text = "Undo Isolate"
+        Me.btnUndoIsolate.UseVisualStyleBackColor = True
         '
         'frmBomTools
         '
@@ -613,4 +652,7 @@ Partial Class frmBomTools
     Friend WithEvents lvPromanBom As Windows.Forms.ListView
     Friend WithEvents TabControl1 As Windows.Forms.TabControl
     Friend WithEvents btnIsolateSpare As Windows.Forms.Button
+    Friend WithEvents btnIsolateCert As Windows.Forms.Button
+    Friend WithEvents btnIsolateInspect As Windows.Forms.Button
+    Friend WithEvents btnUndoIsolate As Windows.Forms.Button
 End Class

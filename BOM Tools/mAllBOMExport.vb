@@ -561,7 +561,7 @@ Module mAllBOMExport
                 End Try
 
                 Try
-                    occurrenceInfo.InspectField = partProps.Item("User Defined Properties").Item("Inspect").Value
+                    occurrenceInfo.InspectField = partProps.Item("User Defined Properties").Item("InspectionRequired").Value
                 Catch ex As Exception
                     InspectionErr(occurrenceInfo)
                 End Try
@@ -596,7 +596,7 @@ Module mAllBOMExport
                 End Try
 
                 Try
-                    occurrenceInfo.InspectField = partProps.Item("User Defined Properties").Item("Inspect").Value
+                    occurrenceInfo.InspectField = partProps.Item("User Defined Properties").Item("InspectionRequired").Value
                 Catch ex As Exception
                     InspectionErr(occurrenceInfo)
                 End Try
@@ -652,7 +652,7 @@ Module mAllBOMExport
                 End Try
 
                 Try
-                    occurrenceInfo.InspectField = partProps.Item("User Defined Properties").Item("Inspect").Value
+                    occurrenceInfo.InspectField = partProps.Item("User Defined Properties").Item("InspectionRequired").Value
                 Catch ex As Exception
                     InspectionErr(occurrenceInfo)
                 End Try
@@ -708,7 +708,7 @@ Module mAllBOMExport
                 End Try
 
                 Try
-                    occurrenceInfo.InspectField = partProps.Item("User Defined Properties").Item("Inspect").Value
+                    occurrenceInfo.InspectField = partProps.Item("User Defined Properties").Item("InspectionRequired").Value
                 Catch ex As Exception
                     InspectionErr(occurrenceInfo)
                 End Try
@@ -1352,7 +1352,7 @@ Module mAllBOMExport
                 .Range("I" & row).Value = part.ParentAssy
                 .Range("J" & row).Value = 1                             'default plan type will always be 1
                 .Range("K" & row).Value = ""                            'default to a blank cell for Item Nbr
-                .Range("L" & row).Value = ""                            'default to blank cell for inspection
+                .Range("L" & row).Value = part.InspectField             'default to blank cell for inspection
                 .Range("M" & row).Value = TranslateCertReqd(part)       'default to blank cell for cert reqd
                 .Range("N" & row).Value = part.ErrorMsg
                 If part.PartError = True Then
