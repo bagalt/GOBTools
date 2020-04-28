@@ -22,6 +22,9 @@
     Private pParentAssy As String       'parent assembly of the part
     Private pBreadCrumb As Collection   'breadcrumb to the part aka the path down to the part in the assy tree
     Private pQty As Integer             'part quantity per assembly
+    Private pInspect As String          'inspect part flag
+    Private pCertificate As String      'cert required flag
+    Private pComponentOcc As Inventor.ComponentOccurrence
 
     Private Sub Class_Initialize()
         pBreadCrumb = New Collection
@@ -36,6 +39,9 @@
         pErrorMsg = ""
         pParentAssy = ""
         pQty = 0
+        pInspect = ""
+        pCertificate = ""
+
     End Sub
 
     'Part Number property
@@ -157,6 +163,54 @@
         End Get
         Set(value As String)
             pErrorMsg = value
+        End Set
+    End Property
+
+    'Error flag  property
+    Public Property ErrorFlag() As Boolean
+        Get
+            Return pError
+        End Get
+        Set(value As Boolean)
+            'could put data validation code into the let procedures
+            'let properties assign values to the class
+            pError = value
+        End Set
+    End Property
+
+    'Inspect  property
+    Public Property InspectField() As String
+        Get
+            Return pInspect
+        End Get
+        Set(value As String)
+            'could put data validation code into the let procedures
+            'let properties assign values to the class
+            pInspect = value
+        End Set
+    End Property
+
+    'Certificate  property
+    Public Property Certificate() As String
+        Get
+            Return pCertificate
+        End Get
+        Set(value As String)
+            'could put data validation code into the let procedures
+            'let properties assign values to the class
+            pCertificate = value
+        End Set
+    End Property
+
+    'Component Occurrence  property
+    Public Property ComponentOccurrence() As Inventor.ComponentOccurrence
+        Get
+            Return pComponentOcc
+        End Get
+        Set(value As Inventor.ComponentOccurrence)
+            'could put data validation code into the let procedures
+            'let properties assign values to the class
+            pComponentOcc = value
         End Set
     End Property
 
