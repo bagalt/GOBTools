@@ -139,7 +139,7 @@ Namespace GOBTools
                         Case "Part", "Assembly"
                             Dim tab As RibbonTab = ribbon.RibbonTabs.Item("id_TabTools")
 
-                            Dim newpanel As RibbonPanel = tab.RibbonPanels.Add("GOB Tools v1.1", "gombarTools", AddInGuid(Me.GetType))
+                            Dim newpanel As RibbonPanel = tab.RibbonPanels.Add("GOB Tools v1.0", "gombarTools", AddInGuid(Me.GetType))
 
                             Call newpanel.CommandControls.AddButton(m_StepperButtonDef, True, True)
                             Call newpanel.CommandControls.AddButton(m_HoleMakerButtonDef, True, True)
