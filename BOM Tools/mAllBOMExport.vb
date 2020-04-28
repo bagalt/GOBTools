@@ -9,8 +9,9 @@ Module mAllBOMExport
     'Bom Comparisons, Part Export, and BOM Export
     '************************************
 
-    Private mCollBomExport As Collection 'collection to hold all the parts with correct parents for BOM Export
+    Private mCollFullBOM As Collection 'collection to hold all the parts with correct parents for BOM Import
     Private mCollBOMInstances As Collection 'collection to hold all of the parts with instances of parent, used for full bom creation
+    Private mCollPartExport As Collection 'colection to hold all the new parts, manuf and purch and proman information, for Part Creation import
     Private mCollBomCompare As Collection 'collection to hold all the parts for the BOM compare listview
 
     Private mStartAssy As String 'holds the top level assembly name
@@ -32,6 +33,12 @@ Module mAllBOMExport
         Public bBomCompShowTopLevelAssy As Boolean
     End Structure
 
+    Public Structure PartExportSettings
+        Public bPartExportShowB49 As Boolean
+        Public bPartExportShowTopLevelAssy As Boolean
+        Public bPartExportShowFasteners As Boolean
+    End Structure
+
     Public Structure BomExportSettings
         Public bBomExportShowB49 As Boolean
         Public bBomExportShowFasteners As Boolean
@@ -39,7 +46,9 @@ Module mAllBOMExport
     End Structure
 
     Private mBomExportSettings As BomExportSettings
+    Private mPartExportSettings As PartExportSettings
     Private mBomCompSettings As BomCompareSettings
+
 
     'enum to characterize the type of part that is identified
     'this helps with handling the different types of parts
@@ -61,10 +70,12 @@ Module mAllBOMExport
 
     Public mResults As String = "" 'variable used for displaying the results
     Public bomCompareList As Collection 'collection for all unique parts in an assembly
-    Public bomExportList As Collection
+    Public partExportList As Collection
+    Public bomImportList As Collection
     Public collAllParts As Collection 'public collection to show all parts
 
-    Public Sub AssemblyCount(ThisApplication As Inventor.Application, BomImportConfig As BomExportSettings, BomCompConfig As BomCompareSettings, sDirectoryPath As String)
+
+    Public Sub AssemblyCount(ThisApplication As Inventor.Application, BomImportConfig As BomExportSettings, PartExportConfig As PartExportSettings, BomCompConfig As BomCompareSettings, sDirectoryPath As String)
         ' Set reference to active document.
         ' This assumes the active document is an assembly
         Dim oDoc As Inventor.AssemblyDocument
@@ -75,8 +86,9 @@ Module mAllBOMExport
         End If
 
         oDoc = ThisApplication.ActiveDocument
-        mCollBomExport = New Collection
+        mCollFullBOM = New Collection
         mCollBOMInstances = New Collection
+        mCollPartExport = New Collection
         mCollBomCompare = New Collection
 
         ' Get assembly component definition
@@ -97,6 +109,7 @@ Module mAllBOMExport
 
         'Assign All parts and New Parts settings
         mBomExportSettings = BomImportConfig
+        mPartExportSettings = PartExportConfig
         mBomCompSettings = BomCompConfig
 
         sMsg = ""
@@ -190,7 +203,8 @@ Module mAllBOMExport
         'Debug.Print("")
         'PrintColl(mCollFullBOM)
         bomCompareList = mCollBomCompare
-        bomExportList = mCollBomExport
+        partExportList = mCollPartExport
+        bomImportList = mCollFullBOM
 
     End Sub
 
@@ -508,7 +522,7 @@ Module mAllBOMExport
 
     Private Sub GetProps(ByVal oCompOcc As Inventor.ComponentOccurrence, ByVal currentOccurrenceType As PartType, ByVal collBreadCrumb As Collection)
         'sub to get the desired properties from the occurrence
-        'Proman Class Code, Part Number, Description English, Cust Serv Code, etc
+        'Proman Class Code, Part Number, Description English, Cust Serv Code
 
         'initialize variables
         Dim partProps As Inventor.PropertySets
@@ -518,7 +532,6 @@ Module mAllBOMExport
 
         'assign part properties object
         partProps = oCompOcc.Definition.Document.PropertySets
-        occurrenceInfo.ComponentOccurrence = oCompOcc
 
         'get the occurrence properties based on the current occurrence type, unfortunately locations for info change based on type
         Select Case currentOccurrenceType
@@ -560,18 +573,6 @@ Module mAllBOMExport
                     ServiceCodeErr(occurrenceInfo)
                 End Try
 
-                Try
-                    occurrenceInfo.InspectField = partProps.Item("User Defined Properties").Item("InspectionRequired").Value
-                Catch ex As Exception
-                    InspectionErr(occurrenceInfo)
-                End Try
-
-                Try
-                    occurrenceInfo.Certificate = partProps.Item("User Defined Properties").Item("Certificate").Value
-                Catch ex As Exception
-                    CertReqdErr(occurrenceInfo)
-                End Try
-
             Case PartType.CAssy
                 'Get the part number from the status tab of the iProperties
                 occurrenceInfo.PartNum = partProps.Item("Design Tracking Properties").Item("Part Number").Value
@@ -593,18 +594,6 @@ Module mAllBOMExport
                     occurrenceInfo.ServiceCode = partProps.Item("User Defined Properties").Item("Cust Serv Code").Value
                 Catch
                     ServiceCodeErr(occurrenceInfo)
-                End Try
-
-                Try
-                    occurrenceInfo.InspectField = partProps.Item("User Defined Properties").Item("InspectionRequired").Value
-                Catch ex As Exception
-                    InspectionErr(occurrenceInfo)
-                End Try
-
-                Try
-                    occurrenceInfo.Certificate = partProps.Item("User Defined Properties").Item("Certificate").Value
-                Catch ex As Exception
-                    CertReqdErr(occurrenceInfo)
                 End Try
 
             Case PartType.PurchPart
@@ -651,18 +640,6 @@ Module mAllBOMExport
                     ManufNumErr(occurrenceInfo)
                 End Try
 
-                Try
-                    occurrenceInfo.InspectField = partProps.Item("User Defined Properties").Item("InspectionRequired").Value
-                Catch ex As Exception
-                    InspectionErr(occurrenceInfo)
-                End Try
-
-                Try
-                    occurrenceInfo.Certificate = partProps.Item("User Defined Properties").Item("Certificate").Value
-                Catch ex As Exception
-                    CertReqdErr(occurrenceInfo)
-                End Try
-
             Case PartType.OldPurchPart
                 'Get the part number from the status tab of the iProperties
                 occurrenceInfo.PartNum = partProps.Item("Design Tracking Properties").Item("Part Number").Value
@@ -705,18 +682,6 @@ Module mAllBOMExport
                     occurrenceInfo.ManufNum = occurrenceInfo.ManufNum.ToUpper
                 Catch
                     ManufNumErr(occurrenceInfo)
-                End Try
-
-                Try
-                    occurrenceInfo.InspectField = partProps.Item("User Defined Properties").Item("InspectionRequired").Value
-                Catch ex As Exception
-                    InspectionErr(occurrenceInfo)
-                End Try
-
-                Try
-                    occurrenceInfo.Certificate = partProps.Item("User Defined Properties").Item("Certificate").Value
-                Catch ex As Exception
-                    CertReqdErr(occurrenceInfo)
                 End Try
 
             Case PartType.StandardPart
@@ -813,6 +778,7 @@ Module mAllBOMExport
         'build BOM Collections
         'AddToCollection(collBreadCrumb, occurrenceInfo, currentOccurrenceType, oCompOcc)
         AddToBomCompCollection(collBreadCrumb, occurrenceInfo, currentOccurrenceType, oCompOcc)
+        AddToPartExportCollection(collBreadCrumb, occurrenceInfo, currentOccurrenceType, oCompOcc)
         AddToBomExportCollection(collBreadCrumb, occurrenceInfo, currentOccurrenceType, oCompOcc)
 
     End Sub
@@ -879,6 +845,7 @@ Module mAllBOMExport
         'build BOM Collections
         'AddToCollection(topLevelColl, topLevelPartInfo, topLevelType, topLevelOcc)
         AddToBomCompCollection(topLevelColl, topLevelPartInfo, topLevelType, topLevelOcc)
+        AddToPartExportCollection(topLevelColl, topLevelPartInfo, topLevelType, topLevelOcc)
         AddToBomExportCollection(topLevelColl, topLevelPartInfo, topLevelType, topLevelOcc)
 
     End Sub
@@ -964,66 +931,68 @@ Module mAllBOMExport
         End If
     End Sub
 
-    'Private Sub AddToPartExportCollection(ByRef collBreadCrumb As Collection, ByVal occurrenceInfo As cPartInfo, ByRef occurrenceType As PartType, ByVal occurrence As Inventor.ComponentOccurrence)
-    '    'sub to add occurrences to the Part Export collection
+    Private Sub AddToPartExportCollection(ByRef collBreadCrumb As Collection, ByVal occurrenceInfo As cPartInfo, ByRef occurrenceType As PartType, ByVal occurrence As Inventor.ComponentOccurrence)
+        'sub to add occurrences to the Part Export collection
 
-    '    Dim addToPartExportColl As Boolean
-    '    Dim sParentInstance As String
-    '    Dim sPartExportKey As String
-    '    Dim ParentInfo As ParentStatus
-    '    Dim partExportOccInfo As cPartInfo
-    '    Dim parentType As PartType
-    '    Dim parentOccType As PartType
+        Dim addToPartExportColl As Boolean
+        Dim sParentInstance As String
+        Dim sPartExportKey As String
+        Dim ParentInfo As ParentStatus
+        Dim partExportOccInfo As cPartInfo
+        Dim parentType As PartType
+        Dim parentOccType As PartType
 
-    '    'find parent for occurrence
-    '    Try
-    '        sParentInstance = FindParentOccurrence(occurrence)
-    '        parentOccType = GetOccType(sParentInstance)
-    '    Catch ex As Exception
-    '        'occurrence is on the top level, no parent occurrence
-    '        sParentInstance = "TopLevel"
-    '        parentOccType = PartType.Toplevel
-    '    End Try
+        'find parent for occurrence
+        Try
+            sParentInstance = FindParentOccurrence(occurrence)
+            parentOccType = GetOccType(sParentInstance)
+        Catch ex As Exception
+            'occurrence is on the top level, no parent occurrence
+            sParentInstance = "TopLevel"
+            parentOccType = PartType.Toplevel
+        End Try
 
-    '    'build the key for the part export collection
-    '    sPartExportKey = occurrenceInfo.PartNum
+        'build the key for the part export collection
+        sPartExportKey = occurrenceInfo.PartNum
 
-    '    'find the parent and type for part create collection
-    '    ParentInfo = PartExportFindParent(collBreadCrumb, occurrenceInfo.PartNum)
-    '    parentType = GetOccType(ParentInfo.ParentName)
+        'find the parent and type for part create collection
+        ParentInfo = PartExportFindParent(collBreadCrumb, occurrenceInfo.PartNum)
+        parentType = GetOccType(ParentInfo.ParentName)
 
-    '    'Build the BOM Compare collection
-    '    If Not KeyExists(mCollPartExport, sPartExportKey) Then
-    '        'if the part does not exist in collection then add the part
-    '        addToPartExportColl = True
-    '        Select Case occurrenceType
-    '            Case PartType.BAssy
-    '                'check settings for B49 parents
-    '                addToPartExportColl = mPartExportSettings.bPartExportShowB49
-    '            Case PartType.M900Part
-    '                addToPartExportColl = mPartExportSettings.bPartExportShowFasteners
-    '            Case PartType.Toplevel
-    '                addToPartExportColl = mPartExportSettings.bPartExportShowTopLevelAssy
-    '            Case Else
-    '                addToPartExportColl = True
-    '        End Select
+        'Build the BOM Compare collection
+        If Not KeyExists(mCollPartExport, sPartExportKey) Then
+            'if the part does not exist in collection then add the part
+            addToPartExportColl = True
+            Select Case occurrenceType
+                Case PartType.BAssy
+                    'check settings for B49 parents
+                    addToPartExportColl = mPartExportSettings.bPartExportShowB49
+                Case PartType.M900Part
+                    addToPartExportColl = mPartExportSettings.bPartExportShowFasteners
+                Case PartType.Toplevel
+                    addToPartExportColl = mPartExportSettings.bPartExportShowTopLevelAssy
+                Case PartType.BGEPart, PartType.BPHPart
+                    addToPartExportColl = False
+                Case Else
+                    addToPartExportColl = True
+            End Select
 
-    '        If addToPartExportColl Then
-    '            'create instance of the partinfo class for all parts
-    '            partExportOccInfo = New cPartInfo
-    '            MakeEqual(partExportOccInfo, occurrenceInfo)
-    '            partExportOccInfo.Description = CommaReplacer(occurrenceInfo.Description)
-    '            'bump the quantity of the part (starts at 0)
-    '            partExportOccInfo.IncrementQty(1)
-    '            'add the newly created BomCompPartInfo to the mCollBomCompare collection with the part number as the key
-    '            mCollPartExport.Add(partExportOccInfo, sPartExportKey)
-    '        End If
-    '    Else
-    '        'part already exists in list, increment qty
-    '        mCollPartExport.Item(sPartExportKey).IncrementQty(1)
-    '    End If
+            If addToPartExportColl Then
+                'create instance of the partinfo class for all parts
+                partExportOccInfo = New cPartInfo
+                MakeEqual(partExportOccInfo, occurrenceInfo)
+                partExportOccInfo.Description = CommaReplacer(occurrenceInfo.Description)
+                'bump the quantity of the part (starts at 0)
+                partExportOccInfo.IncrementQty(1)
+                'add the newly created BomCompPartInfo to the mCollBomCompare collection with the part number as the key
+                mCollPartExport.Add(partExportOccInfo, sPartExportKey)
+            End If
+        Else
+            'part already exists in list, increment qty
+            mCollPartExport.Item(sPartExportKey).IncrementQty(1)
+        End If
 
-    'End Sub
+    End Sub
 
     Private Sub AddToBomExportCollection(ByRef collBreadCrumb As Collection, ByVal occurrenceInfo As cPartInfo, ByRef occurrenceType As PartType, ByVal occurrence As Inventor.ComponentOccurrence)
         'sub to add occurrences to the BOM Export collection
@@ -1059,7 +1028,7 @@ Module mAllBOMExport
         If Not KeyExists(mCollBOMInstances, sBomInstanceKey) Then
             addToBOMExportColl = True
             'part does not exist in the collection
-            If Not KeyExists(mCollBomExport, sBomExportKey) Then
+            If Not KeyExists(mCollFullBOM, sBomExportKey) Then
                 'part does not exist in the collection
                 Select Case occurrenceType
                     Case PartType.BAssy
@@ -1093,17 +1062,195 @@ Module mAllBOMExport
                     'bump the quantity of the part (starts at 0)
                     importOccurrence.IncrementQty(1)
                     'add the newly created partinfo to the full bom collection and bom instances collection 
-                    mCollBomExport.Add(importOccurrence, sBomExportKey)
+                    mCollFullBOM.Add(importOccurrence, sBomExportKey)
                     mCollBOMInstances.Add(importOccurrence, sBomInstanceKey)
                 End If
             Else
                 'key already exists, bump the quantity of the part
             End If
         Else
-            mCollBomExport.Item(sBomExportKey).IncrementQty(1)
+            mCollFullBOM.Item(sBomExportKey).IncrementQty(1)
         End If
 
     End Sub
+
+    'Private Sub AddToCollection(ByRef collBreadCrumb As Collection, ByVal occurrenceInfo As cPartInfo, ByRef occurrenceType As PartType, ByVal occurrence As Inventor.ComponentOccurrence)
+    '    'sub to add occurrences to collections
+    '    'BOM Import collection, holds all parts and correct hierarchy with part information for proman
+    '    'BOM Compare collection, holds all the parts for the BOM compare listview, no part information required
+    '    'occurrences should be added to collections based on user settings
+
+    '    Dim addPart As Boolean
+    '    Dim sBomExportKey As String
+    '    Dim sBomInstanceKey As String
+    '    Dim sParentInstance As String
+    '    Dim sBomCompareKey As String
+    '    Dim sPartExportKey As String
+    '    Dim ParentInfo As ParentStatus
+    '    Dim createOccurence As cPartInfo
+    '    Dim compOccurrence As cPartInfo
+    '    Dim importOccurrence As cPartInfo
+    '    Dim parentType As PartType
+    '    Dim parentOccType As PartType
+    '    Dim addToBOMExportColl As Boolean
+
+
+    '    'find parent for occurrence
+    '    Try
+    '        sParentInstance = FindParentOccurrence(occurrence)
+    '        parentOccType = GetOccType(sParentInstance)
+    '    Catch ex As Exception
+    '        'occurrence is on the top level, no parent occurrence
+    '        sParentInstance = "TopLevel"
+    '        parentOccType = PartType.Toplevel
+    '    End Try
+
+    '    'find the parent name and type for the bom compare collection
+    '    ParentInfo = BomCompareFindParent(collBreadCrumb, occurrenceInfo.PartNum)
+    '    'ParentInfo = BomExportFindParent(collBreadCrumb, occurrenceInfo.PartNum)
+    '    parentType = GetOccType(ParentInfo.ParentName)
+
+    '    'build the keys for the collections
+    '    sBomCompareKey = occurrenceInfo.PartNum
+
+    '    'Build the BOM Compare collection
+    '    If Not KeyExists(mCollBomCompare, sBomCompareKey) Then
+    '        'if the part does not exist in collection then add the part
+    '        addPart = True
+    '        Select Case parentType
+    '            Case PartType.BAssy
+    '                'check settings for B49 parents
+    '                If mBomCompSettings.bBomCompIncludeBAssy Then
+    '                    'B49s are shown, no children
+    '                    addPart = False
+    '                Else
+    '                    addPart = CheckPartSettings(occurrenceType) 'need to check part level settings like for M900s
+    '                End If
+    '            Case PartType.CAssy
+    '                'check settings for C assemblies
+    '                If mBomCompSettings.bBomCompIncCAssy Then
+    '                    'C49s are shown, no children
+    '                    addPart = False
+    '                Else
+    '                    addPart = CheckPartSettings(occurrenceType)
+    '                End If
+    '            Case PartType.M900Part
+    '                addPart = mBomCompSettings.bBomCompShowFasteners
+    '            Case PartType.Toplevel
+    '                addPart = mBomCompSettings.bBomCompShowTopLevelAssy
+    '            Case Else
+    '                'check other settings
+    '                If IsB39(ParentInfo.ParentName) Then
+    '                    'check settings for B39 children
+    '                    addPart = mBomCompSettings.bBomCompIncB39Children
+    '                ElseIf GetPrefix(ParentInfo.ParentName) = "B45" Then
+    '                    addPart = mBomCompSettings.bBomCompIncB45Children
+    '                Else
+    '                    addPart = CheckPartSettings(occurrenceType)
+    '                End If
+    '        End Select
+
+    '        If addPart Then
+    '            'create instance of the partinfo class for all parts
+    '            compOccurrence = New cPartInfo
+    '            MakeEqual(compOccurrence, occurrenceInfo)
+    '            compOccurrence.Description = CommaReplacer(occurrenceInfo.Description)
+    '            'bump the quantity of the part (starts at 0)
+    '            compOccurrence.IncrementQty(1)
+    '            'add the newly created BomCompPartInfo to the mCollBomCompare collection with the part number as the key
+    '            mCollBomCompare.Add(compOccurrence, sBomCompareKey)
+    '        End If
+    '    Else
+    '        'part already exists in list, increment qty
+    '        mCollBomCompare.Item(sBomCompareKey).IncrementQty(1)
+    '    End If
+
+    '    'build the key for the part export collection
+    '    sPartExportKey = occurrenceInfo.PartNum
+
+    '    'find the parent and type for part create collection
+
+    '    'Build the Part Export collection
+    '    If Not KeyExists(mCollPartExport, sPartExportKey) Then
+    '        'if include b49 is true and part is a b49 then do all this
+    '        If (mPartExportSettings.bPartExportShowB49 = False) And (occurrenceType = PartType.BAssy) Then
+    '            'do nothing, b49 assemblies not added to part create collection if option is not checked
+    '        ElseIf (occurrenceType = PartType.BGEPart) Then
+    '            'do nothing, bge parts should never be created
+    '        ElseIf (occurrenceType = PartType.BPHPart) Then
+    '            'do nothing, BPH parts should never be created
+    '        ElseIf occurrenceType = PartType.StandardPart Then
+    '            'do nothing, standard parts not added to part create collection
+    '        ElseIf occurrenceType = PartType.Toplevel And Not mPartExportSettings.bPartExportShowTopLevelAssy Then
+    '            'do nothing, Top Level part not shown
+    '        Else
+    '            'create instance of partinfo class for new parts
+    '            createOccurence = New cPartInfo
+    '            MakeEqual(createOccurence, occurrenceInfo)
+
+    '            'bump the quantity of the part (starts at 0)
+    '            createOccurence.IncrementQty(1)
+
+    '            'add the newly created mypartinfo to the myparts collection with the part number as the key
+    '            mCollPartExport.Add(createOccurence, sPartExportKey) 'partcreatepartinfo, (spartcreatekey))
+    '        End If
+    '    Else
+    '        'key already exists, bump the quantity of the part
+    '        mCollPartExport.Item(sPartExportKey).incrementqty(1)
+    '    End If
+
+    '    'find the parent and type for the BOM export collection
+    '    ParentInfo = BomExportFindParent(collBreadCrumb, occurrenceInfo.PartNum)
+    '    parentType = GetOccType(ParentInfo.ParentName)
+
+    '    'build the keys for the Bom export collection
+    '    sBomExportKey = occurrenceInfo.PartNum & "-" & ParentInfo.ParentName
+    '    sBomInstanceKey = occurrenceInfo.PartNum & "-" & sParentInstance
+
+    '    'build the BOM Export collection
+    '    If Not KeyExists(mCollBOMInstances, sBomInstanceKey) Then
+    '        addToBOMExportColl = True
+    '        'part does not exist in the collection
+    '        If Not KeyExists(mCollFullBOM, sBomExportKey) Then
+    '            'part does not exist in the collection
+    '            Select Case occurrenceType
+    '                Case PartType.BAssy
+    '                    'add assembly based on settings
+    '                    addToBOMExportColl = mBomExportSettings.bBomExportShowB49
+    '                Case PartType.M900Part
+    '                    addToBOMExportColl = mBomExportSettings.bBomExportShowFasteners
+    '                Case PartType.BPHPart, PartType.BGEPart
+    '                    addToBOMExportColl = False
+    '                Case PartType.Toplevel
+    '                    addToBOMExportColl = mBomExportSettings.bBomExportShowTopLevelAssy
+    '                Case Else
+    '                    addToBOMExportColl = True
+    '            End Select
+    '            'add to collection
+    '            If addToBOMExportColl Then
+    '                importOccurrence = New cPartInfo
+    '                MakeEqual(importOccurrence, occurrenceInfo)
+    '                If ParentInfo.ErrorStatus = True Then
+    '                    importOccurrence.ParentAssy = ParentInfo.ParentName
+    '                    importOccurrence.PartError = True
+    '                    importOccurrence.ErrorMsg = "Invalid Parent Assy"
+    '                Else
+    '                    importOccurrence.ParentAssy = ParentInfo.ParentName
+    '                End If
+    '                importOccurrence.Breadcrumb = collBreadCrumb
+    '                'bump the quantity of the part (starts at 0)
+    '                importOccurrence.IncrementQty(1)
+    '                'add the newly created partinfo to the full bom collection and bom instances collection 
+    '                mCollFullBOM.Add(importOccurrence, sBomExportKey)
+    '                mCollBOMInstances.Add(importOccurrence, sBomInstanceKey)
+    '            End If
+    '        Else
+    '            'key already exists, bump the quantity of the part
+    '        End If
+    '    Else
+    '        mCollFullBOM.Item(sBomExportKey).incrementqty(1)
+    '    End If
+    'End Sub
 
     Private Function FindParentOccurrence(ByVal occ As Inventor.ComponentOccurrence) As String
         'finds the name of the parent occurrence and if the parent meets certain conditions it 
@@ -1179,9 +1326,6 @@ Module mAllBOMExport
         part1.Qty = part2.Qty
         part1.ServiceCode = part2.ServiceCode
         part1.VendorCode = part2.VendorCode
-        part1.InspectField = part2.InspectField
-        part1.Certificate = part2.Certificate
-        part1.ComponentOccurrence = part2.ComponentOccurrence
 
         Return part1
     End Function
@@ -1240,15 +1384,6 @@ Module mAllBOMExport
 
     End Sub
 
-    Private Sub InspectionErr(ByVal occurrence As cPartInfo)
-        'sub to handle changing values if there is no inspection field in the occurrence
-        occurrence.InspectField = ""
-    End Sub
-
-    Private Sub CertReqdErr(ByVal occurrence As cPartInfo)
-        'sub to handle if there is no Certificate field in the occurrence
-        occurrence.Certificate = ""
-    End Sub
     Private Sub UnknownPartErr(ByVal occurrence As cPartInfo)
         'sub to handle error information for unknown parts
         occurrence.PartError = True
@@ -1267,7 +1402,7 @@ Module mAllBOMExport
         Dim sFilePath As String = ""
 
         'Check if mNewParts contains items
-        If IsNothing(mCollBomExport) Then
+        If IsNothing(mCollPartExport) Then
             'Empty parts list
             MsgBox("Parts List Empty, try loading Inventor BOM")
             BOMExportExcel = False
@@ -1278,10 +1413,10 @@ Module mAllBOMExport
         If IsValidFileNameOrPath(FilePath) Then
             'valid file path
             'Add results to Results String
-            mResults = "File Path: " & FilePath & vbNewLine & vbNewLine & "Num Unique Parts: " & CStr(bomExportList.Count)
+            mResults = "File Path: " & FilePath & vbNewLine & vbNewLine & "Num Unique Parts: " & CStr(bomImportList.Count)
         Else
             'File Path not valid
-            mResults = "Excel file NOT created" & vbNewLine & vbNewLine & "Num Unique Parts: " & CStr(bomExportList.Count)
+            mResults = "Excel file NOT created" & vbNewLine & vbNewLine & "Num Unique Parts: " & CStr(bomImportList.Count)
             'dont try to create excel document
             BOMExportExcel = False
             Exit Function
@@ -1324,22 +1459,20 @@ Module mAllBOMExport
             .Range("I1").Value = "Parent Assy"
             .Range("J1").Value = "Plan Type"
             .Range("K1").Value = "Item Nbr"
-            .Range("L1").Value = "Insp Reqd"
-            .Range("M1").Value = "Cert Reqd"
-            .Range("N1").Value = "Errors"
+            .Range("L1").Value = "Errors"
             'color heading row gray
-            .Range("A1:N1").Interior.Color = mikronBlue 'RGB(178, 178, 178)
+            .Range("A1:L1").Interior.Color = mikronBlue 'RGB(178, 178, 178)
             'color heading text
-            .Range("A1:N1").Font.Color = headingTextColor
+            .Range("A1:L1").Font.Color = headingTextColor
             'bold heading row column headings
-            .Range("A1:N1").Font.Bold = True
+            .Range("A1:L1").Font.Bold = True
         End With
 
         'start filling in table on row 2
         row = 2
 
         'populate the remaining cells for ws2
-        For Each part In mCollBomExport
+        For Each part In mCollFullBOM
             With ws1
                 .Range("A" & row).Value = part.PartNum
                 .Range("B" & row).Value = part.PromanCode
@@ -1350,21 +1483,19 @@ Module mAllBOMExport
                 .Range("G" & row).Value = part.ManufNum
                 .Range("H" & row).Value = part.Qty
                 .Range("I" & row).Value = part.ParentAssy
-                .Range("J" & row).Value = 1                             'default plan type will always be 1
-                .Range("K" & row).Value = ""                            'default to a blank cell for Item Nbr
-                .Range("L" & row).Value = part.InspectField             'default to blank cell for inspection
-                .Range("M" & row).Value = TranslateCertReqd(part)       'default to blank cell for cert reqd
-                .Range("N" & row).Value = part.ErrorMsg
+                .Range("J" & row).Value = 1 'default plan type will always be 1
+                .Range("K" & row).Value = "" 'default to a blank cell
+                .Range("L" & row).Value = part.ErrorMsg
                 If part.PartError = True Then
                     'color error rows
-                    .Range("A" & row & ":" & "N" & row).Interior.Color = errorColor
+                    .Range("A" & row & ":" & "L" & row).Interior.Color = errorColor
                 End If
             End With
             row = row + 1
         Next
 
         'autosize columns
-        ws1.Columns("A:N").Autofit
+        ws1.Columns("A:L").Autofit
 
         Try
             wb.SaveAs(Filename:=FilePath, AccessMode:=Excel.XlSaveAsAccessMode.xlExclusive, ConflictResolution:=Excel.XlSaveConflictResolution.xlLocalSessionChanges)
@@ -1385,250 +1516,232 @@ Module mAllBOMExport
 
     End Function
 
-    'Public Function PartExportExcel(FilePath As String, ByVal viewImmediately As Boolean) As Boolean
-    '    'sub to create an excel document from the parts list that was created from the assembly
+    Public Function PartExportExcel(FilePath As String, ByVal viewImmediately As Boolean) As Boolean
+        'sub to create an excel document from the parts list that was created from the assembly
 
-    '    Dim XLApp As Excel.Application
-    '    Dim wb As Excel.Workbook
-    '    Dim ws1 As Excel.Worksheet 'for Part Create info
-    '    Dim sFilePath As String = ""
+        Dim XLApp As Excel.Application
+        Dim wb As Excel.Workbook
+        Dim ws1 As Excel.Worksheet 'for Part Create info
+        Dim sFilePath As String = ""
 
-    '    'Check if mNewParts contains items
-    '    If IsNothing(mCollPartExport) Then
-    '        'Empty parts list
-    '        MsgBox("Parts List Empty, try loading Inventor BOM")
-    '        PartExportExcel = False
-    '        Exit Function
-    '    End If
+        'Check if mNewParts contains items
+        If IsNothing(mCollPartExport) Then
+            'Empty parts list
+            MsgBox("Parts List Empty, try loading Inventor BOM")
+            PartExportExcel = False
+            Exit Function
+        End If
 
-    '    'Check the file path and directory
-    '    If IsValidFileNameOrPath(FilePath) Then
-    '        'valid file path
-    '        'Add results to Results String
-    '        mResults = "File Path: " & FilePath & vbNewLine & vbNewLine & "Num Unique Parts: " & CStr(partExportList.Count)
-    '    Else
-    '        'File Path not valid
-    '        mResults = "Excel file NOT created" & vbNewLine & vbNewLine & "Num Unique Parts: " & CStr(partExportList.Count)
-    '        'dont try to create excel document
-    '        PartExportExcel = False
-    '        Exit Function
-    '    End If
+        'Check the file path and directory
+        If IsValidFileNameOrPath(FilePath) Then
+            'valid file path
+            'Add results to Results String
+            mResults = "File Path: " & FilePath & vbNewLine & vbNewLine & "Num Unique Parts: " & CStr(partExportList.Count)
+        Else
+            'File Path not valid
+            mResults = "Excel file NOT created" & vbNewLine & vbNewLine & "Num Unique Parts: " & CStr(partExportList.Count)
+            'dont try to create excel document
+            PartExportExcel = False
+            Exit Function
+        End If
 
-    '    'create the excel application, workbook and worksheet
-    '    XLApp = CreateObject("Excel.Application")
-    '    XLApp.DisplayAlerts = False 'dont display alert for overwriting file on save
-    '    wb = XLApp.Workbooks.Add
-    '    ws1 = wb.Sheets(1) 'wb.Worksheets.Item(1)
+        'create the excel application, workbook and worksheet
+        XLApp = CreateObject("Excel.Application")
+        XLApp.DisplayAlerts = False 'dont display alert for overwriting file on save
+        wb = XLApp.Workbooks.Add
+        ws1 = wb.Sheets(1) 'wb.Worksheets.Item(1)
 
-    '    'name sheets
-    '    ws1.Name = "Part Export"
-    '    'ws2.Name = "EXPERIMENTAL"
-    '    ws1.Activate()
+        'name sheets
+        ws1.Name = "Part Export"
+        'ws2.Name = "EXPERIMENTAL"
+        ws1.Activate()
 
-    '    'add items to the worksheet
-    '    Dim part As cPartInfo
-    '    Dim row As Integer
-    '    Dim mikronBlue As Integer
-    '    Dim headingTextColor As Integer
-    '    Dim errorColor As Integer
+        'add items to the worksheet
+        Dim part As cPartInfo
+        Dim row As Integer
+        Dim mikronBlue As Integer
+        Dim headingTextColor As Integer
+        Dim errorColor As Integer
 
-    '    'define mikron blue color
-    '    mikronBlue = RGB(0, 51, 153)
-    '    'define heading text color
-    '    headingTextColor = RGB(255, 255, 255)
-    '    'define error color
-    '    errorColor = RGB(255, 97, 161)
+        'define mikron blue color
+        mikronBlue = RGB(0, 51, 153)
+        'define heading text color
+        headingTextColor = RGB(255, 255, 255)
+        'define error color
+        errorColor = RGB(255, 97, 161)
 
-    '    'start filling in table on row 2
-    '    row = 2
+        'start filling in table on row 2
+        row = 2
 
-    '    'create column headings for ws1
-    '    With ws1
-    '        .Range("A1").Value = "Part Number"
-    '        .Range("B1").Value = "Class Code"
-    '        .Range("C1").Value = "Description"
-    '        .Range("D1").Value = "Serv Code"
-    '        .Range("E1").Value = "Vend Code"
-    '        .Range("F1").Value = "Manuf Name"
-    '        .Range("G1").Value = "Manuf Num"
-    '        .Range("H1").Value = "QPA"
-    '        .Range("I1").Value = "Errors"
-    '        'color heading row gray
-    '        .Range("A1:I1").Interior.Color = mikronBlue
-    '        'Color heading text white
-    '        .Range("A1:I1").Font.Color = headingTextColor
-    '        'bold heading row column headings
-    '        .Range("A1:I1").Font.Bold = True
-    '    End With
+        'create column headings for ws1
+        With ws1
+            .Range("A1").Value = "Part Number"
+            .Range("B1").Value = "Class Code"
+            .Range("C1").Value = "Description"
+            .Range("D1").Value = "Serv Code"
+            .Range("E1").Value = "Vend Code"
+            .Range("F1").Value = "Manuf Name"
+            .Range("G1").Value = "Manuf Num"
+            .Range("H1").Value = "QPA"
+            .Range("I1").Value = "Errors"
+            'color heading row gray
+            .Range("A1:I1").Interior.Color = mikronBlue
+            'Color heading text white
+            .Range("A1:I1").Font.Color = headingTextColor
+            'bold heading row column headings
+            .Range("A1:I1").Font.Bold = True
+        End With
 
-    '    'populate the remaining cells for WS1
-    '    For Each part In mCollPartExport
-    '        With ws1
-    '            .Range("A" & row).Value = part.PartNum
-    '            .Range("B" & row).Value = part.PromanCode
-    '            .Range("C" & row).Value = part.Description
-    '            .Range("D" & row).Value = part.ServiceCode
-    '            .Range("E" & row).Value = part.VendorCode
-    '            .Range("F" & row).Value = part.ManufName
-    '            .Range("G" & row).Value = part.ManufNum
-    '            .Range("H" & row).Value = part.Qty
-    '            .Range("I" & row).Value = part.ErrorMsg
-    '            If part.PartError = True Then
-    '                'color error rows
-    '                .Range("A" & row & ":" & "I" & row).Interior.Color = errorColor
-    '            End If
-    '        End With
-    '        row = row + 1
-    '    Next
+        'populate the remaining cells for WS1
+        For Each part In mCollPartExport
+            With ws1
+                .Range("A" & row).Value = part.PartNum
+                .Range("B" & row).Value = part.PromanCode
+                .Range("C" & row).Value = part.Description
+                .Range("D" & row).Value = part.ServiceCode
+                .Range("E" & row).Value = part.VendorCode
+                .Range("F" & row).Value = part.ManufName
+                .Range("G" & row).Value = part.ManufNum
+                .Range("H" & row).Value = part.Qty
+                .Range("I" & row).Value = part.ErrorMsg
+                If part.PartError = True Then
+                    'color error rows
+                    .Range("A" & row & ":" & "I" & row).Interior.Color = errorColor
+                End If
+            End With
+            row = row + 1
+        Next
 
-    '    'autosize columns
-    '    ws1.Columns("A:J").AutoFit
+        'autosize columns
+        ws1.Columns("A:J").AutoFit
 
-    '    Try
-    '        wb.SaveAs(Filename:=FilePath, AccessMode:=Excel.XlSaveAsAccessMode.xlExclusive, ConflictResolution:=Excel.XlSaveConflictResolution.xlLocalSessionChanges)
-    '        PartExportExcel = True
-    '        If Not viewImmediately Then
-    '            'ok to close excel
-    '            wb.Close()
-    '            XLApp.Quit()
-    '        Else
-    '            XLApp.Visible = True
-    '        End If
+        Try
+            wb.SaveAs(Filename:=FilePath, AccessMode:=Excel.XlSaveAsAccessMode.xlExclusive, ConflictResolution:=Excel.XlSaveConflictResolution.xlLocalSessionChanges)
+            PartExportExcel = True
+            If Not viewImmediately Then
+                'ok to close excel
+                wb.Close()
+                XLApp.Quit()
+            Else
+                XLApp.Visible = True
+            End If
 
-    '    Catch ex As Exception
-    '        PartExportExcel = False
-    '        wb.Close()
-    '        XLApp.Quit()
-    '    End Try
+        Catch ex As Exception
+            PartExportExcel = False
+            wb.Close()
+            XLApp.Quit()
+        End Try
 
-    'End Function
+    End Function
 
-    'Public Function BomCompExportExcel(FilePath As String, ByVal viewImmediately As Boolean) As Boolean
-    '    'sub to create BOM Compare excel document from the parts list that was created from the assembly
-    '    'uses the bom compare collection mCollBomCompare
+    Public Function BomCompExportExcel(FilePath As String, ByVal viewImmediately As Boolean) As Boolean
+        'sub to create BOM Compare excel document from the parts list that was created from the assembly
+        'uses the bom compare collection mCollBomCompare
 
-    '    Dim XLApp As Excel.Application
-    '    Dim wb As Excel.Workbook
-    '    Dim ws1 As Excel.Worksheet 'for Part Create info
-    '    Dim sFilePath As String = ""
+        Dim XLApp As Excel.Application
+        Dim wb As Excel.Workbook
+        Dim ws1 As Excel.Worksheet 'for Part Create info
+        Dim sFilePath As String = ""
 
-    '    'Check if mNewParts contains items
-    '    If IsNothing(mCollBomCompare) Then 'dont check mCollPartExport check mCollBomCompare instead
-    '        'Empty parts list
-    '        MsgBox("Parts List Empty, try loading Inventor BOM")
-    '        BomCompExportExcel = False
-    '        Exit Function
-    '    End If
+        'Check if mNewParts contains items
+        If IsNothing(mCollPartExport) Then
+            'Empty parts list
+            MsgBox("Parts List Empty, try loading Inventor BOM")
+            BomCompExportExcel = False
+            Exit Function
+        End If
 
-    '    'Check the file path and directory
-    '    If IsValidFileNameOrPath(FilePath) Then
-    '        'valid file path
-    '        'Add results to Results String
-    '        mResults = "File Path: " & FilePath & vbNewLine & vbNewLine & "Num Unique Parts: " & CStr(bomCompareList.Count)
-    '    Else
-    '        'File Path not valid
-    '        mResults = "Excel file NOT created" & vbNewLine & vbNewLine & "Num Unique Parts: " & CStr(bomCompareList.Count)
-    '        'dont try to create excel document
-    '        BomCompExportExcel = False
-    '        Exit Function
-    '    End If
+        'Check the file path and directory
+        If IsValidFileNameOrPath(FilePath) Then
+            'valid file path
+            'Add results to Results String
+            mResults = "File Path: " & FilePath & vbNewLine & vbNewLine & "Num Unique Parts: " & CStr(bomCompareList.Count)
+        Else
+            'File Path not valid
+            mResults = "Excel file NOT created" & vbNewLine & vbNewLine & "Num Unique Parts: " & CStr(bomCompareList.Count)
+            'dont try to create excel document
+            BomCompExportExcel = False
+            Exit Function
+        End If
 
-    '    'create the excel application, workbook and worksheet
-    '    XLApp = CreateObject("Excel.Application")
-    '    XLApp.DisplayAlerts = False 'dont display alert for overwriting file on save
-    '    wb = XLApp.Workbooks.Add
-    '    ws1 = wb.Sheets(1)
+        'create the excel application, workbook and worksheet
+        XLApp = CreateObject("Excel.Application")
+        XLApp.DisplayAlerts = False 'dont display alert for overwriting file on save
+        wb = XLApp.Workbooks.Add
+        ws1 = wb.Sheets(1)
 
-    '    'name sheets
-    '    ws1.Name = "BOM Compare"
-    '    ws1.Activate()
+        'name sheets
+        ws1.Name = "BOM Compare"
+        ws1.Activate()
 
-    '    'add items to the worksheet
-    '    Dim part As cPartInfo
-    '    Dim row As Integer
-    '    Dim mikronBlue As Integer
-    '    Dim headingTextColor As Integer
-    '    Dim errorColor As Integer
+        'add items to the worksheet
+        Dim part As cPartInfo
+        Dim row As Integer
+        Dim mikronBlue As Integer
+        Dim headingTextColor As Integer
+        Dim errorColor As Integer
 
-    '    'define mikron blue color
-    '    mikronBlue = RGB(0, 51, 153)
-    '    'define heading text color
-    '    headingTextColor = RGB(255, 255, 255)
-    '    'define error color
-    '    errorColor = RGB(255, 97, 161)
+        'define mikron blue color
+        mikronBlue = RGB(0, 51, 153)
+        'define heading text color
+        headingTextColor = RGB(255, 255, 255)
+        'define error color
+        errorColor = RGB(255, 97, 161)
 
-    '    'start filling in table on row 2
-    '    row = 2
+        'start filling in table on row 2
+        row = 2
 
-    '    'create column headings for ws1
-    '    With ws1
-    '        .Range("A1").Value = "Part Number"
-    '        .Range("B1").Value = "Description"
-    '        .Range("C1").Value = "QPA"
-    '        'color heading row gray
-    '        .Range("A1:C1").Interior.Color = mikronBlue
-    '        'Color heading text white
-    '        .Range("A1:C1").Font.Color = headingTextColor
-    '        'bold heading row column headings
-    '        .Range("A1:C1").Font.Bold = True
-    '    End With
+        'create column headings for ws1
+        With ws1
+            .Range("A1").Value = "Part Number"
+            .Range("B1").Value = "Description"
+            .Range("C1").Value = "QPA"
+            'color heading row gray
+            .Range("A1:C1").Interior.Color = mikronBlue
+            'Color heading text white
+            .Range("A1:C1").Font.Color = headingTextColor
+            'bold heading row column headings
+            .Range("A1:C1").Font.Bold = True
+        End With
 
-    '    'populate the remaining cells for WS1
-    '    For Each part In mCollPartExport
-    '        With ws1
-    '            .Range("A" & row).Value = part.PartNum
-    '            .Range("B" & row).Value = part.Description
-    '            .Range("C" & row).Value = part.Qty
-    '            'If part.PartError = True Then
-    '            '    'color error rows
-    '            '    .Range("A" & row & ":" & "C" & row).Interior.Color = errorColor
-    '            'End If
-    '        End With
-    '        row = row + 1
-    '    Next
+        'populate the remaining cells for WS1
+        For Each part In mCollPartExport
+            With ws1
+                .Range("A" & row).Value = part.PartNum
+                .Range("B" & row).Value = part.Description
+                .Range("C" & row).Value = part.Qty
+                'If part.PartError = True Then
+                '    'color error rows
+                '    .Range("A" & row & ":" & "C" & row).Interior.Color = errorColor
+                'End If
+            End With
+            row = row + 1
+        Next
 
-    '    'autosize columns
-    '    ws1.Columns("A:C").AutoFit
+        'autosize columns
+        ws1.Columns("A:C").AutoFit
 
-    '    Try
-    '        wb.SaveAs(Filename:=FilePath, AccessMode:=Excel.XlSaveAsAccessMode.xlExclusive, ConflictResolution:=Excel.XlSaveConflictResolution.xlLocalSessionChanges)
-    '        BomCompExportExcel = True
-    '        If Not viewImmediately Then
-    '            'ok to close excel
-    '            wb.Close()
-    '            XLApp.Quit()
-    '        Else
-    '            XLApp.Visible = True
-    '        End If
+        Try
+            wb.SaveAs(Filename:=FilePath, AccessMode:=Excel.XlSaveAsAccessMode.xlExclusive, ConflictResolution:=Excel.XlSaveConflictResolution.xlLocalSessionChanges)
+            BomCompExportExcel = True
+            If Not viewImmediately Then
+                'ok to close excel
+                wb.Close()
+                XLApp.Quit()
+            Else
+                XLApp.Visible = True
+            End If
 
-    '    Catch ex As Exception
-    '        BomCompExportExcel = False
-    '        wb.Close()
-    '        XLApp.Quit()
-    '    End Try
+        Catch ex As Exception
+            BomCompExportExcel = False
+            wb.Close()
+            XLApp.Quit()
+        End Try
 
-    'End Function
+    End Function
 
 #End Region
 
-    Private Function TranslateCertReqd(ByVal myPart As cPartInfo) As String
-        'sub to take the string value of the iProperty "Certificate" and turn it into an Y if it matches defined values
-
-        Dim certRequiredString As String = "Y"
-        Dim certNotRequiredString As String = ""
-
-        Select Case myPart.Certificate
-            Case "Material"
-                TranslateCertReqd = certRequiredString
-            Case "Material + Finish"
-                TranslateCertReqd = certRequiredString
-            Case "Calibration"
-                TranslateCertReqd = certRequiredString
-            Case Else
-                TranslateCertReqd = certNotRequiredString
-        End Select
-
-    End Function
 
     Private Sub PrintColl(PartCollection As Collection)
         'sub to debug print the parts collection
@@ -1728,47 +1841,47 @@ Module mAllBOMExport
 
     End Function
 
-    'Private Function PartExportFindParent(collBreadCrumb As Collection, sChild As String) As ParentStatus
-    '    'function to find the parent assembly going backwards through the breadcrumb collection 
+    Private Function PartExportFindParent(collBreadCrumb As Collection, sChild As String) As ParentStatus
+        'function to find the parent assembly going backwards through the breadcrumb collection 
 
-    '    Dim i As Integer
-    '    Dim parent As String = "Empty Parent"
+        Dim i As Integer
+        Dim parent As String = "Empty Parent"
 
-    '    For i = 0 To collBreadCrumb.Count
-    '        Try
-    '            parent = collBreadCrumb.Item(collBreadCrumb.Count - i)
-    '            If sChild = parent Then
-    '                'cant have a child part have itself as a parent 
-    '            Else
-    '                If IsPrefixMatch(parent, "BGE") Then
-    '                    'cant have BGE as parent
-    '                ElseIf IsPrefixMatch(parent, "BPH") Then
-    '                    'cant have BPH as parent
-    '                ElseIf IsBFourtyNine(parent) Then
-    '                    'are B49s allowed to be parents??
-    '                    If mPartExportSettings.bPartExportShowB49 Then
-    '                        'B49s allowed to be parents
-    '                        Exit For
-    '                    End If
-    '                Else
-    '                    'parent is not a B49, BPH or a BGE so it is OK
-    '                    Exit For
-    '                End If
-    '            End If
+        For i = 0 To collBreadCrumb.Count
+            Try
+                parent = collBreadCrumb.Item(collBreadCrumb.Count - i)
+                If sChild = parent Then
+                    'cant have a child part have itself as a parent 
+                Else
+                    If IsPrefixMatch(parent, "BGE") Then
+                        'cant have BGE as parent
+                    ElseIf IsPrefixMatch(parent, "BPH") Then
+                        'cant have BPH as parent
+                    ElseIf IsBFourtyNine(parent) Then
+                        'are B49s allowed to be parents??
+                        If mPartExportSettings.bPartExportShowB49 Then
+                            'B49s allowed to be parents
+                            Exit For
+                        End If
+                    Else
+                        'parent is not a B49, BPH or a BGE so it is OK
+                        Exit For
+                    End If
+                End If
 
-    '        Catch ex As Exception
-    '            PartExportFindParent.ParentName = "INVALID Parent"
-    '            PartExportFindParent.ErrorStatus = True
-    '            'exit the function and assign invalid parent error
-    '            Exit Function
-    '        End Try
-    '    Next
+            Catch ex As Exception
+                PartExportFindParent.ParentName = "INVALID Parent"
+                PartExportFindParent.ErrorStatus = True
+                'exit the function and assign invalid parent error
+                Exit Function
+            End Try
+        Next
 
-    '    'for loop was finished or exited, assign values
-    '    PartExportFindParent.ParentName = parent
-    '    PartExportFindParent.ErrorStatus = False
+        'for loop was finished or exited, assign values
+        PartExportFindParent.ParentName = parent
+        PartExportFindParent.ErrorStatus = False
 
-    'End Function
+    End Function
 
     Private Function BomExportFindParent(collBreadCrumb As Collection, sChild As String) As ParentStatus
         'function to find the parent assembly by going backwards through the breadcrumb collection
