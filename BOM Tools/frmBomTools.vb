@@ -37,7 +37,7 @@ Public Class frmBomTools
             'get the top level assembly document name
             startAssy = mAssyDoc.PropertySets.Item("Design Tracking Properties").Item("Part Number").Value
             mAssyCompDef = mAssyDoc.ComponentDefinition
-            lblVersion.Text = "v1.11a"
+            lblVersion.Text = "v1.11b"
 
             'define colors for row highlighting
             colorPartNotOnList = Color.DeepPink
