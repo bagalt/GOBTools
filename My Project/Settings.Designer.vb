@@ -14,7 +14,7 @@ Option Explicit On
 
 
 <Global.System.Runtime.CompilerServices.CompilerGeneratedAttribute(),  _
- Global.System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.6.0.0"),  _
+ Global.System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.5.0.0"),  _
  Global.System.ComponentModel.EditorBrowsableAttribute(Global.System.ComponentModel.EditorBrowsableState.Advanced)>  _
 Partial Friend NotInheritable Class Settings
     Inherits Global.System.Configuration.ApplicationSettingsBase
@@ -278,6 +278,54 @@ Partial Friend NotInheritable Class Settings
         End Get
         Set
             Me("BTPartExportShowFasteners") = value
+        End Set
+    End Property
+    
+    <Global.System.Configuration.UserScopedSettingAttribute(),  _
+     Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+     Global.System.Configuration.DefaultSettingValueAttribute("261.424")>  _
+    Public Property StepperVertOffset() As Double
+        Get
+            Return CType(Me("StepperVertOffset"),Double)
+        End Get
+        Set
+            Me("StepperVertOffset") = value
+        End Set
+    End Property
+    
+    <Global.System.Configuration.UserScopedSettingAttribute(),  _
+     Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+     Global.System.Configuration.DefaultSettingValueAttribute("123.993")>  _
+    Public Property StepperHorizOffset() As Double
+        Get
+            Return CType(Me("StepperHorizOffset"),Double)
+        End Get
+        Set
+            Me("StepperHorizOffset") = value
+        End Set
+    End Property
+    
+    <Global.System.Configuration.UserScopedSettingAttribute(),  _
+     Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+     Global.System.Configuration.DefaultSettingValueAttribute("Angle Name")>  _
+    Public Property StepperAngleName() As String
+        Get
+            Return CType(Me("StepperAngleName"),String)
+        End Get
+        Set
+            Me("StepperAngleName") = value
+        End Set
+    End Property
+    
+    <Global.System.Configuration.UserScopedSettingAttribute(),  _
+     Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+     Global.System.Configuration.DefaultSettingValueAttribute("Unknown")>  _
+    Public Property StepperLastFile() As String
+        Get
+            Return CType(Me("StepperLastFile"),String)
+        End Get
+        Set
+            Me("StepperLastFile") = value
         End Set
     End Property
 End Class

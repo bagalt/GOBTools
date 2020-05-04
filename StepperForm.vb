@@ -22,6 +22,7 @@ Public Class frmStepper
     Dim gVertNameValidated As Boolean
     Dim gHorizNameValidated As Boolean
     Dim gAngleNameValidated As Boolean                          'flag to hold True/False if the angle parameter has been validated
+    Dim gLastFile As String                                     'variable to hold the name of the last file used.  Used for checking parameters when first showing form.
 
     Public Sub New(ThisApplication As Inventor.Application)
 
@@ -432,7 +433,7 @@ Public Class frmStepper
         'and assign it to the horizparam global
 
         Try
-            gHorizParam = gAssyCompDef.Parameters(txtHorizName.Text)
+            gHorizParam = gAssyCompDef.Parameters.Item(txtHorizName.Text)
             'check parameter suppressed status
             If CheckSuppressed(gHorizParam.Name) Then
                 MsgBox("Horizontal Parameter is Suppressed, please unsuppress", MsgBoxStyle.OkOnly, "Horiz Param Suppressed")
@@ -454,7 +455,7 @@ Public Class frmStepper
         'sub to check and assign the parameter name when the value has been updated
         'and assign it to the vert param global
         Try
-            gVertParam = gAssyCompDef.Parameters(txtVertName.Text)
+            gVertParam = gAssyCompDef.Parameters.Item(txtVertName.Text)
             'check to see if parameter is supressed
             If CheckSuppressed(gVertParam.Name) Then
                 MsgBox("Vertical Parameter is Suppressed, please unsuppress", MsgBoxStyle.OkOnly, "Vert Param Suppressed")
@@ -662,6 +663,10 @@ Public Class frmStepper
         My.Settings.StepperAccelThresh = CDbl(txtAccelThreshold.Text)
         My.Settings.StepperStepSize = CInt(txtStepSize.Text)
         My.Settings.StepperIgnoreHoriz = chkIgnoreHoriz.Checked
+        My.Settings.StepperVertOffset = CDbl(txtVertOffset.Text)
+        My.Settings.StepperHorizOffset = CDbl(txtHorizOffset.Text)
+        My.Settings.StepperLastFile = gAssyDoc.PropertySets.Item("Design Tracking Properties").Item("Part Number").Value
+        My.Settings.Save()
 
     End Sub
 
@@ -703,26 +708,37 @@ Public Class frmStepper
         txtAccelThreshold.Text = My.Settings.StepperAccelThresh
         txtStepSize.Text = My.Settings.StepperStepSize
         chkIgnoreHoriz.Checked = My.Settings.StepperIgnoreHoriz
+        txtVertOffset.Text = My.Settings.StepperVertOffset
+        txtHorizOffset.Text = My.Settings.StepperHorizOffset
+        txtAngleName.Text = My.Settings.StepperAngleName
+        gLastFile = My.Settings.StepperLastFile
 
         'load vertical and horizontal names
         txtVertName.Text = My.Settings.StepperVertName
+        txtHorizName.Text = My.Settings.StepperHorizName
 
-        'check vert name that was loaded
-        If CheckVertName(txtVertName.Text) Then
-            gOrigVert = gVertParam.Value
-        End If
-
-        'see if we're using the horizontal parameter
-        If chkIgnoreHoriz.Checked Then
-            'not using the horizontal parameter
-        Else
-            'checkbox not checked, using horizontal parameter
-            txtHorizName.Text = My.Settings.StepperHorizName
-            If CheckHorizName(txtHorizName.Text) Then
-                gOrigHoriz = gHorizParam.Value
+        If gLastFile = gAssyDoc.PropertySets.Item("Design Tracking Properties").Item("Part Number").Value Then
+            'looking at the same file as the last time Stepper was opened
+            'Check the parameters again
+            'check vert name that was loaded
+            If CheckVertName(txtVertName.Text) Then
+                gOrigVert = gVertParam.Value
             End If
-        End If
 
+            'see if we're using the horizontal parameter
+            If chkIgnoreHoriz.Checked Then
+                'not using the horizontal parameter
+            Else
+                'checkbox not checked, using horizontal parameter
+                txtHorizName.Text = My.Settings.StepperHorizName
+                If CheckHorizName(txtHorizName.Text) Then
+                    gOrigHoriz = gHorizParam.Value
+                End If
+            End If
+        Else
+            'looking at different assembly.  Dont check parameters.
+
+        End If
 
     End Sub
 
