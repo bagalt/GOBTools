@@ -7,18 +7,21 @@ Imports System.Drawing
 Public Class frmStepper
     'test
     Dim gAssyCompDef As Inventor.AssemblyComponentDefinition
-    Dim gdblPosArray As Object(,) 'array from VNM has 361 elements, arrays start at zero
-    Dim gintCurrentIndex As Integer = 1 'holds current index for traversing through position array
-    Dim gintPrevIndex As Integer = 1 'holds previous index for traversing through position array
-    Public gInvApp As Inventor.Application 'global for inventor application object
-    Dim gVertParam As Inventor.Parameter 'global for vertical parameter
-    Dim gHorizParam As Inventor.Parameter 'global for horizontal parameter
+    Dim gdblPosArray As Object(,)                               'array from VNM has 361 elements, arrays start at zero [angle,vert,horiz]
+    Dim gintCurrentIndex As Integer = 1                         'holds current index for traversing through position array
+    Dim gintPrevIndex As Integer = 1                            'holds previous index for traversing through position array
+    Public gInvApp As Inventor.Application                      'global for inventor application object
+    Dim gVertParam As Inventor.Parameter                        'global for vertical parameter
+    Dim gHorizParam As Inventor.Parameter                       'global for horizontal parameter
+    Dim gAngleParam As Inventor.Parameter                       'global for the angle parameter
     Dim gboolLoop As Boolean
-    Dim gOrigVert As Double 'holds the original value of the vertical parameter for reset purposes
-    Dim gOrigHoriz As Double 'holds the original value of the horizontal parameter for reset purposes
+    Dim gOrigVert As Double                                     'holds the original value of the vertical parameter for reset purposes
+    Dim gOrigHoriz As Double                                    'holds the original value of the horizontal parameter for reset purposes
+    Dim gOrigAngle As Double                                    'holds the original value of the angle parameter for reset purposes
     Dim gAssyDoc As Inventor.AssemblyDocument
     Dim gVertNameValidated As Boolean
     Dim gHorizNameValidated As Boolean
+    Dim gAngleNameValidated As Boolean                          'flag to hold True/False if the angle parameter has been validated
 
     Public Sub New(ThisApplication As Inventor.Application)
 
@@ -39,6 +42,7 @@ Public Class frmStepper
             'set default values
             gVertNameValidated = False
             gHorizNameValidated = False
+            gAngleNameValidated = False
         Catch
             MsgBox("Assembly document must be active")
             Me.Close()
@@ -272,6 +276,21 @@ Public Class frmStepper
 
     End Sub
 
+    Private Sub UpdateAngle(ByRef AngleParam As Inventor.Parameter)
+        'sub to update an angle parameter if it has been defined and the checkbox is enabled
+        'updates based on the angle value in degrees and needs to be converted to radians for inventor
+
+        If chkEnableAngle.Checked = True Then
+            Try
+                'dont need to use radians when using the expression command.  entered as deg below
+                AngleParam.Expression = FormatNumber(gdblPosArray(gintCurrentIndex, 1), 2)
+            Catch ex As Exception
+                MsgBox("Problem with Angle Parameter.")
+            End Try
+        End If
+
+    End Sub
+
     Private Sub UpdateModel(ByRef VertName As Inventor.Parameter, ByRef HorizName As Inventor.Parameter)
         'sub to update the inventor assembly parameters based on VertName and HorizName and the index
         'in the gdblPosArray
@@ -285,7 +304,10 @@ Public Class frmStepper
                 'for passing values to inventor, inventor uses internal units of cm and radians
                 'use the expression to have the display only show 3 decimal places and add the mm to use the correct units
                 VertName.Expression = FormatNumber(gdblPosArray(gintCurrentIndex, 2) + CDbl(txtVertOffset.Text), 3) & "mm"
-                'VertName.Value = CDbl((gdblPosArray(gintCurrentIndex, 2) + CDbl(txtVertOffset.Text)) / 10)
+
+                If chkEnableAngle.Checked = True Then
+                    UpdateAngle(gAngleParam)
+                End If
                 'update model and ignore errors
                 gInvApp.ScreenUpdating = True
                 gAssyDoc.Update2(True)
@@ -293,8 +315,10 @@ Public Class frmStepper
                 'use the expression to have the display only show 3 decimal places and add the mm to use the correct units               
                 VertName.Expression = FormatNumber(gdblPosArray(gintCurrentIndex, 2) + CDbl(txtVertOffset.Text), 3) & "mm"
                 HorizName.Expression = FormatNumber(gdblPosArray(gintCurrentIndex, 3) + CDbl(txtHorizOffset.Text), 3) & "mm"
-                'VertName.Value = CDbl((gdblPosArray(gintCurrentIndex, 2) + CDbl(txtVertOffset.Text)) / 10)
-                'HorizName.Value = CDbl((gdblPosArray(gintCurrentIndex, 3) + CDbl(txtHorizOffset.Text)) / 10)
+
+                If chkEnableAngle.Checked = True Then
+                    UpdateAngle(gAngleParam)
+                End If
                 'update model and ignore errors
                 gInvApp.ScreenUpdating = True
                 gAssyDoc.Update2(True)
@@ -440,13 +464,30 @@ Public Class frmStepper
                 gVertNameValidated = True
                 Return True
             End If
-
-
         Catch ex As Exception
             MsgBox("Problem with the Vert Parameter Name")
             Return False
         End Try
 
+    End Function
+
+    Private Function CheckAngleName(AngleName As String) As Boolean
+        'function to check to see if the angle parameter exists
+        Try
+            gAngleParam = gAssyCompDef.Parameters(txtAngleName.Text)
+            'check to see if parameter is surpressed
+            If CheckSuppressed(gAngleParam.Name) Then
+                MsgBox("Angle Parameter is surpressed, please unsurpress", MsgBoxStyle.OkOnly, "Angle Param Surpressed")
+                Return False
+            Else
+                'set validated flag
+                gAngleNameValidated = True
+                Return True
+            End If
+        Catch ex As Exception
+            MsgBox("Problem with the Angle Parameter Name")
+            Return False
+        End Try
     End Function
 
     Private Sub txtHorizName_Validated(sender As Object, e As EventArgs) Handles txtHorizName.Validated
@@ -518,13 +559,9 @@ Public Class frmStepper
         'index will be +1 from current index
         'pos array index starts at 1, lstview index starts at 0
 
-
         gintPrevIndex = gintCurrentIndex
         gintCurrentIndex = selectedItems.Item(0).Index + 1
         UpdateModel(gVertParam, gHorizParam)
-
-
-
 
     End Sub
 
@@ -591,6 +628,7 @@ Public Class frmStepper
             'reset vert and horizontal parameters to the original values
             gVertParam.Value = gOrigVert
             gHorizParam.Value = gOrigHoriz
+            gAngleParam.Value = gOrigAngle
             gInvApp.ActiveDocument.Update2(True)
         Catch ex As Exception
 
@@ -610,6 +648,7 @@ Public Class frmStepper
             'reset vert and horizontal parameters to the original values
             gVertParam.Value = gOrigVert
             gHorizParam.Value = gOrigHoriz
+            gAngleParam.Value = gOrigAngle
             gInvApp.ActiveDocument.Update2(True)
             gintCurrentIndex = 1
         Catch ex As Exception
@@ -635,6 +674,7 @@ Public Class frmStepper
             'reset vert and horizontal parameters to the original values
             gVertParam.Value = gOrigVert
             gHorizParam.Value = gOrigHoriz
+            gAngleParam.Value = gOrigAngle
             gInvApp.ActiveDocument.Update2(True)
         Catch ex As Exception
             MsgBox("Problem resetting values, check Vert and Horiz Parameter Names")
@@ -706,15 +746,22 @@ Public Class frmStepper
         If (NameHelp.GetVertParamName <> "") Then
             'apply the selected param name to the vert name text box
             txtVertName.Text = NameHelp.GetVertParamName
-            If (CheckVertName(txtVertName.Text)) Then
+            If CheckVertName(txtVertName.Text) Then
                 gOrigVert = gVertParam.Value
             End If
         ElseIf (NameHelp.GetHorizParamName <> "") Then
             'apply the selected param name to the horiz name text box
             txtHorizName.Text = NameHelp.GetHorizParamName
-            If (CheckHorizName(txtHorizName.Text)) Then
+            If CheckHorizName(txtHorizName.Text) Then
                 gOrigHoriz = gHorizParam.Value
             End If
+        ElseIf (NameHelp.GetAngleParamName <> "") Then
+            'apply the selected param name to the angle name text box
+            txtAngleName.Text = NameHelp.GetAngleParamName
+            If CheckAngleName(txtAngleName.Text) Then
+                gOrigAngle = gAngleParam.Value
+            End If
+
         End If
 
         'Stop  NameHelp form And clear up memory
@@ -743,4 +790,5 @@ Public Class frmStepper
         Return LocateInCenter
 
     End Function
+
 End Class
