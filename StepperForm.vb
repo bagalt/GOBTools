@@ -737,7 +737,6 @@ Public Class frmStepper
             End If
         Else
             'looking at different assembly.  Dont check parameters.
-
         End If
 
     End Sub
