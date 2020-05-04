@@ -39,7 +39,7 @@ Public Class frmStepper
             gAssyCompDef = gAssyDoc.ComponentDefinition
             txtNumConstraints.Text = gAssyDoc.ComponentDefinition.Constraints.Count
             'add label for information
-            lblVersion.Text = "v1.3"
+            lblVersion.Text = "v1.4"
             'set default values
             gVertNameValidated = False
             gHorizNameValidated = False
@@ -88,12 +88,12 @@ Public Class frmStepper
         If (txtFilePath.Text <> "") Then
             If System.IO.File.Exists(txtFilePath.Text) Then
                 ExcelToArray(txtFilePath.Text)
+                'update the listview to go to the current angle
+                UpdateListView()
             Else
                 MsgBox("File does not exist, check file path", MsgBoxStyle.OkOnly, "File not Found")
             End If
-
         End If
-
     End Sub
 
     Private Sub ExcelToArray(Path As String)
@@ -737,6 +737,7 @@ Public Class frmStepper
             End If
         Else
             'looking at different assembly.  Dont check parameters.
+            MsgBox("Opened new file, be sure Offsets are correct.", MsgBoxStyle.OkOnly)
         End If
 
     End Sub
