@@ -59,5 +59,17 @@
     <Setting Name="BTPartExportShowFasteners" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
+    <Setting Name="StepperVertOffset" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">261.424</Value>
+    </Setting>
+    <Setting Name="StepperHorizOffset" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">123.993</Value>
+    </Setting>
+    <Setting Name="StepperAngleName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Angle Name</Value>
+    </Setting>
+    <Setting Name="StepperLastFile" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Unknown</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
