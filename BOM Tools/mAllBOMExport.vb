@@ -1107,6 +1107,8 @@ Module mAllBOMExport
 
     End Sub
 
+
+
     Private Function FindParentOccurrence(ByVal occ As Inventor.ComponentOccurrence) As String
         'finds the name of the parent occurrence and if the parent meets certain conditions it 
         'recursively calls itself until it gets to a valid parent
@@ -1771,6 +1773,7 @@ Module mAllBOMExport
     '    PartExportFindParent.ErrorStatus = False
 
     'End Function
+
 
     Private Function BomExportFindParent(collBreadCrumb As Collection, sChild As String) As ParentStatus
         'function to find the parent assembly by going backwards through the breadcrumb collection

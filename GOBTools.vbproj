@@ -335,9 +335,9 @@ REM - Delete the pdb file because it doesn't need to be delivered.
 DEL "$(TargetDir)$(TargetName).pdb"
 
 REM - Delete the existing add-in folder.
-rmdir /q /s "C:\ProgramData\Autodesk\Inventor 2018\Addins\$(TargetName)"
+rmdir /q /s "C:\ProgramData\Autodesk\Inventor 2021\Addins\$(TargetName)"
 
 REM - Copy the folder to the Inventor Addins folder so Inventor will see it and run it.
-XCopy "$(TargetDir)*" "C:\ProgramData\Autodesk\Inventor 2018\Addins\$(TargetName)\" /y /r /i /s /f</PostBuildEvent>
+XCopy "$(TargetDir)*" "C:\ProgramData\Autodesk\Inventor 2021\Addins\$(TargetName)\" /y /r /i /s /f</PostBuildEvent>
   </PropertyGroup>
 </Project>
