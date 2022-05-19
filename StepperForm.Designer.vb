@@ -73,10 +73,9 @@ Partial Class frmStepper
         '
         'txtVertPos
         '
-        Me.txtVertPos.Location = New System.Drawing.Point(656, 53)
-        Me.txtVertPos.Margin = New System.Windows.Forms.Padding(4)
+        Me.txtVertPos.Location = New System.Drawing.Point(492, 43)
         Me.txtVertPos.Name = "txtVertPos"
-        Me.txtVertPos.Size = New System.Drawing.Size(104, 22)
+        Me.txtVertPos.Size = New System.Drawing.Size(79, 20)
         Me.txtVertPos.TabIndex = 49
         '
         'OpenFileDialog1
@@ -86,11 +85,10 @@ Partial Class frmStepper
         'TabControl1
         '
         Me.TabControl1.Controls.Add(Me.TabPage1)
-        Me.TabControl1.Location = New System.Drawing.Point(3, 2)
-        Me.TabControl1.Margin = New System.Windows.Forms.Padding(4)
+        Me.TabControl1.Location = New System.Drawing.Point(2, 2)
         Me.TabControl1.Name = "TabControl1"
         Me.TabControl1.SelectedIndex = 0
-        Me.TabControl1.Size = New System.Drawing.Size(647, 585)
+        Me.TabControl1.Size = New System.Drawing.Size(485, 475)
         Me.TabControl1.TabIndex = 44
         '
         'TabPage1
@@ -106,11 +104,10 @@ Partial Class frmStepper
         Me.TabPage1.Controls.Add(Me.btnNextAngle)
         Me.TabPage1.Controls.Add(Me.btnPrevAngle)
         Me.TabPage1.Controls.Add(Me.bxSettings)
-        Me.TabPage1.Location = New System.Drawing.Point(4, 25)
-        Me.TabPage1.Margin = New System.Windows.Forms.Padding(4)
+        Me.TabPage1.Location = New System.Drawing.Point(4, 22)
         Me.TabPage1.Name = "TabPage1"
-        Me.TabPage1.Padding = New System.Windows.Forms.Padding(4)
-        Me.TabPage1.Size = New System.Drawing.Size(639, 556)
+        Me.TabPage1.Padding = New System.Windows.Forms.Padding(3, 3, 3, 3)
+        Me.TabPage1.Size = New System.Drawing.Size(477, 449)
         Me.TabPage1.TabIndex = 0
         Me.TabPage1.Text = "Step Tool"
         Me.TabPage1.UseVisualStyleBackColor = True
@@ -118,20 +115,18 @@ Partial Class frmStepper
         'chkShowDebug
         '
         Me.chkShowDebug.AutoSize = True
-        Me.chkShowDebug.Location = New System.Drawing.Point(16, 514)
-        Me.chkShowDebug.Margin = New System.Windows.Forms.Padding(4)
+        Me.chkShowDebug.Location = New System.Drawing.Point(12, 418)
         Me.chkShowDebug.Name = "chkShowDebug"
-        Me.chkShowDebug.Size = New System.Drawing.Size(135, 21)
+        Me.chkShowDebug.Size = New System.Drawing.Size(107, 17)
         Me.chkShowDebug.TabIndex = 36
         Me.chkShowDebug.Text = "Show More Info?"
         Me.chkShowDebug.UseVisualStyleBackColor = True
         '
         'btnExit
         '
-        Me.btnExit.Location = New System.Drawing.Point(177, 497)
-        Me.btnExit.Margin = New System.Windows.Forms.Padding(4)
+        Me.btnExit.Location = New System.Drawing.Point(133, 404)
         Me.btnExit.Name = "btnExit"
-        Me.btnExit.Size = New System.Drawing.Size(100, 42)
+        Me.btnExit.Size = New System.Drawing.Size(75, 34)
         Me.btnExit.TabIndex = 35
         Me.btnExit.Text = "Exit"
         Me.btnExit.UseVisualStyleBackColor = True
@@ -141,11 +136,9 @@ Partial Class frmStepper
         Me.GroupBox1.Controls.Add(Me.btnStop)
         Me.GroupBox1.Controls.Add(Me.btnPlay)
         Me.GroupBox1.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.GroupBox1.Location = New System.Drawing.Point(11, 377)
-        Me.GroupBox1.Margin = New System.Windows.Forms.Padding(4)
+        Me.GroupBox1.Location = New System.Drawing.Point(8, 306)
         Me.GroupBox1.Name = "GroupBox1"
-        Me.GroupBox1.Padding = New System.Windows.Forms.Padding(4)
-        Me.GroupBox1.Size = New System.Drawing.Size(267, 79)
+        Me.GroupBox1.Size = New System.Drawing.Size(200, 64)
         Me.GroupBox1.TabIndex = 35
         Me.GroupBox1.TabStop = False
         Me.GroupBox1.Text = "AutoPlay"
@@ -153,10 +146,9 @@ Partial Class frmStepper
         'btnStop
         '
         Me.btnStop.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnStop.Location = New System.Drawing.Point(147, 23)
-        Me.btnStop.Margin = New System.Windows.Forms.Padding(4)
+        Me.btnStop.Location = New System.Drawing.Point(110, 19)
         Me.btnStop.Name = "btnStop"
-        Me.btnStop.Size = New System.Drawing.Size(112, 46)
+        Me.btnStop.Size = New System.Drawing.Size(84, 37)
         Me.btnStop.TabIndex = 14
         Me.btnStop.Text = "Stop"
         Me.btnStop.UseVisualStyleBackColor = True
@@ -164,20 +156,18 @@ Partial Class frmStepper
         'btnPlay
         '
         Me.btnPlay.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnPlay.Location = New System.Drawing.Point(9, 23)
-        Me.btnPlay.Margin = New System.Windows.Forms.Padding(4)
+        Me.btnPlay.Location = New System.Drawing.Point(7, 19)
         Me.btnPlay.Name = "btnPlay"
-        Me.btnPlay.Size = New System.Drawing.Size(129, 46)
+        Me.btnPlay.Size = New System.Drawing.Size(97, 37)
         Me.btnPlay.TabIndex = 13
         Me.btnPlay.Text = "Play"
         Me.btnPlay.UseVisualStyleBackColor = True
         '
         'btnReload
         '
-        Me.btnReload.Location = New System.Drawing.Point(548, 23)
-        Me.btnReload.Margin = New System.Windows.Forms.Padding(4)
+        Me.btnReload.Location = New System.Drawing.Point(411, 19)
         Me.btnReload.Name = "btnReload"
-        Me.btnReload.Size = New System.Drawing.Size(80, 28)
+        Me.btnReload.Size = New System.Drawing.Size(60, 23)
         Me.btnReload.TabIndex = 2
         Me.btnReload.Text = "Reload"
         Me.btnReload.UseVisualStyleBackColor = True
@@ -190,31 +180,28 @@ Partial Class frmStepper
         Me.lstData.FullRowSelect = True
         Me.lstData.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable
         Me.lstData.HideSelection = False
-        Me.lstData.Location = New System.Drawing.Point(291, 63)
-        Me.lstData.Margin = New System.Windows.Forms.Padding(4)
+        Me.lstData.Location = New System.Drawing.Point(218, 51)
         Me.lstData.MultiSelect = False
         Me.lstData.Name = "lstData"
-        Me.lstData.Size = New System.Drawing.Size(332, 467)
+        Me.lstData.Size = New System.Drawing.Size(250, 380)
         Me.lstData.TabIndex = 32
         Me.lstData.UseCompatibleStateImageBehavior = False
         Me.lstData.View = System.Windows.Forms.View.Details
         '
         'btnBrowse
         '
-        Me.btnBrowse.Location = New System.Drawing.Point(463, 23)
-        Me.btnBrowse.Margin = New System.Windows.Forms.Padding(4)
+        Me.btnBrowse.Location = New System.Drawing.Point(347, 19)
         Me.btnBrowse.Name = "btnBrowse"
-        Me.btnBrowse.Size = New System.Drawing.Size(80, 28)
+        Me.btnBrowse.Size = New System.Drawing.Size(60, 23)
         Me.btnBrowse.TabIndex = 1
         Me.btnBrowse.Text = "Browse"
         Me.btnBrowse.UseVisualStyleBackColor = True
         '
         'txtFilePath
         '
-        Me.txtFilePath.Location = New System.Drawing.Point(11, 27)
-        Me.txtFilePath.Margin = New System.Windows.Forms.Padding(4)
+        Me.txtFilePath.Location = New System.Drawing.Point(8, 22)
         Me.txtFilePath.Name = "txtFilePath"
-        Me.txtFilePath.Size = New System.Drawing.Size(443, 22)
+        Me.txtFilePath.Size = New System.Drawing.Size(333, 20)
         Me.txtFilePath.TabIndex = 0
         Me.txtFilePath.Text = "Browse for Path"
         '
@@ -222,29 +209,26 @@ Partial Class frmStepper
         '
         Me.lblFilePath.AutoSize = True
         Me.lblFilePath.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblFilePath.Location = New System.Drawing.Point(7, 7)
-        Me.lblFilePath.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lblFilePath.Location = New System.Drawing.Point(5, 6)
         Me.lblFilePath.Name = "lblFilePath"
-        Me.lblFilePath.Size = New System.Drawing.Size(72, 17)
+        Me.lblFilePath.Size = New System.Drawing.Size(57, 13)
         Me.lblFilePath.TabIndex = 3
         Me.lblFilePath.Text = "File Path"
         '
         'btnNextAngle
         '
-        Me.btnNextAngle.Location = New System.Drawing.Point(153, 293)
-        Me.btnNextAngle.Margin = New System.Windows.Forms.Padding(4)
+        Me.btnNextAngle.Location = New System.Drawing.Point(115, 238)
         Me.btnNextAngle.Name = "btnNextAngle"
-        Me.btnNextAngle.Size = New System.Drawing.Size(129, 64)
+        Me.btnNextAngle.Size = New System.Drawing.Size(97, 52)
         Me.btnNextAngle.TabIndex = 12
         Me.btnNextAngle.Text = "Next Angle"
         Me.btnNextAngle.UseVisualStyleBackColor = True
         '
         'btnPrevAngle
         '
-        Me.btnPrevAngle.Location = New System.Drawing.Point(11, 293)
-        Me.btnPrevAngle.Margin = New System.Windows.Forms.Padding(4)
+        Me.btnPrevAngle.Location = New System.Drawing.Point(8, 238)
         Me.btnPrevAngle.Name = "btnPrevAngle"
-        Me.btnPrevAngle.Size = New System.Drawing.Size(129, 64)
+        Me.btnPrevAngle.Size = New System.Drawing.Size(97, 52)
         Me.btnPrevAngle.TabIndex = 11
         Me.btnPrevAngle.Text = "Prev Angle"
         Me.btnPrevAngle.UseVisualStyleBackColor = True
@@ -266,11 +250,9 @@ Partial Class frmStepper
         Me.bxSettings.Controls.Add(Me.lblVertOffset)
         Me.bxSettings.Controls.Add(Me.txtVertOffset)
         Me.bxSettings.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.bxSettings.Location = New System.Drawing.Point(11, 59)
-        Me.bxSettings.Margin = New System.Windows.Forms.Padding(4)
+        Me.bxSettings.Location = New System.Drawing.Point(8, 48)
         Me.bxSettings.Name = "bxSettings"
-        Me.bxSettings.Padding = New System.Windows.Forms.Padding(4)
-        Me.bxSettings.Size = New System.Drawing.Size(267, 229)
+        Me.bxSettings.Size = New System.Drawing.Size(200, 186)
         Me.bxSettings.TabIndex = 3
         Me.bxSettings.TabStop = False
         Me.bxSettings.Text = "Settings"
@@ -279,20 +261,18 @@ Partial Class frmStepper
         '
         Me.lblAccelThreshold.AutoSize = True
         Me.lblAccelThreshold.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblAccelThreshold.Location = New System.Drawing.Point(8, 172)
-        Me.lblAccelThreshold.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lblAccelThreshold.Location = New System.Drawing.Point(6, 140)
         Me.lblAccelThreshold.Name = "lblAccelThreshold"
-        Me.lblAccelThreshold.Size = New System.Drawing.Size(110, 17)
+        Me.lblAccelThreshold.Size = New System.Drawing.Size(84, 13)
         Me.lblAccelThreshold.TabIndex = 38
         Me.lblAccelThreshold.Text = "Accel Threshold"
         '
         'txtAccelThreshold
         '
         Me.txtAccelThreshold.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.txtAccelThreshold.Location = New System.Drawing.Point(12, 193)
-        Me.txtAccelThreshold.Margin = New System.Windows.Forms.Padding(4)
+        Me.txtAccelThreshold.Location = New System.Drawing.Point(9, 157)
         Me.txtAccelThreshold.Name = "txtAccelThreshold"
-        Me.txtAccelThreshold.Size = New System.Drawing.Size(100, 23)
+        Me.txtAccelThreshold.Size = New System.Drawing.Size(76, 20)
         Me.txtAccelThreshold.TabIndex = 7
         Me.txtAccelThreshold.Text = "9"
         '
@@ -300,10 +280,9 @@ Partial Class frmStepper
         '
         Me.chkIgnoreHoriz.AutoSize = True
         Me.chkIgnoreHoriz.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.chkIgnoreHoriz.Location = New System.Drawing.Point(140, 133)
-        Me.chkIgnoreHoriz.Margin = New System.Windows.Forms.Padding(4)
+        Me.chkIgnoreHoriz.Location = New System.Drawing.Point(105, 108)
         Me.chkIgnoreHoriz.Name = "chkIgnoreHoriz"
-        Me.chkIgnoreHoriz.Size = New System.Drawing.Size(115, 21)
+        Me.chkIgnoreHoriz.Size = New System.Drawing.Size(89, 17)
         Me.chkIgnoreHoriz.TabIndex = 10
         Me.chkIgnoreHoriz.Text = "Ignore Horiz?"
         Me.chkIgnoreHoriz.UseVisualStyleBackColor = True
@@ -311,10 +290,9 @@ Partial Class frmStepper
         'btnNameHelp
         '
         Me.btnNameHelp.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnNameHelp.Location = New System.Drawing.Point(8, 133)
-        Me.btnNameHelp.Margin = New System.Windows.Forms.Padding(4)
+        Me.btnNameHelp.Location = New System.Drawing.Point(6, 108)
         Me.btnNameHelp.Name = "btnNameHelp"
-        Me.btnNameHelp.Size = New System.Drawing.Size(100, 28)
+        Me.btnNameHelp.Size = New System.Drawing.Size(75, 23)
         Me.btnNameHelp.TabIndex = 9
         Me.btnNameHelp.Text = "Name Help"
         Me.btnNameHelp.UseVisualStyleBackColor = True
@@ -323,20 +301,18 @@ Partial Class frmStepper
         '
         Me.lblStepSize.AutoSize = True
         Me.lblStepSize.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblStepSize.Location = New System.Drawing.Point(180, 172)
-        Me.lblStepSize.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lblStepSize.Location = New System.Drawing.Point(135, 140)
         Me.lblStepSize.Name = "lblStepSize"
-        Me.lblStepSize.Size = New System.Drawing.Size(68, 17)
+        Me.lblStepSize.Size = New System.Drawing.Size(52, 13)
         Me.lblStepSize.TabIndex = 28
         Me.lblStepSize.Text = "Step Size"
         '
         'txtStepSize
         '
         Me.txtStepSize.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.txtStepSize.Location = New System.Drawing.Point(184, 193)
-        Me.txtStepSize.Margin = New System.Windows.Forms.Padding(4)
+        Me.txtStepSize.Location = New System.Drawing.Point(138, 157)
         Me.txtStepSize.Name = "txtStepSize"
-        Me.txtStepSize.Size = New System.Drawing.Size(64, 23)
+        Me.txtStepSize.Size = New System.Drawing.Size(49, 20)
         Me.txtStepSize.TabIndex = 8
         Me.txtStepSize.Text = "2"
         '
@@ -344,20 +320,18 @@ Partial Class frmStepper
         '
         Me.lblHorizName.AutoSize = True
         Me.lblHorizName.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblHorizName.Location = New System.Drawing.Point(136, 76)
-        Me.lblHorizName.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lblHorizName.Location = New System.Drawing.Point(102, 62)
         Me.lblHorizName.Name = "lblHorizName"
-        Me.lblHorizName.Size = New System.Drawing.Size(82, 17)
+        Me.lblHorizName.Size = New System.Drawing.Size(62, 13)
         Me.lblHorizName.TabIndex = 11
         Me.lblHorizName.Text = "Horiz Name"
         '
         'txtHorizName
         '
         Me.txtHorizName.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.txtHorizName.Location = New System.Drawing.Point(140, 98)
-        Me.txtHorizName.Margin = New System.Windows.Forms.Padding(4)
+        Me.txtHorizName.Location = New System.Drawing.Point(105, 80)
         Me.txtHorizName.Name = "txtHorizName"
-        Me.txtHorizName.Size = New System.Drawing.Size(108, 23)
+        Me.txtHorizName.Size = New System.Drawing.Size(82, 20)
         Me.txtHorizName.TabIndex = 6
         Me.txtHorizName.Text = "HorizName"
         '
@@ -365,20 +339,18 @@ Partial Class frmStepper
         '
         Me.lblVertName.AutoSize = True
         Me.lblVertName.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblVertName.Location = New System.Drawing.Point(8, 76)
-        Me.lblVertName.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lblVertName.Location = New System.Drawing.Point(6, 62)
         Me.lblVertName.Name = "lblVertName"
-        Me.lblVertName.Size = New System.Drawing.Size(75, 17)
+        Me.lblVertName.Size = New System.Drawing.Size(57, 13)
         Me.lblVertName.TabIndex = 9
         Me.lblVertName.Text = "Vert Name"
         '
         'txtVertName
         '
         Me.txtVertName.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.txtVertName.Location = New System.Drawing.Point(8, 98)
-        Me.txtVertName.Margin = New System.Windows.Forms.Padding(4)
+        Me.txtVertName.Location = New System.Drawing.Point(6, 80)
         Me.txtVertName.Name = "txtVertName"
-        Me.txtVertName.Size = New System.Drawing.Size(108, 23)
+        Me.txtVertName.Size = New System.Drawing.Size(82, 20)
         Me.txtVertName.TabIndex = 5
         Me.txtVertName.Text = "VertName"
         '
@@ -386,20 +358,18 @@ Partial Class frmStepper
         '
         Me.lblHorizOffset.AutoSize = True
         Me.lblHorizOffset.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblHorizOffset.Location = New System.Drawing.Point(136, 20)
-        Me.lblHorizOffset.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lblHorizOffset.Location = New System.Drawing.Point(102, 16)
         Me.lblHorizOffset.Name = "lblHorizOffset"
-        Me.lblHorizOffset.Size = New System.Drawing.Size(119, 17)
+        Me.lblHorizOffset.Size = New System.Drawing.Size(87, 13)
         Me.lblHorizOffset.TabIndex = 7
         Me.lblHorizOffset.Text = "Horiz Offset (mm)"
         '
         'txtHorizOffset
         '
         Me.txtHorizOffset.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.txtHorizOffset.Location = New System.Drawing.Point(140, 42)
-        Me.txtHorizOffset.Margin = New System.Windows.Forms.Padding(4)
+        Me.txtHorizOffset.Location = New System.Drawing.Point(105, 34)
         Me.txtHorizOffset.Name = "txtHorizOffset"
-        Me.txtHorizOffset.Size = New System.Drawing.Size(108, 23)
+        Me.txtHorizOffset.Size = New System.Drawing.Size(82, 20)
         Me.txtHorizOffset.TabIndex = 4
         Me.txtHorizOffset.Text = "123.993"
         '
@@ -407,85 +377,76 @@ Partial Class frmStepper
         '
         Me.lblVertOffset.AutoSize = True
         Me.lblVertOffset.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblVertOffset.Location = New System.Drawing.Point(8, 20)
-        Me.lblVertOffset.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lblVertOffset.Location = New System.Drawing.Point(6, 16)
         Me.lblVertOffset.Name = "lblVertOffset"
-        Me.lblVertOffset.Size = New System.Drawing.Size(112, 17)
+        Me.lblVertOffset.Size = New System.Drawing.Size(82, 13)
         Me.lblVertOffset.TabIndex = 5
         Me.lblVertOffset.Text = "Vert Offset (mm)"
         '
         'txtVertOffset
         '
         Me.txtVertOffset.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.txtVertOffset.Location = New System.Drawing.Point(8, 42)
-        Me.txtVertOffset.Margin = New System.Windows.Forms.Padding(4)
+        Me.txtVertOffset.Location = New System.Drawing.Point(6, 34)
         Me.txtVertOffset.Name = "txtVertOffset"
-        Me.txtVertOffset.Size = New System.Drawing.Size(108, 23)
+        Me.txtVertOffset.Size = New System.Drawing.Size(82, 20)
         Me.txtVertOffset.TabIndex = 3
         Me.txtVertOffset.Text = "261.424"
         '
         'lblHorizPos
         '
         Me.lblHorizPos.AutoSize = True
-        Me.lblHorizPos.Location = New System.Drawing.Point(656, 84)
-        Me.lblHorizPos.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lblHorizPos.Location = New System.Drawing.Point(492, 68)
         Me.lblHorizPos.Name = "lblHorizPos"
-        Me.lblHorizPos.Size = New System.Drawing.Size(69, 17)
+        Me.lblHorizPos.Size = New System.Drawing.Size(52, 13)
         Me.lblHorizPos.TabIndex = 48
         Me.lblHorizPos.Text = "Horiz Pos"
         '
         'txtHorizPos
         '
-        Me.txtHorizPos.Location = New System.Drawing.Point(656, 107)
-        Me.txtHorizPos.Margin = New System.Windows.Forms.Padding(4)
+        Me.txtHorizPos.Location = New System.Drawing.Point(492, 87)
         Me.txtHorizPos.Name = "txtHorizPos"
-        Me.txtHorizPos.Size = New System.Drawing.Size(104, 22)
+        Me.txtHorizPos.Size = New System.Drawing.Size(79, 20)
         Me.txtHorizPos.TabIndex = 47
         '
         'lblStopwatch
         '
         Me.lblStopwatch.AutoSize = True
-        Me.lblStopwatch.Location = New System.Drawing.Point(656, 137)
-        Me.lblStopwatch.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lblStopwatch.Location = New System.Drawing.Point(492, 111)
         Me.lblStopwatch.Name = "lblStopwatch"
-        Me.lblStopwatch.Size = New System.Drawing.Size(105, 17)
+        Me.lblStopwatch.Size = New System.Drawing.Size(80, 13)
         Me.lblStopwatch.TabIndex = 46
         Me.lblStopwatch.Text = "Stopwatch (ms)"
         '
         'txtStopwatch
         '
-        Me.txtStopwatch.Location = New System.Drawing.Point(656, 160)
-        Me.txtStopwatch.Margin = New System.Windows.Forms.Padding(4)
+        Me.txtStopwatch.Location = New System.Drawing.Point(492, 130)
         Me.txtStopwatch.Name = "txtStopwatch"
-        Me.txtStopwatch.Size = New System.Drawing.Size(104, 22)
+        Me.txtStopwatch.Size = New System.Drawing.Size(79, 20)
         Me.txtStopwatch.TabIndex = 45
         '
         'lblVertPos
         '
         Me.lblVertPos.AutoSize = True
-        Me.lblVertPos.Location = New System.Drawing.Point(656, 30)
-        Me.lblVertPos.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lblVertPos.Location = New System.Drawing.Point(492, 24)
         Me.lblVertPos.Name = "lblVertPos"
-        Me.lblVertPos.Size = New System.Drawing.Size(62, 17)
+        Me.lblVertPos.Size = New System.Drawing.Size(47, 13)
         Me.lblVertPos.TabIndex = 50
         Me.lblVertPos.Text = "Vert Pos"
         '
         'lblVersion
         '
         Me.lblVersion.AutoSize = True
-        Me.lblVersion.Location = New System.Drawing.Point(661, 566)
-        Me.lblVersion.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lblVersion.Location = New System.Drawing.Point(496, 460)
         Me.lblVersion.Name = "lblVersion"
-        Me.lblVersion.Size = New System.Drawing.Size(37, 17)
+        Me.lblVersion.Size = New System.Drawing.Size(30, 13)
         Me.lblVersion.TabIndex = 51
         Me.lblVersion.Text = "vX.X"
         '
         'btnReset
         '
-        Me.btnReset.Location = New System.Drawing.Point(654, 506)
-        Me.btnReset.Margin = New System.Windows.Forms.Padding(4)
+        Me.btnReset.Location = New System.Drawing.Point(490, 411)
         Me.btnReset.Name = "btnReset"
-        Me.btnReset.Size = New System.Drawing.Size(100, 34)
+        Me.btnReset.Size = New System.Drawing.Size(75, 28)
         Me.btnReset.TabIndex = 52
         Me.btnReset.Text = "Reset"
         Me.btnReset.UseVisualStyleBackColor = True
@@ -493,29 +454,26 @@ Partial Class frmStepper
         'lblNumConstraints
         '
         Me.lblNumConstraints.AutoSize = True
-        Me.lblNumConstraints.Location = New System.Drawing.Point(656, 196)
-        Me.lblNumConstraints.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lblNumConstraints.Location = New System.Drawing.Point(492, 159)
         Me.lblNumConstraints.Name = "lblNumConstraints"
-        Me.lblNumConstraints.Size = New System.Drawing.Size(112, 17)
+        Me.lblNumConstraints.Size = New System.Drawing.Size(84, 13)
         Me.lblNumConstraints.TabIndex = 54
         Me.lblNumConstraints.Text = "Num Constraints"
         '
         'txtNumConstraints
         '
-        Me.txtNumConstraints.Location = New System.Drawing.Point(656, 218)
-        Me.txtNumConstraints.Margin = New System.Windows.Forms.Padding(4)
+        Me.txtNumConstraints.Location = New System.Drawing.Point(492, 177)
         Me.txtNumConstraints.Name = "txtNumConstraints"
-        Me.txtNumConstraints.Size = New System.Drawing.Size(64, 22)
+        Me.txtNumConstraints.Size = New System.Drawing.Size(49, 20)
         Me.txtNumConstraints.TabIndex = 53
         Me.txtNumConstraints.Text = "0"
         '
         'txtAngleName
         '
         Me.txtAngleName.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.txtAngleName.Location = New System.Drawing.Point(653, 280)
-        Me.txtAngleName.Margin = New System.Windows.Forms.Padding(4)
+        Me.txtAngleName.Location = New System.Drawing.Point(490, 228)
         Me.txtAngleName.Name = "txtAngleName"
-        Me.txtAngleName.Size = New System.Drawing.Size(108, 23)
+        Me.txtAngleName.Size = New System.Drawing.Size(82, 20)
         Me.txtAngleName.TabIndex = 55
         Me.txtAngleName.Text = "Angle Name"
         '
@@ -523,29 +481,27 @@ Partial Class frmStepper
         '
         Me.lblAngleName.AutoSize = True
         Me.lblAngleName.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblAngleName.Location = New System.Drawing.Point(653, 258)
-        Me.lblAngleName.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lblAngleName.Location = New System.Drawing.Point(490, 210)
         Me.lblAngleName.Name = "lblAngleName"
-        Me.lblAngleName.Size = New System.Drawing.Size(85, 17)
+        Me.lblAngleName.Size = New System.Drawing.Size(65, 13)
         Me.lblAngleName.TabIndex = 56
         Me.lblAngleName.Text = "Angle Name"
         '
         'chkEnableAngle
         '
         Me.chkEnableAngle.AutoSize = True
-        Me.chkEnableAngle.Location = New System.Drawing.Point(653, 311)
-        Me.chkEnableAngle.Margin = New System.Windows.Forms.Padding(4)
+        Me.chkEnableAngle.Location = New System.Drawing.Point(490, 253)
         Me.chkEnableAngle.Name = "chkEnableAngle"
-        Me.chkEnableAngle.Size = New System.Drawing.Size(122, 21)
+        Me.chkEnableAngle.Size = New System.Drawing.Size(95, 17)
         Me.chkEnableAngle.TabIndex = 57
         Me.chkEnableAngle.Text = "Enable Angle?"
         Me.chkEnableAngle.UseVisualStyleBackColor = True
         '
         'frmStepper
         '
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 16.0!)
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(651, 589)
+        Me.ClientSize = New System.Drawing.Size(490, 485)
         Me.Controls.Add(Me.chkEnableAngle)
         Me.Controls.Add(Me.lblAngleName)
         Me.Controls.Add(Me.txtAngleName)
@@ -561,11 +517,10 @@ Partial Class frmStepper
         Me.Controls.Add(Me.lblVertPos)
         Me.Controls.Add(Me.lblVersion)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D
-        Me.Margin = New System.Windows.Forms.Padding(4)
         Me.MaximizeBox = False
-        Me.MaximumSize = New System.Drawing.Size(793, 640)
+        Me.MaximumSize = New System.Drawing.Size(600, 528)
         Me.MinimizeBox = False
-        Me.MinimumSize = New System.Drawing.Size(673, 640)
+        Me.MinimumSize = New System.Drawing.Size(510, 528)
         Me.Name = "frmStepper"
         Me.Text = "Position Stepper"
         Me.TabControl1.ResumeLayout(False)

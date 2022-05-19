@@ -611,9 +611,9 @@ Public Class frmStepper
 
         'will extend the form width to show or hide some additional information
         If (chkShowDebug.Checked = True) Then
-            Me.Width = 793
+            Me.Width = 610
         Else
-            Me.Width = 673
+            Me.Width = 510
         End If
     End Sub
 
